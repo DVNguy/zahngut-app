@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -34,6 +35,9 @@
             background: var(--white);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            -webkit-overflow-scrolling: touch;
+            height: 100vh;
+            position: relative;
         }
 
         /* Header */
@@ -64,25 +68,8 @@
             letter-spacing: -0.5px;
         }
 
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--white);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .logo-icon::before {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 24px;
-            background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 4px 4px 8px 8px;
-            clip-path: polygon(20% 0%, 80% 0%, 100% 40%, 85% 100%, 50% 85%, 15% 100%, 0% 40%);
+        .logo img {
+            border-radius: 6px;
         }
 
         .emergency-btn {
@@ -984,7 +971,7 @@
     <div class="header">
         <div class="header-content">
             <div class="logo">
-                <div class="logo-icon"></div>
+                <img src="logo.png" style="height: 36px; width: auto; filter: brightness(0) invert(1);">
                 <span>Zahngut</span>
             </div>
             <a href="tel:029571010" class="emergency-btn">
@@ -999,7 +986,7 @@
     <!-- Hero Section -->
     <div class="hero">
         <h1>Willkommen bei Zahngut</h1>
-        <p>Die Zahnarztpraxis mit Herz in Bad Wünnenberg</p>
+        <p>Moderne Zahnmedizin. Alle Fachbereiche. Ein Team.</p>
     </div>
 
     <!-- Main Categories -->
@@ -1108,64 +1095,29 @@
             <div class="sub-categories">
                 <h2 class="section-title">Behandlungen</h2>
                 <div class="info-grid">
+                    <div class="info-card" onclick="showDetail('zahnersatz')">
+                        <div class="info-icon">👑</div>
+                        <span>Zahnersatz</span>
+                    </div>
+                    <div class="info-card" onclick="showDetail('implantate')">
+                        <div class="info-icon">🦴</div>
+                        <span>Implantate</span>
+                    </div>
+                    <div class="info-card" onclick="showDetail('wurzelbehandlung')">
+                        <div class="info-icon">💉</div>
+                        <span>Wurzelkanalbehandlung</span>
+                    </div>
                     <div class="info-card" onclick="showDetail('prophylaxe')">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="var(--primary)" stroke-width="2"/>
-                                <path d="M8 12h8M12 8v8" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
-                                <circle cx="12" cy="12" r="3" fill="var(--accent)"/>
-                            </svg>
-                        </div>
+                        <div class="info-icon">🦷</div>
                         <span>Prophylaxe</span>
                     </div>
                     <div class="info-card" onclick="showDetail('fuellungen')">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <rect x="3" y="3" width="18" height="18" rx="2" stroke="var(--primary)" stroke-width="2"/>
-                                <path d="M8 12h8M12 8v8" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
-                                <rect x="9" y="9" width="6" height="6" fill="var(--accent)"/>
-                            </svg>
-                        </div>
+                        <div class="info-icon">🔧</div>
                         <span>Füllungen</span>
                     </div>
-                    <div class="info-card" onclick="showDetail('zahnersatz')">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L22 7v10c0 2-2 5-10 5S2 19 2 17V7l10-5z" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/>
-                                <circle cx="12" cy="12" r="3" fill="var(--accent)"/>
-                            </svg>
-                        </div>
-                        <span>Zahnersatz</span>
-                    </div>
                     <div class="info-card" onclick="showDetail('bleaching')">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/>
-                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="var(--accent)" opacity="0.5"/>
-                            </svg>
-                        </div>
+                        <div class="info-icon">✨</div>
                         <span>Bleaching</span>
-                    </div>
-                    <div class="info-card" onclick="showDetail('wurzelbehandlung')">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2v20M12 2c-4 0-6 2-6 6s2 6 6 6 6-2 6-6-2-6-6-6z" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
-                                <circle cx="12" cy="8" r="2" fill="var(--accent)"/>
-                            </svg>
-                        </div>
-                        <span>Wurzelbehandlung</span>
-                    </div>
-                    <div class="info-card" onclick="showDetail('kinder')">
-                        <div class="info-icon">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <circle cx="9" cy="10" r="3" stroke="var(--primary)" stroke-width="2"/>
-                                <circle cx="15" cy="10" r="3" stroke="var(--primary)" stroke-width="2"/>
-                                <path d="M8 14c0 2.21 1.79 4 4 4s4-1.79 4-4" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
-                                <circle cx="9" cy="10" r="1" fill="var(--accent)"/>
-                                <circle cx="15" cy="10" r="1" fill="var(--accent)"/>
-                            </svg>
-                        </div>
-                        <span>Kinderzahnheilkunde</span>
                     </div>
                 </div>
 
@@ -1251,7 +1203,317 @@
             </div>
         </div>
 
-        <!-- Weitere Behandlungsseiten -->
+        <!-- Füllungen Detail Page -->
+        <div id="fuellungen" class="content-section detail-page">
+            <div class="detail-header">
+                <div class="detail-icon">🔧</div>
+                <div>
+                    <h2>Füllungstherapie</h2>
+                    <p style="opacity: 0.9; margin-top: 4px;">Moderne Zahnerhaltung</p>
+                </div>
+            </div>
+            
+            <div class="detail-content">
+                <div class="info-box">
+                    <h3>Hochwertige Kompositfüllungen</h3>
+                    <p>Mit modernsten Füllungsmaterialien restaurieren wir Ihre Zähne substanzschonend und ästhetisch anspruchsvoll. Unsere zahnfarbenen Füllungen sind von natürlichen Zähnen kaum zu unterscheiden.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h3>Behandlungsablauf</h3>
+                    <ul>
+                        <li>Schonende Entfernung der Karies</li>
+                        <li>Desinfektion und Vorbereitung des Zahnes</li>
+                        <li>Schichtweiser Aufbau mit Komposit</li>
+                        <li>Aushärtung mit speziellem UV-Licht</li>
+                        <li>Feinpolitur für perfekte Oberfläche</li>
+                        <li>Bissanpassung und Kontrolle</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>Unsere Füllungsmaterialien</h3>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>⚪</span>
+                            <strong>Komposit</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Zahnfarbene Kunststofffüllung - ästhetisch und langlebig</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>🔷</span>
+                            <strong>Keramik-Inlay</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Laborangefertigte Einlagefüllung - höchste Stabilität</p>
+                    </div>
+                </div>
+
+                <div class="info-box highlight">
+                    <h3>Ihre Vorteile</h3>
+                    <ul>
+                        <li>Zahnfarben und unsichtbar</li>
+                        <li>Minimalinvasive Behandlung</li>
+                        <li>Lange Haltbarkeit (5-10 Jahre)</li>
+                        <li>Metallfreie Versorgung</li>
+                        <li>Sofort belastbar</li>
+                    </ul>
+                </div>
+
+                <div class="appointment-box">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <div class="label">Dauer</div>
+                            <div class="value">30-45 Min</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Haltbarkeit</div>
+                            <div class="value">5-10 Jahre</div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="switchTab('termine')">Termin vereinbaren</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zahnersatz Detail Page -->
+        <div id="zahnersatz" class="content-section detail-page">
+            <div class="detail-header">
+                <div class="detail-icon">👑</div>
+                <div>
+                    <h2>Zahnersatz</h2>
+                    <p style="opacity: 0.9; margin-top: 4px;">Kronen, Brücken und Prothesen</p>
+                </div>
+            </div>
+            
+            <div class="detail-content">
+                <div class="info-box">
+                    <h3>Hochwertiger Zahnersatz aus unserem Meisterlabor</h3>
+                    <p>Ob einzelne Kronen, Brücken oder herausnehmbarer Zahnersatz - wir bieten Ihnen individuelle Lösungen für ein lückenloses Lächeln. In enger Zusammenarbeit mit unserem Dentallabor entstehen passgenaue Versorgungen.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h3>Unser Leistungsspektrum</h3>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>👑</span>
+                            <strong>Vollkeramikkronen</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Metallfreie Kronen mit perfekter Ästhetik</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>🌉</span>
+                            <strong>Brücken</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Festsitzender Ersatz für fehlende Zähne</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>🦷</span>
+                            <strong>Teil- und Vollprothesen</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Herausnehmbarer Zahnersatz mit hohem Tragekomfort</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>Digitaler Workflow</h3>
+                    <ul>
+                        <li>Digitale Abformung ohne Würgereiz</li>
+                        <li>3D-Planung am Computer</li>
+                        <li>CAD/CAM-Fertigung für höchste Präzision</li>
+                        <li>Perfekte Passgenauigkeit</li>
+                        <li>Kurze Behandlungszeiten</li>
+                    </ul>
+                </div>
+
+                <div class="info-box highlight">
+                    <h3>Qualität und Garantie</h3>
+                    <ul>
+                        <li>5 Jahre erweiterte Garantie</li>
+                        <li>Ausschließlich deutsche Meisterlabore</li>
+                        <li>Biokompatible Materialien</li>
+                        <li>Individuelle Farbanpassung</li>
+                        <li>Langzeithaltbarkeit</li>
+                    </ul>
+                </div>
+
+                <div class="appointment-box">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <div class="label">Behandlung</div>
+                            <div class="value">2-3 Termine</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Haltbarkeit</div>
+                            <div class="value">10-15 Jahre</div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="switchTab('termine')">Beratungstermin buchen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wurzelbehandlung Detail Page -->
+        <div id="wurzelbehandlung" class="content-section detail-page">
+            <div class="detail-header">
+                <div class="detail-icon">💉</div>
+                <div>
+                    <h2>Wurzelkanalbehandlung</h2>
+                    <p style="opacity: 0.9; margin-top: 4px;">Endodontie mit Mikroskop</p>
+                </div>
+            </div>
+            
+            <div class="detail-content">
+                <div class="info-box">
+                    <h3>Zahnerhaltung durch moderne Endodontie</h3>
+                    <p>Mit modernster Technik und unter Einsatz unseres OP-Mikroskops können wir auch stark geschädigte Zähne erhalten. Die Wurzelkanalbehandlung erfolgt schonend und mit höchster Präzision.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h3>Unsere Technologie</h3>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>🔬</span>
+                            <strong>OP-Mikroskop</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">25-fache Vergrößerung für maximale Präzision</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>📊</span>
+                            <strong>Elektronische Längenmessung</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Exakte Bestimmung der Wurzelkanallänge</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>🔄</span>
+                            <strong>Maschinelle Aufbereitung</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Schonende und gründliche Reinigung</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>Behandlungsablauf</h3>
+                    <ul>
+                        <li>Schmerzfreie Lokalanästhesie</li>
+                        <li>Kofferdam für steriles Arbeitsfeld</li>
+                        <li>Darstellung aller Wurzelkanäle unter Mikroskop</li>
+                        <li>Desinfektion mit Ultraschall</li>
+                        <li>Bakteriendichte Wurzelfüllung</li>
+                        <li>Adhäsiver Verschluss des Zahnes</li>
+                    </ul>
+                </div>
+
+                <div class="info-box highlight">
+                    <h3>Ihre Vorteile bei uns</h3>
+                    <ul>
+                        <li>Erfolgsrate über 95%</li>
+                        <li>Schmerzfreie Behandlung</li>
+                        <li>Erhalt des natürlichen Zahnes</li>
+                        <li>Revision alter Wurzelfüllungen möglich</li>
+                        <li>Entfernung abgebrochener Instrumente</li>
+                    </ul>
+                </div>
+
+                <div class="appointment-box">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <div class="label">Dauer</div>
+                            <div class="value">60-90 Min</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Erfolgsrate</div>
+                            <div class="value">&gt;95%</div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="switchTab('termine')">Termin vereinbaren</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implantate Detail Page -->
+        <div id="implantate" class="content-section detail-page">
+            <div class="detail-header">
+                <div class="detail-icon">🦴</div>
+                <div>
+                    <h2>Implantate</h2>
+                    <p style="opacity: 0.9; margin-top: 4px;">Feste Zähne wie eigene</p>
+                </div>
+            </div>
+            
+            <div class="detail-content">
+                <div class="info-box">
+                    <h3>Zahnimplantate - Die moderne Lösung</h3>
+                    <p>Implantate sind künstliche Zahnwurzeln aus Titan oder Keramik, die fest im Kieferknochen verankert werden. Sie bieten die natürlichste Form des Zahnersatzes und fühlen sich an wie eigene Zähne.</p>
+                </div>
+                
+                <div class="info-box">
+                    <h3>Behandlungskonzept</h3>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>1️⃣</span>
+                            <strong>3D-Diagnostik</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Digitale Volumentomographie für präzise Planung</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>2️⃣</span>
+                            <strong>Implantation</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Minimalinvasiver Eingriff mit navigierter Chirurgie</p>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div class="info-badge">
+                            <span>3️⃣</span>
+                            <strong>Versorgung</strong>
+                        </div>
+                        <p style="margin-left: 0; margin-top: 8px;">Individuell angefertigte Krone nach Einheilung</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>Einsatzmöglichkeiten</h3>
+                    <ul>
+                        <li>Einzelzahnersatz ohne Beschleifen der Nachbarzähne</li>
+                        <li>Große Lücken mit implantatgetragenen Brücken</li>
+                        <li>Fester Halt für Vollprothesen</li>
+                        <li>Sofortimplantate nach Zahnverlust</li>
+                        <li>All-on-4 Konzept für zahnlose Kiefer</li>
+                    </ul>
+                </div>
+
+                <div class="info-box highlight">
+                    <h3>Ihre Vorteile</h3>
+                    <ul>
+                        <li>Fester Biss wie mit eigenen Zähnen</li>
+                        <li>Kein Knochenabbau</li>
+                        <li>Schonung der Nachbarzähne</li>
+                        <li>Lebenslange Haltbarkeit möglich</li>
+                        <li>Natürliche Ästhetik</li>
+                        <li>10 Jahre Garantie auf Implantate</li>
+                    </ul>
+                </div>
+
+                <div class="appointment-box">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <div class="label">Einheilung</div>
+                            <div class="value">3-6 Monate</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="label">Erfolgsrate</div>
+                            <div class="value">98%</div>
+                        </div>
+                    </div>
+                    <button class="action-button" onclick="switchTab('termine')">Implantat-Beratung buchen</button>
+                </div>
+            </div>
+        </div>
         <div id="bleaching" class="content-section detail-page">
             <div class="detail-header">
                 <div class="detail-icon">
@@ -1310,10 +1572,21 @@
         <div id="notfall" class="content-section">
             <div class="emergency-info">
                 <div class="emergency-card urgent">
-                    <h2>🚨 Zahnärztlicher Notdienst</h2>
+                    <h2>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#C92A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 9v4M12 17h.01" stroke="#C92A2A" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Zahnärztlicher Notdienst
+                    </h2>
                     <p>Bei akuten Schmerzen außerhalb unserer Öffnungszeiten:</p>
                     <a href="tel:01805986700" class="emergency-phone">
-                        <span>📞 01805 / 986 700</span>
+                        <span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
+                                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72" stroke="#C92A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            01805 / 986 700
+                        </span>
                         <small>Zahnärztlicher Notdienst</small>
                     </a>
                     <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px;">
@@ -1321,8 +1594,11 @@
                             <strong>Unsere regulären Öffnungszeiten:</strong><br>
                             Mo-Do: 8:00-19:00 Uhr | Fr: 8:00-16:00 Uhr
                         </p>
-                        <a href="tel:029571010" style="color: var(--primary); font-weight: bold;">
-                            ☎️ Praxis: 02957 / 10 10
+                        <a href="tel:029571010" style="color: var(--primary); font-weight: bold; text-decoration: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 6px;">
+                                <path d="M22 16.92v3a2 2 0 01-2.18 2" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Praxis: 02957 / 10 10
                         </a>
                     </div>
                 </div>
@@ -1780,11 +2056,18 @@
             <div class="contact-card">
                 <h2 style="margin-bottom: 20px;">Termin vereinbaren</h2>
                 <a href="tel:029571010" class="action-button">
-                    📞 Jetzt anrufen: 02957 / 10 10
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align: middle; margin-right: 8px;">
+                        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                    Jetzt anrufen: 02957 / 10 10
                 </a>
-                <button class="action-button secondary" onclick="alert('Online-Terminbuchung wird in Kürze verfügbar sein!')">
-                    🌐 Online Termin buchen
-                </button>
+                <a href="https://www.doctolib.de/zahnarztpraxis/bad-wuennenberg/zahngut-bad-wuennenberg?utm_campaign=website-button&utm_source=zahngut-bad-wuennenberg-website-button&utm_medium=referral&utm_content=option-8&utm_term=zahngut-bad-wuennenberg" target="_blank" class="action-button secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="vertical-align: middle; margin-right: 8px;">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    Online Termin buchen (Doctolib)
+                </a>
                 
                 <div style="margin-top: 20px;">
                     <h3 style="margin-bottom: 12px;">Öffnungszeiten:</h3>
@@ -1798,7 +2081,12 @@
                 <div style="margin-top: 20px; padding: 16px; background: var(--bg-light); border-radius: 8px;">
                     <h3 style="margin-bottom: 8px; color: var(--primary-dark);">Notdienst</h3>
                     <p style="font-size: 14px;">Außerhalb der Öffnungszeiten:</p>
-                    <p style="font-size: 18px; font-weight: bold; color: var(--primary);">☎️ 01805 / 986 700</p>
+                    <p style="font-size: 18px; font-weight: bold; color: var(--primary);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
+                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72"/>
+                        </svg>
+                        01805 / 986 700
+                    </p>
                 </div>
             </div>
         </div>
@@ -1807,7 +2095,12 @@
         <div id="kontakt" class="content-section">
             <div class="contact-card">
                 <div class="contact-item">
-                    <div class="contact-icon">📍</div>
+                    <div class="contact-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="var(--primary)" stroke-width="2"/>
+                            <circle cx="12" cy="10" r="3" fill="var(--primary)" opacity="0.3"/>
+                        </svg>
+                    </div>
                     <div class="contact-info">
                         <h4>Adresse</h4>
                         <p>Kirchweg 8d<br>33181 Bad Wünnenberg</p>
@@ -1815,7 +2108,11 @@
                 </div>
 
                 <div class="contact-item">
-                    <div class="contact-icon">📞</div>
+                    <div class="contact-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                     <div class="contact-info">
                         <h4>Telefon</h4>
                         <p>02957 / 10 10</p>
@@ -1823,7 +2120,12 @@
                 </div>
 
                 <div class="contact-item">
-                    <div class="contact-icon">📧</div>
+                    <div class="contact-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="4" width="18" height="16" rx="2" stroke="var(--primary)" stroke-width="2"/>
+                            <path d="M3 8l9 6 9-6" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
                     <div class="contact-info">
                         <h4>E-Mail</h4>
                         <p>info@dein-zahngut.de</p>
@@ -1831,7 +2133,14 @@
                 </div>
 
                 <div class="contact-item">
-                    <div class="contact-icon">🚗</div>
+                    <div class="contact-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="11" width="18" height="10" rx="2" stroke="var(--primary)" stroke-width="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4M12 15v2" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                            <circle cx="8" cy="16" r="1" fill="var(--primary)"/>
+                            <circle cx="16" cy="16" r="1" fill="var(--primary)"/>
+                        </svg>
+                    </div>
                     <div class="contact-info">
                         <h4>Parkmöglichkeiten</h4>
                         <p>Kostenlose Parkplätze direkt vor der Praxis</p>
@@ -1839,16 +2148,25 @@
                 </div>
 
                 <div class="contact-item">
-                    <div class="contact-icon">🚨</div>
+                    <div class="contact-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#FF5757" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 9v4M12 17h.01" stroke="#FF5757" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
                     <div class="contact-info">
                         <h4>Zahnärztlicher Notdienst</h4>
-                        <p>01805 / 986 700</p>
+                        <p style="color: #FF5757; font-weight: 600;">01805 / 986 700</p>
                     </div>
                 </div>
             </div>
 
             <a href="https://maps.google.com/maps?q=Kirchweg+8d+33181+Bad+Wünnenberg" target="_blank" class="action-button">
-                🗺️ In Google Maps öffnen
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align: middle; margin-right: 8px;">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="white" stroke-width="2" fill="none"/>
+                    <circle cx="12" cy="10" r="3" fill="white"/>
+                </svg>
+                In Google Maps öffnen
             </a>
         </div>
     </div>
