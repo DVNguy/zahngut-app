@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -7,6 +6,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <title>Zahngut Bad Wünnenberg</title>
+    
+    <!-- Data Management -->
+    <script src="data.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -15,24 +18,25 @@
         }
 
         :root {
-            --primary: #7FD8A6;
-            --primary-dark: #52B788;
-            --secondary: #A8E6CF;
-            --accent: #C3F0D8;
-            --mint: #E8F8F0;
-            --sage: #95D5B2;
-            --text-dark: #1a1a1a;
-            --text-light: #666;
-            --bg-light: #f5faf7;
+            --primary: #2563EB;
+            --primary-dark: #1E40AF;
+            --secondary: #60A5FA;
+            --accent: #DBEAFE;
+            --mint: #EFF6FF;
+            --sage: #3B82F6;
+            --text-dark: #0F172A;
+            --text-light: #64748B;
+            --bg-light: #F8FAFC;
             --white: #ffffff;
-            --shadow: 0 2px 10px rgba(127,216,166,0.12);
-            --radius: 12px;
+            --shadow: 0 2px 15px rgba(37,99,235,0.08);
+            --radius: 16px;
+            --gradient: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             color: var(--text-dark);
-            background: var(--white);
+            background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -webkit-overflow-scrolling: touch;
@@ -42,13 +46,14 @@
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: var(--gradient);
             color: var(--white);
             padding: 20px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 20px rgba(0,166,251,0.2);
+            box-shadow: 0 4px 24px rgba(37,99,235,0.15);
+            backdrop-filter: blur(10px);
         }
 
         .header-content {
@@ -68,7 +73,23 @@
             letter-spacing: -0.5px;
         }
 
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
         .logo img {
+            height: 36px;
+            width: auto;
+            object-fit: contain;
+            background: white;
+            padding: 4px;
             border-radius: 6px;
         }
 
@@ -92,20 +113,22 @@
         /* Hero Section */
         .hero {
             padding: 30px 20px;
-            background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%);
+            background: linear-gradient(180deg, rgba(37,99,235,0.05) 0%, transparent 100%);
         }
 
         .hero h1 {
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 12px;
             color: var(--text-dark);
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
         .hero p {
             color: var(--text-light);
             font-size: 16px;
             line-height: 1.5;
+            font-weight: 500;
         }
 
         /* Main Categories */
@@ -132,36 +155,61 @@
 
         .category-card {
             background: var(--white);
-            border-radius: var(--radius);
-            padding: 16px;
+            border-radius: 20px;
+            padding: 20px;
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(37,99,235,0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
+            border: 1px solid rgba(37,99,235,0.1);
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 0;
         }
 
         .category-card:active {
             transform: scale(0.98);
-            box-shadow: 0 1px 5px rgba(82,183,136,0.1);
+            box-shadow: 0 2px 10px rgba(37,99,235,0.15);
+        }
+
+        .category-card:hover::before {
+            opacity: 0.05;
         }
 
         .category-icon {
             width: 56px;
             height: 56px;
-            border-radius: 14px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 28px;
             color: white;
             flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            background: var(--gradient);
+            box-shadow: 0 4px 15px rgba(37,99,235,0.25);
         }
 
         .category-content {
             flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .category-content h3 {
@@ -181,61 +229,8 @@
             font-size: 24px;
             color: var(--text-light);
             opacity: 0.5;
-        }
-
-        /* Quick Links */
-        .quick-links {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .quick-link {
-            background: var(--bg-light);
-            border-radius: var(--radius);
-            padding: 12px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .quick-link:active {
-            transform: scale(0.95);
-            background: var(--accent);
-            border-color: var(--primary);
-        }
-
-        .quick-link-icon {
-            font-size: 24px;
-        }
-
-        .quick-link span:last-child {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        /* Navigation Tabs - Hidden by default */
-        .nav-tabs {
-            display: none;
-            background: var(--white);
-            padding: 10px 20px;
-            gap: 10px;
-            overflow-x: auto;
-            border-bottom: 1px solid #e5e7eb;
-            position: sticky;
-            top: 76px;
-            z-index: 90;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .nav-tabs.show {
-            display: flex;
+            position: relative;
+            z-index: 1;
         }
 
         /* Back Button */
@@ -262,34 +257,11 @@
             background: var(--accent);
         }
 
-        .nav-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .nav-tab {
-            padding: 10px 20px;
-            background: var(--bg-light);
-            border-radius: 20px;
-            white-space: nowrap;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-light);
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .nav-tab.active {
-            background: var(--primary);
-            color: var(--white);
-        }
-
         /* Content Sections */
         .content-section {
             display: none;
-            padding: 20px;
             animation: fadeIn 0.3s ease;
+            padding-bottom: 20px;
         }
 
         .content-section.active {
@@ -315,15 +287,34 @@
 
         .info-card {
             background: var(--white);
-            border-radius: var(--radius);
-            padding: 16px 8px;
+            border-radius: 20px;
+            padding: 20px 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            box-shadow: var(--shadow);
+            gap: 10px;
+            box-shadow: 0 2px 15px rgba(37,99,235,0.08);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(37,99,235,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover::after {
+            transform: scaleX(1);
         }
 
         .info-card:active {
@@ -332,7 +323,14 @@
         }
 
         .info-icon {
-            font-size: 32px;
+            font-size: 36px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(37,99,235,0.1) 0%, rgba(124,58,237,0.1) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .info-card span {
@@ -353,22 +351,24 @@
             align-items: center;
             gap: 15px;
             padding: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: var(--gradient);
             color: var(--white);
             margin-bottom: 0;
             border-radius: 0;
+            box-shadow: 0 4px 24px rgba(37,99,235,0.2);
         }
 
         .detail-icon {
             font-size: 40px;
-            width: 60px;
-            height: 60px;
+            width: 64px;
+            height: 64px;
             background: rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
-            border-radius: 12px;
+            border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .detail-header h2 {
@@ -383,17 +383,18 @@
 
         .info-box {
             background: var(--white);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: var(--shadow);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 15px rgba(37,99,235,0.08);
+            border: 1px solid rgba(37,99,235,0.1);
         }
 
         .info-box h3 {
-            color: var(--primary-dark);
-            font-size: 16px;
-            margin-bottom: 12px;
-            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 18px;
+            margin-bottom: 14px;
+            font-weight: 700;
         }
 
         .info-box p {
@@ -425,27 +426,9 @@
             font-size: 18px;
         }
 
-        .info-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--bg-light);
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: var(--text-dark);
-            border: 2px solid var(--accent);
-        }
-
-        .info-badge strong {
-            color: var(--primary-dark);
-        }
-
         .info-box.highlight {
-            background: linear-gradient(135deg, var(--mint) 0%, var(--accent) 100%);
-            border: none;
+            background: linear-gradient(135deg, rgba(37,99,235,0.05) 0%, rgba(124,58,237,0.05) 100%);
+            border: 2px solid var(--primary);
         }
 
         .info-box.highlight h3 {
@@ -453,13 +436,13 @@
         }
 
         .appointment-box {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: var(--gradient);
             color: var(--white);
-            padding: 24px;
-            border-radius: var(--radius);
+            padding: 28px;
+            border-radius: 24px;
             text-align: center;
             margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(82,183,136,0.3);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
         }
 
         .appointment-box .info-row {
@@ -490,6 +473,86 @@
             font-weight: 600;
             padding: 14px 28px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Contact Section */
+        .contact-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin: 0 20px 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--mint) 0%, var(--accent) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .contact-info p {
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Action Buttons */
+        .action-button {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 0 20px 15px;
+            padding: 18px;
+            background: var(--gradient);
+            color: var(--white);
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(37,99,235,0.25);
+            letter-spacing: 0.5px;
+        }
+
+        .action-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 10px rgba(37,99,235,0.3);
+        }
+
+        .action-button.secondary {
+            background: rgba(37,99,235,0.1);
+            color: var(--primary);
+            box-shadow: none;
+            border: 2px solid rgba(37,99,235,0.2);
+        }
+
+        .action-button.secondary:hover {
+            background: rgba(37,99,235,0.15);
+            border-color: var(--primary);
         }
 
         /* Emergency Section */
@@ -646,7 +709,7 @@
             align-items: center;
             justify-content: center;
             color: var(--white);
-            box-shadow: 0 4px 20px rgba(127,216,166,0.4);
+            box-shadow: 0 4px 20px rgba(37,99,235,0.4);
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -654,6 +717,23 @@
         .play-button:hover {
             transform: translate(-50%, -50%) scale(1.1);
             background: var(--primary-dark);
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .video-info h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: var(--text-light);
         }
 
         /* Nachsorge Section */
@@ -697,6 +777,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            font-size: 24px;
         }
 
         .nachsorge-card.expanded .nachsorge-icon {
@@ -774,15 +855,18 @@
         }
 
         .timeline-badge::after {
-            content: attr(data-time);
-            position: absolute;
-            left: 24px;
-            top: -2px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            white-space: nowrap;
-        }
+    content: attr(data-time);
+    position: absolute;
+    left: 28px;  /* Mehr Abstand vom Badge */
+    top: -2px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--primary-dark);
+    white-space: nowrap;
+    background: var(--white);  /* Weißer Hintergrund für bessere Lesbarkeit */
+    padding: 0 4px;
+    border-radius: 4px;
+}
 
         .timeline-content {
             background: var(--bg-light);
@@ -792,11 +876,12 @@
         }
 
         .timeline-content h4 {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            margin-bottom: 8px;
-        }
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+    margin-left: 65px;  /* Platz für die Zeit schaffen */
+}
 
         .timeline-content ul {
             margin: 0;
@@ -815,107 +900,20 @@
             color: #E65100;
         }
 
-        .video-info {
-            padding: 15px;
-        }
-
-        .video-info h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-        }
-
-        .video-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        /* Contact Section */
-        .contact-card {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 15px;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .contact-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .contact-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .contact-info h4 {
-            font-size: 14px;
-            margin-bottom: 4px;
-            color: var(--text-dark);
-        }
-
-        .contact-info p {
-            font-size: 14px;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* Action Buttons */
-        .action-button {
-            display: block;
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--white);
-            border: none;
-            border-radius: var(--radius);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            text-decoration: none;
-            margin-bottom: 15px;
-        }
-
-        .action-button:active {
-            transform: scale(0.98);
-        }
-
-        .action-button.secondary {
-            background: var(--bg-light);
-            color: var(--primary);
-        }
-
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: var(--white);
-            border-top: 1px solid #e5e7eb;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(37,99,235,0.1);
             padding: 8px 0;
             display: flex;
             justify-content: space-around;
             z-index: 100;
+            box-shadow: 0 -4px 20px rgba(37,99,235,0.08);
         }
 
         .nav-item {
@@ -935,34 +933,26 @@
             color: var(--primary);
         }
 
+        .nav-item.active .nav-item-icon {
+            transform: scale(1.1);
+        }
+
         .nav-item-icon {
             font-size: 24px;
             margin-bottom: 4px;
+            transition: transform 0.3s ease;
         }
 
         .nav-item-label {
             font-size: 11px;
             font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         /* Spacing for bottom nav */
         .content-wrapper {
-            padding-bottom: 80px;
-        }
-
-        /* Loading State */
-        .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-            border-radius: 8px;
-            height: 100px;
-            margin-bottom: 15px;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            padding-bottom: 70px;
+            min-height: 100vh;
         }
     </style>
 </head>
@@ -970,11 +960,11 @@
     <!-- Header -->
     <div class="header">
         <div class="header-content">
-            <div class="logo">
-                <img src="logo.png" style="height: 36px; width: auto; filter: brightness(0) invert(1);">
-                <span>Zahngut</span>
+            <div class="logo" id="headerLogo">
+                <span class="logo-icon">🦷</span>
+                <span class="praxis-name">Zahngut</span>
             </div>
-            <a href="tel:029571010" class="emergency-btn">
+            <a href="tel:029571010" class="emergency-btn emergency-phone-link">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right: 6px;">
                     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -985,8 +975,8 @@
 
     <!-- Hero Section -->
     <div class="hero">
-        <h1>Willkommen bei Zahngut</h1>
-        <p>Moderne Zahnmedizin. Alle Fachbereiche. Ein Team.</p>
+        <h1 class="hero-title">Willkommen bei Zahngut</h1>
+        <p class="hero-slogan">Moderne Zahnmedizin. Der Mensch im Mittelpunkt.</p>
     </div>
 
     <!-- Main Categories -->
@@ -994,8 +984,26 @@
         <h2 class="section-title">Was können wir für Sie tun?</h2>
         
         <div class="category-grid">
+            <div class="category-card" onclick="switchTab('videos')">
+                <div class="category-icon">🎥</div>
+                <div class="category-content">
+                    <h3>Aufklärungsvideos</h3>
+                    <p>Behandlungen verständlich erklärt</p>
+                </div>
+                <div class="category-arrow">›</div>
+            </div>
+
+            <div class="category-card" onclick="switchTab('nachsorge')">
+                <div class="category-icon">💊</div>
+                <div class="category-content">
+                    <h3>Nachsorge</h3>
+                    <p>Wichtige Tipps nach der Behandlung</p>
+                </div>
+                <div class="category-arrow">›</div>
+            </div>
+
             <div class="category-card" onclick="switchTab('info')">
-                <div class="category-icon" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);">
+                <div class="category-icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                         <path d="M9 11H7a4 4 0 110-8h2m6 0h2a4 4 0 110 8h-2m-8 0h10m-6 0v10m-4 0h8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -1008,7 +1016,7 @@
             </div>
 
             <div class="category-card" onclick="switchTab('termine')">
-                <div class="category-icon" style="background: linear-gradient(135deg, var(--sage) 0%, var(--primary-dark) 100%);">
+                <div class="category-icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                         <rect x="3" y="4" width="18" height="18" rx="2" stroke="white" stroke-width="2"/>
                         <path d="M16 2v4M8 2v4M3 10h18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1023,7 +1031,7 @@
             </div>
 
             <div class="category-card" onclick="switchTab('notfall')">
-                <div class="category-icon" style="background: linear-gradient(135deg, #FF8A8A 0%, #FF5757 100%);">
+                <div class="category-icon" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                         <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M12 9v4M12 17h.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1034,45 +1042,6 @@
                     <p>Schnelle Hilfe bei akuten Beschwerden</p>
                 </div>
                 <div class="category-arrow">›</div>
-            </div>
-        </div>
-
-        <h2 class="section-title">Schnellzugriff</h2>
-        <div class="quick-links">
-            <div class="quick-link" onclick="switchTab('videos')">
-                <span class="quick-link-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <polygon points="5 3 19 12 5 21 5 3" fill="var(--primary)" stroke="var(--primary)" stroke-width="2" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span>Videos</span>
-            </div>
-            <div class="quick-link" onclick="switchTab('nachsorge')">
-                <span class="quick-link-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M9 14h6v8H9z" fill="var(--primary)" opacity="0.3"/>
-                    </svg>
-                </span>
-                <span>Nachsorge</span>
-            </div>
-            <div class="quick-link" onclick="switchTab('formulare')">
-                <span class="quick-link-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span>Formulare</span>
-            </div>
-            <div class="quick-link" onclick="alert('FAQ-Bereich kommt bald!')">
-                <span class="quick-link-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="var(--primary)" stroke-width="2"/>
-                        <path d="M9 9a3 3 0 116 0c0 2-3 3-3 3M12 17h.01" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>
-                <span>FAQ</span>
             </div>
         </div>
     </div>
@@ -1094,31 +1063,8 @@
         <div id="info" class="content-section">
             <div class="sub-categories">
                 <h2 class="section-title">Behandlungen</h2>
-                <div class="info-grid">
-                    <div class="info-card" onclick="showDetail('zahnersatz')">
-                        <div class="info-icon">👑</div>
-                        <span>Zahnersatz</span>
-                    </div>
-                    <div class="info-card" onclick="showDetail('implantate')">
-                        <div class="info-icon">🦴</div>
-                        <span>Implantate</span>
-                    </div>
-                    <div class="info-card" onclick="showDetail('wurzelbehandlung')">
-                        <div class="info-icon">💉</div>
-                        <span>Wurzelkanalbehandlung</span>
-                    </div>
-                    <div class="info-card" onclick="showDetail('prophylaxe')">
-                        <div class="info-icon">🦷</div>
-                        <span>Prophylaxe</span>
-                    </div>
-                    <div class="info-card" onclick="showDetail('fuellungen')">
-                        <div class="info-icon">🔧</div>
-                        <span>Füllungen</span>
-                    </div>
-                    <div class="info-card" onclick="showDetail('bleaching')">
-                        <div class="info-icon">✨</div>
-                        <span>Bleaching</span>
-                    </div>
+                <div class="info-grid" id="behandlungen-grid">
+                    <!-- Wird dynamisch gefüllt -->
                 </div>
 
                 <h2 class="section-title">Vorsorge & Pflege</h2>
@@ -1142,493 +1088,8 @@
             </div>
         </div>
 
-        <!-- Behandlungen Detail Pages -->
-        <div id="prophylaxe" class="content-section detail-page">
-            <div class="detail-header">
-                <div class="detail-icon">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="white" stroke-width="2"/>
-                        <path d="M8 12h8M12 8v8" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                        <circle cx="12" cy="12" r="3" fill="white" opacity="0.5"/>
-                    </svg>
-                </div>
-                <div>
-                    <h2>Professionelle Zahnreinigung</h2>
-                    <p style="opacity: 0.9; margin-top: 4px;">Prophylaxe für gesunde Zähne</p>
-                </div>
-            </div>
-            
-            <div class="detail-content">
-                <div class="info-box">
-                    <h3>Was ist eine Professionelle Zahnreinigung?</h3>
-                    <p>Die professionelle Zahnreinigung (PZR) ist eine intensive Reinigung der Zähne, die weit über das normale Zähneputzen hinausgeht. Dabei werden hartnäckige Beläge und Verfärbungen schonend entfernt.</p>
-                </div>
-                
-                <div class="info-box">
-                    <h3>Ablauf der Behandlung</h3>
-                    <ul>
-                        <li>Gründliche Untersuchung der Mundhöhle</li>
-                        <li>Entfernung von Zahnstein und Belägen</li>
-                        <li>Reinigung der Zahnzwischenräume</li>
-                        <li>Politur der Zahnoberflächen</li>
-                        <li>Fluoridierung zum Schutz</li>
-                        <li>Individuelle Pflegetipps</li>
-                    </ul>
-                </div>
-
-                <div class="info-box highlight">
-                    <h3>Ihre Vorteile</h3>
-                    <ul>
-                        <li>Vorbeugung von Karies und Parodontose</li>
-                        <li>Frischer Atem und sauberes Mundgefühl</li>
-                        <li>Hellere, glatte Zähne</li>
-                        <li>Längere Haltbarkeit von Füllungen</li>
-                        <li>Früherkennung von Zahnproblemen</li>
-                    </ul>
-                </div>
-
-                <div class="appointment-box">
-                    <div class="info-row">
-                        <div class="info-item">
-                            <div class="label">Dauer</div>
-                            <div class="value">45-60 Min</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">Empfohlen</div>
-                            <div class="value">2x jährlich</div>
-                        </div>
-                    </div>
-                    <button class="action-button" onclick="switchTab('termine')">Termin vereinbaren</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Füllungen Detail Page -->
-        <div id="fuellungen" class="content-section detail-page">
-            <div class="detail-header">
-                <div class="detail-icon">🔧</div>
-                <div>
-                    <h2>Füllungstherapie</h2>
-                    <p style="opacity: 0.9; margin-top: 4px;">Moderne Zahnerhaltung</p>
-                </div>
-            </div>
-            
-            <div class="detail-content">
-                <div class="info-box">
-                    <h3>Hochwertige Kompositfüllungen</h3>
-                    <p>Mit modernsten Füllungsmaterialien restaurieren wir Ihre Zähne substanzschonend und ästhetisch anspruchsvoll. Unsere zahnfarbenen Füllungen sind von natürlichen Zähnen kaum zu unterscheiden.</p>
-                </div>
-                
-                <div class="info-box">
-                    <h3>Behandlungsablauf</h3>
-                    <ul>
-                        <li>Schonende Entfernung der Karies</li>
-                        <li>Desinfektion und Vorbereitung des Zahnes</li>
-                        <li>Schichtweiser Aufbau mit Komposit</li>
-                        <li>Aushärtung mit speziellem UV-Licht</li>
-                        <li>Feinpolitur für perfekte Oberfläche</li>
-                        <li>Bissanpassung und Kontrolle</li>
-                    </ul>
-                </div>
-
-                <div class="info-box">
-                    <h3>Unsere Füllungsmaterialien</h3>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>⚪</span>
-                            <strong>Komposit</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Zahnfarbene Kunststofffüllung - ästhetisch und langlebig</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>🔷</span>
-                            <strong>Keramik-Inlay</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Laborangefertigte Einlagefüllung - höchste Stabilität</p>
-                    </div>
-                </div>
-
-                <div class="info-box highlight">
-                    <h3>Ihre Vorteile</h3>
-                    <ul>
-                        <li>Zahnfarben und unsichtbar</li>
-                        <li>Minimalinvasive Behandlung</li>
-                        <li>Lange Haltbarkeit (5-10 Jahre)</li>
-                        <li>Metallfreie Versorgung</li>
-                        <li>Sofort belastbar</li>
-                    </ul>
-                </div>
-
-                <div class="appointment-box">
-                    <div class="info-row">
-                        <div class="info-item">
-                            <div class="label">Dauer</div>
-                            <div class="value">30-45 Min</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">Haltbarkeit</div>
-                            <div class="value">5-10 Jahre</div>
-                        </div>
-                    </div>
-                    <button class="action-button" onclick="switchTab('termine')">Termin vereinbaren</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Zahnersatz Detail Page -->
-        <div id="zahnersatz" class="content-section detail-page">
-            <div class="detail-header">
-                <div class="detail-icon">👑</div>
-                <div>
-                    <h2>Zahnersatz</h2>
-                    <p style="opacity: 0.9; margin-top: 4px;">Kronen, Brücken und Prothesen</p>
-                </div>
-            </div>
-            
-            <div class="detail-content">
-                <div class="info-box">
-                    <h3>Hochwertiger Zahnersatz aus unserem Meisterlabor</h3>
-                    <p>Ob einzelne Kronen, Brücken oder herausnehmbarer Zahnersatz - wir bieten Ihnen individuelle Lösungen für ein lückenloses Lächeln. In enger Zusammenarbeit mit unserem Dentallabor entstehen passgenaue Versorgungen.</p>
-                </div>
-                
-                <div class="info-box">
-                    <h3>Unser Leistungsspektrum</h3>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>👑</span>
-                            <strong>Vollkeramikkronen</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Metallfreie Kronen mit perfekter Ästhetik</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>🌉</span>
-                            <strong>Brücken</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Festsitzender Ersatz für fehlende Zähne</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>🦷</span>
-                            <strong>Teil- und Vollprothesen</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Herausnehmbarer Zahnersatz mit hohem Tragekomfort</p>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <h3>Digitaler Workflow</h3>
-                    <ul>
-                        <li>Digitale Abformung ohne Würgereiz</li>
-                        <li>3D-Planung am Computer</li>
-                        <li>CAD/CAM-Fertigung für höchste Präzision</li>
-                        <li>Perfekte Passgenauigkeit</li>
-                        <li>Kurze Behandlungszeiten</li>
-                    </ul>
-                </div>
-
-                <div class="info-box highlight">
-                    <h3>Qualität und Garantie</h3>
-                    <ul>
-                        <li>5 Jahre erweiterte Garantie</li>
-                        <li>Ausschließlich deutsche Meisterlabore</li>
-                        <li>Biokompatible Materialien</li>
-                        <li>Individuelle Farbanpassung</li>
-                        <li>Langzeithaltbarkeit</li>
-                    </ul>
-                </div>
-
-                <div class="appointment-box">
-                    <div class="info-row">
-                        <div class="info-item">
-                            <div class="label">Behandlung</div>
-                            <div class="value">2-3 Termine</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">Haltbarkeit</div>
-                            <div class="value">10-15 Jahre</div>
-                        </div>
-                    </div>
-                    <button class="action-button" onclick="switchTab('termine')">Beratungstermin buchen</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Wurzelbehandlung Detail Page -->
-        <div id="wurzelbehandlung" class="content-section detail-page">
-            <div class="detail-header">
-                <div class="detail-icon">💉</div>
-                <div>
-                    <h2>Wurzelkanalbehandlung</h2>
-                    <p style="opacity: 0.9; margin-top: 4px;">Endodontie mit Mikroskop</p>
-                </div>
-            </div>
-            
-            <div class="detail-content">
-                <div class="info-box">
-                    <h3>Zahnerhaltung durch moderne Endodontie</h3>
-                    <p>Mit modernster Technik und unter Einsatz unseres OP-Mikroskops können wir auch stark geschädigte Zähne erhalten. Die Wurzelkanalbehandlung erfolgt schonend und mit höchster Präzision.</p>
-                </div>
-                
-                <div class="info-box">
-                    <h3>Unsere Technologie</h3>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>🔬</span>
-                            <strong>OP-Mikroskop</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">25-fache Vergrößerung für maximale Präzision</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>📊</span>
-                            <strong>Elektronische Längenmessung</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Exakte Bestimmung der Wurzelkanallänge</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>🔄</span>
-                            <strong>Maschinelle Aufbereitung</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Schonende und gründliche Reinigung</p>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <h3>Behandlungsablauf</h3>
-                    <ul>
-                        <li>Schmerzfreie Lokalanästhesie</li>
-                        <li>Kofferdam für steriles Arbeitsfeld</li>
-                        <li>Darstellung aller Wurzelkanäle unter Mikroskop</li>
-                        <li>Desinfektion mit Ultraschall</li>
-                        <li>Bakteriendichte Wurzelfüllung</li>
-                        <li>Adhäsiver Verschluss des Zahnes</li>
-                    </ul>
-                </div>
-
-                <div class="info-box highlight">
-                    <h3>Ihre Vorteile bei uns</h3>
-                    <ul>
-                        <li>Erfolgsrate über 95%</li>
-                        <li>Schmerzfreie Behandlung</li>
-                        <li>Erhalt des natürlichen Zahnes</li>
-                        <li>Revision alter Wurzelfüllungen möglich</li>
-                        <li>Entfernung abgebrochener Instrumente</li>
-                    </ul>
-                </div>
-
-                <div class="appointment-box">
-                    <div class="info-row">
-                        <div class="info-item">
-                            <div class="label">Dauer</div>
-                            <div class="value">60-90 Min</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">Erfolgsrate</div>
-                            <div class="value">&gt;95%</div>
-                        </div>
-                    </div>
-                    <button class="action-button" onclick="switchTab('termine')">Termin vereinbaren</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Implantate Detail Page -->
-        <div id="implantate" class="content-section detail-page">
-            <div class="detail-header">
-                <div class="detail-icon">🦴</div>
-                <div>
-                    <h2>Implantate</h2>
-                    <p style="opacity: 0.9; margin-top: 4px;">Feste Zähne wie eigene</p>
-                </div>
-            </div>
-            
-            <div class="detail-content">
-                <div class="info-box">
-                    <h3>Zahnimplantate - Die moderne Lösung</h3>
-                    <p>Implantate sind künstliche Zahnwurzeln aus Titan oder Keramik, die fest im Kieferknochen verankert werden. Sie bieten die natürlichste Form des Zahnersatzes und fühlen sich an wie eigene Zähne.</p>
-                </div>
-                
-                <div class="info-box">
-                    <h3>Behandlungskonzept</h3>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>1️⃣</span>
-                            <strong>3D-Diagnostik</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Digitale Volumentomographie für präzise Planung</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>2️⃣</span>
-                            <strong>Implantation</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Minimalinvasiver Eingriff mit navigierter Chirurgie</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>3️⃣</span>
-                            <strong>Versorgung</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Individuell angefertigte Krone nach Einheilung</p>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <h3>Einsatzmöglichkeiten</h3>
-                    <ul>
-                        <li>Einzelzahnersatz ohne Beschleifen der Nachbarzähne</li>
-                        <li>Große Lücken mit implantatgetragenen Brücken</li>
-                        <li>Fester Halt für Vollprothesen</li>
-                        <li>Sofortimplantate nach Zahnverlust</li>
-                        <li>All-on-4 Konzept für zahnlose Kiefer</li>
-                    </ul>
-                </div>
-
-                <div class="info-box highlight">
-                    <h3>Ihre Vorteile</h3>
-                    <ul>
-                        <li>Fester Biss wie mit eigenen Zähnen</li>
-                        <li>Kein Knochenabbau</li>
-                        <li>Schonung der Nachbarzähne</li>
-                        <li>Lebenslange Haltbarkeit möglich</li>
-                        <li>Natürliche Ästhetik</li>
-                        <li>10 Jahre Garantie auf Implantate</li>
-                    </ul>
-                </div>
-
-                <div class="appointment-box">
-                    <div class="info-row">
-                        <div class="info-item">
-                            <div class="label">Einheilung</div>
-                            <div class="value">3-6 Monate</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">Erfolgsrate</div>
-                            <div class="value">98%</div>
-                        </div>
-                    </div>
-                    <button class="action-button" onclick="switchTab('termine')">Implantat-Beratung buchen</button>
-                </div>
-            </div>
-        </div>
-        <div id="bleaching" class="content-section detail-page">
-            <div class="detail-header">
-                <div class="detail-icon">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="white" opacity="0.3"/>
-                    </svg>
-                </div>
-                <div>
-                    <h2>Bleaching</h2>
-                    <p style="opacity: 0.9; margin-top: 4px;">Für ein strahlendes Lächeln</p>
-                </div>
-            </div>
-            
-            <div class="detail-content">
-                <div class="info-box">
-                    <h3>Professionelle Zahnaufhellung</h3>
-                    <p>Mit modernsten Bleaching-Methoden hellen wir Ihre Zähne schonend um mehrere Nuancen auf. Das Ergebnis: Ein natürlich weißes, strahlendes Lächeln.</p>
-                </div>
-                
-                <div class="info-box">
-                    <h3>Unsere Methoden</h3>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>🏥</span>
-                            <strong>In-Office Bleaching</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Professionelle Aufhellung in nur einer Sitzung direkt in unserer Praxis.</p>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <div class="info-badge">
-                            <span>🏠</span>
-                            <strong>Home Bleaching</strong>
-                        </div>
-                        <p style="margin-left: 0; margin-top: 8px;">Individuelle Schienen für die bequeme Anwendung zu Hause.</p>
-                    </div>
-                </div>
-
-                <div class="appointment-box">
-                    <div class="info-row">
-                        <div class="info-item">
-                            <div class="label">Dauer</div>
-                            <div class="value">90 Min</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">Haltbarkeit</div>
-                            <div class="value">1-3 Jahre</div>
-                        </div>
-                    </div>
-                    <button class="action-button" onclick="switchTab('termine')">Beratungstermin buchen</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Notfall Section -->
-        <div id="notfall" class="content-section">
-            <div class="emergency-info">
-                <div class="emergency-card urgent">
-                    <h2>
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#C92A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M12 9v4M12 17h.01" stroke="#C92A2A" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Zahnärztlicher Notdienst
-                    </h2>
-                    <p>Bei akuten Schmerzen außerhalb unserer Öffnungszeiten:</p>
-                    <a href="tel:01805986700" class="emergency-phone">
-                        <span>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
-                                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72" stroke="#C92A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            01805 / 986 700
-                        </span>
-                        <small>Zahnärztlicher Notdienst</small>
-                    </a>
-                    <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px;">
-                        <p style="color: var(--text-dark); font-size: 14px;">
-                            <strong>Unsere regulären Öffnungszeiten:</strong><br>
-                            Mo-Do: 8:00-19:00 Uhr | Fr: 8:00-16:00 Uhr
-                        </p>
-                        <a href="tel:029571010" style="color: var(--primary); font-weight: bold; text-decoration: none;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 6px;">
-                                <path d="M22 16.92v3a2 2 0 01-2.18 2" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                            Praxis: 02957 / 10 10
-                        </a>
-                    </div>
-                </div>
-
-                <div class="emergency-card">
-                    <h3>Erste Hilfe bei Zahnschmerzen</h3>
-                    <ul>
-                        <li>Kühlen Sie die betroffene Stelle von außen</li>
-                        <li>Spülen Sie mit lauwarmem Salzwasser</li>
-                        <li>Nehmen Sie bei Bedarf Schmerzmittel (Ibuprofen)</li>
-                        <li>Vermeiden Sie Wärme und körperliche Anstrengung</li>
-                    </ul>
-                </div>
-
-                <div class="emergency-card">
-                    <h3>Zahnunfall - Was tun?</h3>
-                    <div class="emergency-step">
-                        <strong>Zahn ausgeschlagen:</strong>
-                        <p>Zahn nur an der Krone anfassen, in H-Milch oder Kochsalzlösung legen, sofort zum Zahnarzt!</p>
-                    </div>
-                    <div class="emergency-step">
-                        <strong>Zahn gelockert:</strong>
-                        <p>Nicht bewegen, weiche Kost, schnellstmöglich zum Zahnarzt</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-            <div class="treatment-grid">
-            </div>
-        </div>
+        <!-- Behandlungen Detail Pages werden dynamisch generiert -->
+        <div id="behandlungen-details"></div>
 
         <!-- Videos Section -->
         <div id="videos" class="content-section">
@@ -1642,114 +1103,8 @@
                     <div class="category-tab" onclick="filterVideos('kieferorthopaedie', this)">Kieferorthopädie</div>
                 </div>
 
-                <div class="videos-container">
-                    <div class="video-card" data-category="zahnerhaltung" onclick="playVideo(this)">
-                        <div class="video-thumbnail">
-                            <div class="play-button">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                                    <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
-                            </div>
-                            <span class="video-category-badge">Zahnerhaltung</span>
-                        </div>
-                        <div class="video-info">
-                            <h3>Professionelle Zahnreinigung - Was erwartet Sie?</h3>
-                            <div class="video-meta">
-                                <span>⏱ 3:45 Min</span>
-                                <span>👁 2.3k Aufrufe</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="video-card" data-category="zahnerhaltung" onclick="playVideo(this)">
-                        <div class="video-thumbnail">
-                            <div class="play-button">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                                    <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
-                            </div>
-                            <span class="video-category-badge">Zahnerhaltung</span>
-                        </div>
-                        <div class="video-info">
-                            <h3>Moderne Füllungstherapie - Schritt für Schritt</h3>
-                            <div class="video-meta">
-                                <span>⏱ 4:20 Min</span>
-                                <span>👁 1.5k Aufrufe</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="video-card" data-category="zahnersatz" onclick="playVideo(this)">
-                        <div class="video-thumbnail">
-                            <div class="play-button">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                                    <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
-                            </div>
-                            <span class="video-category-badge">Zahnersatz</span>
-                        </div>
-                        <div class="video-info">
-                            <h3>Kronen und Brücken - Ihre Möglichkeiten</h3>
-                            <div class="video-meta">
-                                <span>⏱ 5:15 Min</span>
-                                <span>👁 3.1k Aufrufe</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="video-card" data-category="chirurgie" onclick="playVideo(this)">
-                        <div class="video-thumbnail">
-                            <div class="play-button">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                                    <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
-                            </div>
-                            <span class="video-category-badge">Chirurgie</span>
-                        </div>
-                        <div class="video-info">
-                            <h3>Weisheitszahn-OP - Ablauf und Nachsorge</h3>
-                            <div class="video-meta">
-                                <span>⏱ 6:30 Min</span>
-                                <span>👁 4.2k Aufrufe</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="video-card" data-category="chirurgie" onclick="playVideo(this)">
-                        <div class="video-thumbnail">
-                            <div class="play-button">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                                    <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
-                            </div>
-                            <span class="video-category-badge">Chirurgie</span>
-                        </div>
-                        <div class="video-info">
-                            <h3>Implantate - Der Weg zu festen Zähnen</h3>
-                            <div class="video-meta">
-                                <span>⏱ 7:00 Min</span>
-                                <span>👁 5.8k Aufrufe</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="video-card" data-category="kieferorthopaedie" onclick="playVideo(this)">
-                        <div class="video-thumbnail">
-                            <div class="play-button">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                                    <polygon points="5 3 19 12 5 21 5 3"/>
-                                </svg>
-                            </div>
-                            <span class="video-category-badge">Kieferorthopädie</span>
-                        </div>
-                        <div class="video-info">
-                            <h3>Unsichtbare Zahnspangen - Moderne Korrektur</h3>
-                            <div class="video-meta">
-                                <span>⏱ 4:45 Min</span>
-                                <span>👁 2.9k Aufrufe</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="videos-container" id="videos-liste">
+                    <!-- Wird dynamisch gefüllt -->
                 </div>
             </div>
         </div>
@@ -1762,291 +1117,8 @@
                     Wählen Sie Ihre Behandlung für spezifische Nachsorge-Anweisungen:
                 </p>
                 
-                <div class="nachsorge-grid">
-                    <div class="nachsorge-card" onclick="toggleNachsorge(this)">
-                        <div class="nachsorge-header">
-                            <div class="nachsorge-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 2v6m0 4v10M8 8h8" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
-                                    <circle cx="12" cy="12" r="10" stroke="var(--primary)" stroke-width="2"/>
-                                </svg>
-                            </div>
-                            <div class="nachsorge-info">
-                                <h3>Zahnextraktion</h3>
-                                <p>Nach dem Ziehen eines Zahnes</p>
-                            </div>
-                            <div class="expand-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 9l6 6 6-6" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="nachsorge-content">
-                            <div class="timeline">
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">0-2h</div>
-                                    <div class="timeline-content">
-                                        <h4>Direkt nach dem Eingriff</h4>
-                                        <ul>
-                                            <li>Fest auf Tupfer beißen (30 Min)</li>
-                                            <li>Kühlen von außen (20 Min Intervalle)</li>
-                                            <li>Kopf hochlagern</li>
-                                            <li>Nicht spülen oder saugen</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">24h</div>
-                                    <div class="timeline-content">
-                                        <h4>Erste 24 Stunden</h4>
-                                        <ul>
-                                            <li>Keine heißen Getränke/Speisen</li>
-                                            <li>Nicht rauchen</li>
-                                            <li>Kein Alkohol</li>
-                                            <li>Kein Sport</li>
-                                            <li>Weiche Kost</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">2-7 Tage</div>
-                                    <div class="timeline-content">
-                                        <h4>Heilungsphase</h4>
-                                        <ul>
-                                            <li>Vorsichtige Mundhygiene</li>
-                                            <li>Chlorhexidin-Spülung verwenden</li>
-                                            <li>Bei Schmerzen: Ibuprofen 400mg</li>
-                                            <li>Kontrolltermin wahrnehmen</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="warning-box">
-                                <strong>⚠️ Sofort melden bei:</strong> Starken Blutungen, zunehmenden Schmerzen nach 3 Tagen, Fieber, Schwellungen
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nachsorge-card" onclick="toggleNachsorge(this)">
-                        <div class="nachsorge-header">
-                            <div class="nachsorge-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <rect x="8" y="2" width="8" height="20" rx="1" stroke="var(--primary)" stroke-width="2"/>
-                                    <path d="M8 8h8M8 12h8M8 16h8" stroke="var(--primary)" stroke-width="2" opacity="0.5"/>
-                                </svg>
-                            </div>
-                            <div class="nachsorge-info">
-                                <h3>Implantation</h3>
-                                <p>Nach dem Einsetzen eines Implantats</p>
-                            </div>
-                            <div class="expand-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 9l6 6 6-6" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="nachsorge-content">
-                            <div class="timeline">
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">Tag 1</div>
-                                    <div class="timeline-content">
-                                        <h4>OP-Tag</h4>
-                                        <ul>
-                                            <li>Kontinuierliche Kühlung</li>
-                                            <li>Schmerzmittel nach Plan einnehmen</li>
-                                            <li>Antibiotika wie verordnet</li>
-                                            <li>Nur flüssige/breiige Kost</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">Woche 1</div>
-                                    <div class="timeline-content">
-                                        <h4>Erste Woche</h4>
-                                        <ul>
-                                            <li>Wundgebiet nicht belasten</li>
-                                            <li>Sehr vorsichtige Mundhygiene</li>
-                                            <li>Weiche Kost fortsetzen</li>
-                                            <li>Nahtentfernung nach 7-10 Tagen</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">3-6 Monate</div>
-                                    <div class="timeline-content">
-                                        <h4>Einheilphase</h4>
-                                        <ul>
-                                            <li>Regelmäßige Kontrollen</li>
-                                            <li>Normale Mundhygiene</li>
-                                            <li>Provisorium pflegen</li>
-                                            <li>Belastung langsam steigern</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nachsorge-card" onclick="toggleNachsorge(this)">
-                        <div class="nachsorge-header">
-                            <div class="nachsorge-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 2C8 2 5 5 5 9c0 5.5 7 13 7 13s7-7.5 7-13c0-4-3-7-7-7z" stroke="var(--primary)" stroke-width="2"/>
-                                    <circle cx="12" cy="9" r="2" fill="var(--primary)"/>
-                                </svg>
-                            </div>
-                            <div class="nachsorge-info">
-                                <h3>Wurzelspitzenresektion</h3>
-                                <p>Nach der Wurzelspitzen-OP</p>
-                            </div>
-                            <div class="expand-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 9l6 6 6-6" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="nachsorge-content">
-                            <div class="timeline">
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">0-48h</div>
-                                    <div class="timeline-content">
-                                        <h4>Erste 2 Tage</h4>
-                                        <ul>
-                                            <li>Intensive Kühlung</li>
-                                            <li>Schwellung ist normal</li>
-                                            <li>Schmerzmittel regelmäßig</li>
-                                            <li>Kopf beim Schlafen erhöht</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">1 Woche</div>
-                                    <div class="timeline-content">
-                                        <h4>Heilungsphase</h4>
-                                        <ul>
-                                            <li>Antibiotika zu Ende nehmen</li>
-                                            <li>Spülungen wie verordnet</li>
-                                            <li>Keine Belastung des Zahnes</li>
-                                            <li>Kontrolltermin einhalten</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nachsorge-card" onclick="toggleNachsorge(this)">
-                        <div class="nachsorge-header">
-                            <div class="nachsorge-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M3 12h18M3 6h18M3 18h18" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
-                                    <rect x="7" y="9" width="10" height="6" fill="var(--primary)" opacity="0.3"/>
-                                </svg>
-                            </div>
-                            <div class="nachsorge-info">
-                                <h3>Knochenaufbau</h3>
-                                <p>Nach Augmentation</p>
-                            </div>
-                            <div class="expand-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 9l6 6 6-6" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="nachsorge-content">
-                            <div class="timeline">
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">2 Wochen</div>
-                                    <div class="timeline-content">
-                                        <h4>Kritische Phase</h4>
-                                        <ul>
-                                            <li>Absolutes Rauchverbot</li>
-                                            <li>Keine Prothese tragen</li>
-                                            <li>Nicht schnäuzen</li>
-                                            <li>Niesen mit offenem Mund</li>
-                                            <li>Sehr weiche Kost</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="timeline-item">
-                                    <div class="timeline-badge">4-6 Monate</div>
-                                    <div class="timeline-content">
-                                        <h4>Einheilung</h4>
-                                        <ul>
-                                            <li>Regelmäßige Röntgenkontrollen</li>
-                                            <li>Vorsichtige Belastung</li>
-                                            <li>Optimale Mundhygiene</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nachsorge-card" onclick="toggleNachsorge(this)">
-                        <div class="nachsorge-header">
-                            <div class="nachsorge-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="var(--primary)" stroke-width="2"/>
-                                    <circle cx="12" cy="12" r="3" fill="var(--primary)" opacity="0.5"/>
-                                </svg>
-                            </div>
-                            <div class="nachsorge-info">
-                                <h3>Füllung / Inlay</h3>
-                                <p>Nach einer Füllungstherapie</p>
-                            </div>
-                            <div class="expand-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 9l6 6 6-6" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="nachsorge-content">
-                            <div class="info-box" style="margin: 0;">
-                                <h4>Wichtige Hinweise</h4>
-                                <ul>
-                                    <li>2 Stunden nichts essen (Betäubung)</li>
-                                    <li>24 Stunden keine harten/klebrigen Speisen</li>
-                                    <li>Temperaturempfindlichkeit ist normal (bis 2 Wochen)</li>
-                                    <li>Bei anhaltenden Beschwerden melden</li>
-                                    <li>Normale Mundhygiene fortsetzen</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="nachsorge-card" onclick="toggleNachsorge(this)">
-                        <div class="nachsorge-header">
-                            <div class="nachsorge-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                    <path d="M5 12s3-7 7-7 7 7 7 7-3 7-7 7-7-7-7-7z" stroke="var(--primary)" stroke-width="2"/>
-                                    <circle cx="12" cy="12" r="3" stroke="var(--primary)" stroke-width="2"/>
-                                </svg>
-                            </div>
-                            <div class="nachsorge-info">
-                                <h3>Parodontosebehandlung</h3>
-                                <p>Nach der Zahnfleischbehandlung</p>
-                            </div>
-                            <div class="expand-icon">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                                    <path d="M6 9l6 6 6-6" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="nachsorge-content">
-                            <div class="info-box" style="margin: 0;">
-                                <h4>Nachsorge-Anweisungen</h4>
-                                <ul>
-                                    <li>Chlorhexidin-Spülung 2x täglich</li>
-                                    <li>Sehr weiche Zahnbürste verwenden</li>
-                                    <li>Interdentalbürsten wie gezeigt anwenden</li>
-                                    <li>Zunächst lauwarme, weiche Kost</li>
-                                    <li>Recall-Termine unbedingt einhalten</li>
-                                    <li>Nicht rauchen (verschlechtert Heilung)</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div class="nachsorge-grid" id="nachsorge-liste">
+                    <!-- Wird dynamisch gefüllt -->
                 </div>
             </div>
         </div>
@@ -2055,13 +1127,13 @@
         <div id="termine" class="content-section">
             <div class="contact-card">
                 <h2 style="margin-bottom: 20px;">Termin vereinbaren</h2>
-                <a href="tel:029571010" class="action-button">
+                <a href="tel:029571010" class="action-button phone-link">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align: middle; margin-right: 8px;">
                         <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
-                    Jetzt anrufen: 02957 / 10 10
+                    <span class="phone-text">Jetzt anrufen: 02957 / 10 10</span>
                 </a>
-                <a href="https://www.doctolib.de/zahnarztpraxis/bad-wuennenberg/zahngut-bad-wuennenberg?utm_campaign=website-button&utm_source=zahngut-bad-wuennenberg-website-button&utm_medium=referral&utm_content=option-8&utm_term=zahngut-bad-wuennenberg" target="_blank" class="action-button secondary">
+                <a href="#" target="_blank" class="action-button secondary doctolib-link">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="vertical-align: middle; margin-right: 8px;">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M12 6v6l4 2"/>
@@ -2071,10 +1143,8 @@
                 
                 <div style="margin-top: 20px;">
                     <h3 style="margin-bottom: 12px;">Öffnungszeiten:</h3>
-                    <div style="line-height: 1.8;">
-                        <p><strong>Montag - Donnerstag:</strong> 8:00 - 19:00 Uhr</p>
-                        <p><strong>Freitag:</strong> 8:00 - 16:00 Uhr</p>
-                        <p><strong>Samstag & Sonntag:</strong> Geschlossen</p>
+                    <div style="line-height: 1.8;" id="oeffnungszeiten-liste">
+                        <!-- Wird dynamisch gefüllt -->
                     </div>
                 </div>
 
@@ -2085,7 +1155,7 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" style="vertical-align: middle; margin-right: 6px;">
                             <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72"/>
                         </svg>
-                        01805 / 986 700
+                        <span class="notdienst-nummer">01805 / 986 700</span>
                     </p>
                 </div>
             </div>
@@ -2103,7 +1173,7 @@
                     </div>
                     <div class="contact-info">
                         <h4>Adresse</h4>
-                        <p>Kirchweg 8d<br>33181 Bad Wünnenberg</p>
+                        <p class="adresse-text">Kirchweg 8d<br>33181 Bad Wünnenberg</p>
                     </div>
                 </div>
 
@@ -2115,7 +1185,7 @@
                     </div>
                     <div class="contact-info">
                         <h4>Telefon</h4>
-                        <p>02957 / 10 10</p>
+                        <p class="telefon-text">02957 / 10 10</p>
                     </div>
                 </div>
 
@@ -2128,7 +1198,7 @@
                     </div>
                     <div class="contact-info">
                         <h4>E-Mail</h4>
-                        <p>info@dein-zahngut.de</p>
+                        <p class="email-text">info@dein-zahngut.de</p>
                     </div>
                 </div>
 
@@ -2156,18 +1226,77 @@
                     </div>
                     <div class="contact-info">
                         <h4>Zahnärztlicher Notdienst</h4>
-                        <p style="color: #FF5757; font-weight: 600;">01805 / 986 700</p>
+                        <p style="color: #FF5757; font-weight: 600;" class="notdienst-text">01805 / 986 700</p>
                     </div>
                 </div>
             </div>
 
-            <a href="https://maps.google.com/maps?q=Kirchweg+8d+33181+Bad+Wünnenberg" target="_blank" class="action-button">
+            <a href="#" target="_blank" class="action-button maps-link">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="vertical-align: middle; margin-right: 8px;">
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="white" stroke-width="2" fill="none"/>
                     <circle cx="12" cy="10" r="3" fill="white"/>
                 </svg>
                 In Google Maps öffnen
             </a>
+        </div>
+
+        <!-- Notfall Section -->
+        <div id="notfall" class="content-section">
+            <div class="emergency-info">
+                <div class="emergency-card urgent">
+                    <h2>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#C92A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 9v4M12 17h.01" stroke="#C92A2A" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Zahnärztlicher Notdienst
+                    </h2>
+                    <p>Bei akuten Schmerzen außerhalb unserer Öffnungszeiten:</p>
+                    <a href="tel:01805986700" class="emergency-phone notdienst-link">
+                        <span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 8px;">
+                                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72" stroke="#C92A2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="notdienst-nummer-gross">01805 / 986 700</span>
+                        </span>
+                        <small>Zahnärztlicher Notdienst</small>
+                    </a>
+                    <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 8px;">
+                        <p style="color: var(--text-dark); font-size: 14px;">
+                            <strong>Unsere regulären Öffnungszeiten:</strong><br>
+                            <span id="notfall-oeffnungszeiten">Mo-Do: 8:00-19:00 Uhr | Fr: 8:00-16:00 Uhr</span>
+                        </p>
+                        <a href="tel:029571010" style="color: var(--primary); font-weight: bold; text-decoration: none;" class="praxis-phone">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="vertical-align: middle; margin-right: 6px;">
+                                <path d="M22 16.92v3a2 2 0 01-2.18 2" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Praxis: <span class="praxis-nummer">02957 / 10 10</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="emergency-card" id="emergency-erste-hilfe">
+                    <h3>Erste Hilfe bei Zahnschmerzen</h3>
+                    <ul id="emergency-anweisungen">
+                        <li>Kühlen Sie die betroffene Stelle von außen</li>
+                        <li>Spülen Sie mit lauwarmem Salzwasser</li>
+                        <li>Nehmen Sie bei Bedarf Schmerzmittel (Ibuprofen)</li>
+                        <li>Vermeiden Sie Wärme und körperliche Anstrengung</li>
+                    </ul>
+                </div>
+
+                <div class="emergency-card">
+                    <h3>Zahnunfall - Was tun?</h3>
+                    <div class="emergency-step">
+                        <strong>Zahn ausgeschlagen:</strong>
+                        <p id="emergency-zahn-aus">Zahn nur an der Krone anfassen, in H-Milch oder Kochsalzlösung legen, sofort zum Zahnarzt!</p>
+                    </div>
+                    <div class="emergency-step">
+                        <strong>Zahn gelockert:</strong>
+                        <p id="emergency-zahn-locker">Nicht bewegen, weiche Kost, schnellstmöglich zum Zahnarzt</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2177,10 +1306,13 @@
             <div class="nav-item-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                    <path d="M9 22V12h6v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                 </svg>
             </div>
             <div class="nav-item-label">Start</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('videos')">
+            <div class="nav-item-icon">🎥</div>
+            <div class="nav-item-label">Videos</div>
         </div>
         <div class="nav-item" onclick="switchTab('termine')">
             <div class="nav-item-icon">
@@ -2192,29 +1324,286 @@
             <div class="nav-item-label">Termine</div>
         </div>
         <div class="nav-item" onclick="switchTab('notfall')">
-            <div class="nav-item-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                    <path d="M12 9v4M12 17h.01" stroke-linecap="round"/>
-                </svg>
-            </div>
+            <div class="nav-item-icon">🚨</div>
             <div class="nav-item-label">Notfall</div>
         </div>
         <div class="nav-item" onclick="switchTab('kontakt')">
-            <div class="nav-item-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                    <circle cx="12" cy="10" r="3"/>
-                </svg>
-            </div>
+            <div class="nav-item-icon">📍</div>
             <div class="nav-item-label">Kontakt</div>
         </div>
     </div>
 
     <script>
+        // Daten laden mit data.js
+        function loadData() {
+            if (typeof ZahngutData !== 'undefined') {
+                return ZahngutData.load();
+            }
+            // Fallback wenn data.js nicht geladen ist
+            return null;
+        }
+
+        // Daten in UI anwenden
+        function applyData() {
+            const appData = loadData();
+            
+            if (!appData) {
+                console.log('Using default data - data.js not loaded');
+                return;
+            }
+            
+            // Update Logo
+            updateLogo(appData);
+            
+            // Update header
+            document.querySelector('.praxis-name').textContent = appData.praxis.name;
+            document.querySelector('.hero-title').textContent = 'Willkommen bei ' + appData.praxis.name;
+            document.querySelector('.hero-slogan').textContent = appData.praxis.slogan;
+
+            // Update phone numbers
+            const phoneClean = appData.praxis.phone.replace(/\s/g, '');
+            document.querySelectorAll('.phone-link, .emergency-phone-link, .praxis-phone').forEach(link => {
+                link.href = 'tel:' + phoneClean;
+            });
+            const phoneText = document.querySelector('.phone-text');
+            if (phoneText) phoneText.textContent = 'Jetzt anrufen: ' + appData.praxis.phone;
+            
+            const telefonText = document.querySelector('.telefon-text');
+            if (telefonText) telefonText.textContent = appData.praxis.phone;
+            
+            const praxisNummer = document.querySelector('.praxis-nummer');
+            if (praxisNummer) praxisNummer.textContent = appData.praxis.phone;
+
+            // Update notdienst
+            const notdienstClean = appData.praxis.emergency.replace(/\s/g, '');
+            document.querySelectorAll('.notdienst-link').forEach(link => {
+                link.href = 'tel:' + notdienstClean;
+            });
+            document.querySelectorAll('.notdienst-nummer, .notdienst-nummer-gross, .notdienst-text').forEach(el => {
+                el.textContent = appData.praxis.emergency;
+            });
+
+            // Update contact info
+            const emailText = document.querySelector('.email-text');
+            if (emailText) emailText.textContent = appData.praxis.email;
+            
+            const adresseText = document.querySelector('.adresse-text');
+            if (adresseText) {
+                adresseText.innerHTML = 
+                    `${appData.praxis.address.street}<br>${appData.praxis.address.zip} ${appData.praxis.address.city}`;
+            }
+
+            // Update Doctolib link
+            const doctolibLink = document.querySelector('.doctolib-link');
+            if (doctolibLink && appData.praxis.doctolib) {
+                doctolibLink.href = appData.praxis.doctolib;
+            }
+
+            // Update Google Maps link
+            const mapsLink = document.querySelector('.maps-link');
+            if (mapsLink) {
+                const mapsQuery = `${appData.praxis.address.street}+${appData.praxis.address.zip}+${appData.praxis.address.city}`.replace(/\s/g, '+');
+                mapsLink.href = `https://maps.google.com/maps?q=${mapsQuery}`;
+            }
+
+            // Update Öffnungszeiten
+            updateOeffnungszeiten(appData);
+
+            // Generate Behandlungen dynamisch
+            generateBehandlungen(appData);
+            
+            // Generate Videos dynamisch
+            generateVideos(appData);
+            
+            // Generate Nachsorge dynamisch
+            generateNachsorge(appData);
+            
+            // Update Emergency Info
+            updateEmergencyInfo(appData);
+        }
+
+        function updateLogo(appData) {
+            const logoElement = document.getElementById('headerLogo');
+            if (!logoElement) return;
+            
+            if (appData.logoType === 'upload' && appData.customLogo) {
+                logoElement.innerHTML = `
+                    <img src="${appData.customLogo}" alt="${appData.praxis.name}">
+                    <span class="praxis-name">${appData.praxis.name}</span>
+                `;
+            } else if (appData.logoIcon === 'custom' && appData.customIcon) {
+                logoElement.innerHTML = `
+                    <img src="${appData.customIcon}" style="width: 36px; height: 36px; object-fit: contain; background: rgba(255,255,255,0.2); padding: 4px; border-radius: 8px;">
+                    <span class="praxis-name">${appData.praxis.name}</span>
+                `;
+            } else {
+                logoElement.innerHTML = `
+                    <span class="logo-icon">${appData.logoIcon || '🦷'}</span>
+                    <span class="praxis-name">${appData.praxis.name}</span>
+                `;
+            }
+        }
+
+        function updateOeffnungszeiten(appData) {
+            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            const dayNames = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+            
+            let html = '';
+            days.forEach((day, index) => {
+                const zeiten = appData.praxis.hours[day];
+                if (zeiten === "Geschlossen") {
+                    html += `<p><strong>${dayNames[index]}:</strong> Geschlossen</p>`;
+                } else {
+                    html += `<p><strong>${dayNames[index]}:</strong> ${zeiten}</p>`;
+                }
+            });
+            
+            const container = document.getElementById('oeffnungszeiten-liste');
+            if (container) container.innerHTML = html;
+            
+            // Update auch im Notfall-Bereich
+            const notfallZeiten = document.getElementById('notfall-oeffnungszeiten');
+            if (notfallZeiten) {
+                notfallZeiten.textContent = 
+                    `Mo-Do: ${appData.praxis.hours.monday} | Fr: ${appData.praxis.hours.friday}`;
+            }
+        }
+
+        function generateBehandlungen(appData) {
+            const grid = document.getElementById('behandlungen-grid');
+            if (!grid || !appData.treatments) return;
+            
+            let html = '';
+            appData.treatments.forEach(b => {
+                html += `
+                    <div class="info-card" onclick="showDetail('${b.id}')">
+                        <div class="info-icon">
+                            ${b.iconType === 'custom' ? 
+                                `<img src="${b.icon}" style="width: 100%; height: 100%; object-fit: contain;">` : 
+                                b.icon}
+                        </div>
+                        <span>${b.name}</span>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+            
+            // Generate detail pages
+            generateBehandlungDetails(appData);
+        }
+
+        function generateBehandlungDetails(appData) {
+            const container = document.getElementById('behandlungen-details');
+            if (!container || !appData.treatments) return;
+            
+            let html = '';
+            appData.treatments.forEach(b => {
+                html += `
+                    <div id="${b.id}" class="content-section detail-page">
+                        <div class="detail-header">
+                            <div class="detail-icon">
+                                ${b.iconType === 'custom' ? 
+                                    `<img src="${b.icon}" style="width: 100%; height: 100%; object-fit: contain;">` : 
+                                    b.icon}
+                            </div>
+                            <div>
+                                <h2>${b.name}</h2>
+                                <p style="opacity: 0.9; margin-top: 4px;">${b.untertitel}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-content">
+                            <div class="info-box">
+                                <h3>Was ist das?</h3>
+                                <p>${b.was}</p>
+                            </div>
+                            
+                            <div class="info-box">
+                                <h3>Ablauf der Behandlung</h3>
+                                <ul>
+                                    ${Array.isArray(b.ablauf) ? 
+                                        b.ablauf.map(item => `<li>${item}</li>`).join('') :
+                                        `<li>${b.ablauf}</li>`}
+                                </ul>
+                            </div>
+                            
+                            <div class="info-box highlight">
+                                <h3>Ihre Vorteile</h3>
+                                <ul>
+                                    ${Array.isArray(b.vorteile) ? 
+                                        b.vorteile.map(item => `<li>${item}</li>`).join('') :
+                                        `<li>${b.vorteile}</li>`}
+                                </ul>
+                            </div>
+                            
+                            <div class="appointment-box">
+                                <div class="info-row">
+                                    <div class="info-item">
+                                        <div class="label">Dauer</div>
+                                        <div class="value">${b.dauer}</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="label">Empfohlen</div>
+                                        <div class="value">${b.empfohlen}</div>
+                                    </div>
+                                </div>
+                                <button class="action-button" onclick="switchTab('termine')">Termin vereinbaren</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function generateVideos(appData) {
+            const container = document.getElementById('videos-liste');
+            if (!container || !appData.videos) return;
+            
+            if (typeof ZahngutData !== 'undefined') {
+                ZahngutData.renderVideos(container);
+            }
+        }
+
+        function generateNachsorge(appData) {
+            const container = document.getElementById('nachsorge-liste');
+            if (!container || !appData.aftercare) return;
+            
+            if (typeof ZahngutData !== 'undefined') {
+                ZahngutData.renderNachsorge(container);
+            }
+        }
+
+        function updateEmergencyInfo(appData) {
+            if (!appData.emergency) return;
+            
+            // Update emergency instructions
+            const anweisungen = document.getElementById('emergency-anweisungen');
+            if (anweisungen && appData.emergency.anweisungen) {
+                const items = Array.isArray(appData.emergency.anweisungen) ? 
+                    appData.emergency.anweisungen : 
+                    [appData.emergency.anweisungen];
+                    
+                anweisungen.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+            }
+            
+            // Update Zahnunfall info
+            const zahnAus = document.getElementById('emergency-zahn-aus');
+            if (zahnAus && appData.emergency.zahnAus) {
+                zahnAus.textContent = appData.emergency.zahnAus;
+            }
+            
+            const zahnLocker = document.getElementById('emergency-zahn-locker');
+            if (zahnLocker && appData.emergency.zahnLocker) {
+                zahnLocker.textContent = appData.emergency.zahnLocker;
+            }
+        }
+
+        // Rest der Navigation-Funktionen
         let currentView = 'home';
-        
-        // Go to home
+
         function goHome() {
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
@@ -2223,7 +1612,6 @@
             document.querySelector('.main-categories').style.display = 'block';
             document.querySelector('.back-button').classList.remove('show');
             
-            // Update bottom nav
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
             });
@@ -2233,64 +1621,61 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Tab switching
         function switchTab(tabName) {
-            // Hide main categories when navigating away from home
             if (tabName !== 'home') {
                 document.querySelector('.main-categories').style.display = 'none';
                 document.querySelector('.back-button').classList.add('show');
             }
             
-            // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Show selected section
             const activeSection = document.getElementById(tabName);
             if (activeSection) {
                 activeSection.classList.add('active');
             }
             
-            // Update bottom nav
             updateBottomNav(tabName);
-            
             currentView = tabName;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Show detail page
         function showDetail(detailId) {
             switchTab(detailId);
         }
 
-        // Update bottom navigation
         function updateBottomNav(activeTab) {
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => {
                 item.classList.remove('active');
-                const label = item.querySelector('.nav-item-label').textContent.toLowerCase();
-                if (activeTab.includes(label.substring(0, 4)) || 
-                    (activeTab === 'home' && label === 'start')) {
-                    item.classList.add('active');
-                }
             });
+            
+            // Map tabs to nav positions
+            const tabToNav = {
+                'home': 0,
+                'videos': 1,
+                'termine': 2,
+                'notfall': 3,
+                'kontakt': 4
+            };
+            
+            const navIndex = tabToNav[activeTab];
+            if (navIndex !== undefined && navItems[navIndex]) {
+                navItems[navIndex].classList.add('active');
+            }
         }
 
-        // Toggle Nachsorge cards
         function toggleNachsorge(card) {
             card.classList.toggle('expanded');
         }
 
-        // Filter videos by category
         function filterVideos(category, tab) {
-            // Update active tab
             document.querySelectorAll('.category-tab').forEach(t => {
                 t.classList.remove('active');
             });
             tab.classList.add('active');
             
-            // Filter video cards
             const videoCards = document.querySelectorAll('.video-card');
             videoCards.forEach(card => {
                 if (category === 'alle') {
@@ -2305,36 +1690,13 @@
             });
         }
 
-        // Play video simulation
-        function playVideo(card) {
-            alert('Video-Player wird in der finalen App integriert. Das Video würde hier abgespielt werden.');
+        function playVideo(videoId) {
+            alert('Video-Player wird in der finalen App integriert.');
         }
 
-        // Add smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        // Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // navigator.serviceWorker.register('/sw.js');
-            });
-        }
-
-        // Haptic feedback on touch
-        document.querySelectorAll('button, .category-card, .info-card, .quick-link').forEach(el => {
-            el.addEventListener('touchstart', () => {
-                if (navigator.vibrate) {
-                    navigator.vibrate(10);
-                }
-            });
+        // Initialize when DOM is ready
+        window.addEventListener('DOMContentLoaded', function() {
+            applyData();
         });
     </script>
 </body>
