@@ -21,7 +21,7 @@
             --primary: #2563EB;
             --primary-dark: #1E40AF;
             --secondary: #60A5FA;
-            --accent: #DBEAFE;
+            --accent: #7C3AED;
             --mint: #EFF6FF;
             --sage: #3B82F6;
             --text-dark: #0F172A;
@@ -418,7 +418,7 @@
         }
 
         .info-box ul li:before {
-            content: "✓";
+            content: "✔";
             position: absolute;
             left: 0;
             color: var(--primary);
@@ -663,14 +663,41 @@
             padding: 0 20px;
         }
 
+        .videos-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        /* Desktop: 2 Videos pro Reihe */
+        @media (min-width: 768px) {
+            .videos-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        /* Größere Bildschirme: 3 Videos pro Reihe */
+        @media (min-width: 1200px) {
+            .videos-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+            }
+        }
+
         /* Video Section */
         .video-card {
             background: var(--white);
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
-            margin-bottom: 15px;
             transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(37,99,235,0.15);
         }
 
         .video-card.hidden {
@@ -679,8 +706,15 @@
 
         .video-thumbnail {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 40%; /* Reduziert von 56.25% für kleinere Höhe */
             background: linear-gradient(135deg, var(--mint) 0%, var(--accent) 100%);
+        }
+
+        /* Mobile: Etwas höher für bessere Sichtbarkeit */
+        @media (max-width: 767px) {
+            .video-thumbnail {
+                padding-bottom: 50%;
+            }
         }
 
         .video-category-badge {
@@ -953,6 +987,143 @@
         .content-wrapper {
             padding-bottom: 70px;
             min-height: 100vh;
+        }
+
+        /* Video Modal */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .video-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-modal-content {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            background: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-modal-header {
+            padding: 16px 20px;
+            background: var(--gradient);
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .video-modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .video-close {
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .video-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .video-error {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .video-error h4 {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        /* Loading Animation */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--white);
+            font-size: 18px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .video-modal {
+                padding: 10px;
+            }
+            
+            .video-modal-content {
+                max-height: 95vh;
+            }
+            
+            .video-modal-header {
+                padding: 12px 16px;
+            }
+            
+            .video-modal-header h3 {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
@@ -1333,14 +1504,67 @@
         </div>
     </div>
 
+    <!-- Video Modal -->
+    <div id="videoModal" class="video-modal">
+        <div class="video-modal-content">
+            <div class="video-modal-header">
+                <h3 id="videoModalTitle">Video wird geladen...</h3>
+                <button class="video-close" onclick="closeVideoModal()">×</button>
+            </div>
+            <div class="video-container" id="videoContainer">
+                <div class="video-loading">
+                    <div class="loading-spinner"></div>
+                    Wird geladen...
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Daten laden mit data.js
         function loadData() {
+            // WICHTIG: Lade zuerst aus localStorage für aktuelle Daten
+            const stored = localStorage.getItem('zahngutAppData');
+            if (stored) {
+                try {
+                    const data = JSON.parse(stored);
+                    console.log('Loaded data from localStorage:', data);
+                    return data;
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                }
+            }
+            
+            // Fallback to ZahngutData if available
             if (typeof ZahngutData !== 'undefined') {
                 return ZahngutData.load();
             }
-            // Fallback wenn data.js nicht geladen ist
+            
             return null;
+        }
+
+
+        // Design-Einstellungen anwenden - KORRIGIERTE VERSION
+        function applyDesignSettings(appData) {
+            if (!appData || !appData.design || !appData.design.colors) {
+                console.log('No design settings found, using defaults');
+                return;
+            }
+            
+            const colors = appData.design.colors;
+            const root = document.documentElement;
+            
+            // Setze CSS-Variablen für Farben
+            root.style.setProperty('--primary', colors.primary || '#2563EB');
+            root.style.setProperty('--primary-dark', colors.primaryDark || '#1E40AF');
+            root.style.setProperty('--secondary', colors.secondary || '#60A5FA');
+            root.style.setProperty('--accent', colors.accent || '#7C3AED');
+            root.style.setProperty('--text-dark', colors.textDark || '#0F172A');
+            root.style.setProperty('--text-light', colors.textLight || '#64748B');
+            root.style.setProperty('--bg-light', colors.bgLight || '#F8FAFC');
+            root.style.setProperty('--gradient', `linear-gradient(135deg, ${colors.primary || '#2563EB'} 0%, ${colors.accent || '#7C3AED'} 100%)`);
+            
+            console.log('Design successfully applied:', colors);
         }
 
         // Daten in UI anwenden
@@ -1352,58 +1576,69 @@
                 return;
             }
             
+            // WICHTIG: Apply Design Settings FIRST
+            applyDesignSettings(appData);
+            
             // Update Logo
             updateLogo(appData);
             
             // Update header
-            document.querySelector('.praxis-name').textContent = appData.praxis.name;
-            document.querySelector('.hero-title').textContent = 'Willkommen bei ' + appData.praxis.name;
-            document.querySelector('.hero-slogan').textContent = appData.praxis.slogan;
+            if (appData.praxis) {
+                document.querySelector('.praxis-name').textContent = appData.praxis.name || 'Zahngut';
+                document.querySelector('.hero-title').textContent = 'Willkommen bei ' + (appData.praxis.name || 'Zahngut');
+                document.querySelector('.hero-slogan').textContent = appData.praxis.slogan || '';
 
-            // Update phone numbers
-            const phoneClean = appData.praxis.phone.replace(/\s/g, '');
-            document.querySelectorAll('.phone-link, .emergency-phone-link, .praxis-phone').forEach(link => {
-                link.href = 'tel:' + phoneClean;
-            });
-            const phoneText = document.querySelector('.phone-text');
-            if (phoneText) phoneText.textContent = 'Jetzt anrufen: ' + appData.praxis.phone;
-            
-            const telefonText = document.querySelector('.telefon-text');
-            if (telefonText) telefonText.textContent = appData.praxis.phone;
-            
-            const praxisNummer = document.querySelector('.praxis-nummer');
-            if (praxisNummer) praxisNummer.textContent = appData.praxis.phone;
+                // Update phone numbers
+                const phoneClean = (appData.praxis.telefon || appData.praxis.phone || '').replace(/\s/g, '');
+                document.querySelectorAll('.phone-link, .emergency-phone-link, .praxis-phone').forEach(link => {
+                    link.href = 'tel:' + phoneClean;
+                });
+                const phoneText = document.querySelector('.phone-text');
+                if (phoneText) phoneText.textContent = 'Jetzt anrufen: ' + (appData.praxis.telefon || appData.praxis.phone || '');
+                
+                const telefonText = document.querySelector('.telefon-text');
+                if (telefonText) telefonText.textContent = appData.praxis.telefon || appData.praxis.phone || '';
+                
+                const praxisNummer = document.querySelector('.praxis-nummer');
+                if (praxisNummer) praxisNummer.textContent = appData.praxis.telefon || appData.praxis.phone || '';
 
-            // Update notdienst
-            const notdienstClean = appData.praxis.emergency.replace(/\s/g, '');
-            document.querySelectorAll('.notdienst-link').forEach(link => {
-                link.href = 'tel:' + notdienstClean;
-            });
-            document.querySelectorAll('.notdienst-nummer, .notdienst-nummer-gross, .notdienst-text').forEach(el => {
-                el.textContent = appData.praxis.emergency;
-            });
+                // Update notdienst
+                const notdienstNummer = appData.praxis.notdienst || appData.praxis.emergency || '';
+                const notdienstClean = notdienstNummer.replace(/\s/g, '');
+                document.querySelectorAll('.notdienst-link').forEach(link => {
+                    link.href = 'tel:' + notdienstClean;
+                });
+                document.querySelectorAll('.notdienst-nummer, .notdienst-nummer-gross, .notdienst-text').forEach(el => {
+                    el.textContent = notdienstNummer;
+                });
 
-            // Update contact info
-            const emailText = document.querySelector('.email-text');
-            if (emailText) emailText.textContent = appData.praxis.email;
-            
-            const adresseText = document.querySelector('.adresse-text');
-            if (adresseText) {
-                adresseText.innerHTML = 
-                    `${appData.praxis.address.street}<br>${appData.praxis.address.zip} ${appData.praxis.address.city}`;
-            }
+                // Update contact info
+                const emailText = document.querySelector('.email-text');
+                if (emailText) emailText.textContent = appData.praxis.email || '';
+                
+                // Update address - check for different data structures
+                const adresseText = document.querySelector('.adresse-text');
+                if (adresseText) {
+                    if (appData.praxis.address) {
+                        adresseText.innerHTML = 
+                            `${appData.praxis.address.street}<br>${appData.praxis.address.zip} ${appData.praxis.address.city}`;
+                    } else {
+                        adresseText.innerHTML = 'Kirchweg 8d<br>33181 Bad Wünnenberg';
+                    }
+                }
 
-            // Update Doctolib link
-            const doctolibLink = document.querySelector('.doctolib-link');
-            if (doctolibLink && appData.praxis.doctolib) {
-                doctolibLink.href = appData.praxis.doctolib;
-            }
-
-            // Update Google Maps link
-            const mapsLink = document.querySelector('.maps-link');
-            if (mapsLink) {
-                const mapsQuery = `${appData.praxis.address.street}+${appData.praxis.address.zip}+${appData.praxis.address.city}`.replace(/\s/g, '+');
-                mapsLink.href = `https://maps.google.com/maps?q=${mapsQuery}`;
+                // Update Doctolib link
+                const doctolibLink = document.querySelector('.doctolib-link');
+                if (doctolibLink && appData.praxis.doctolib) {
+                    doctolibLink.href = appData.praxis.doctolib;
+                }
+                
+                // Update Google Maps link
+                const mapsLink = document.querySelector('.maps-link');
+                if (mapsLink && appData.praxis.address) {
+                    const mapsQuery = `${appData.praxis.address.street}+${appData.praxis.address.zip}+${appData.praxis.address.city}`.replace(/\s/g, '+');
+                    mapsLink.href = `https://maps.google.com/maps?q=${mapsQuery}`;
+                }
             }
 
             // Update Öffnungszeiten
@@ -1422,39 +1657,56 @@
             updateEmergencyInfo(appData);
         }
 
+        // KORRIGIERTE updateLogo Funktion
         function updateLogo(appData) {
             const logoElement = document.getElementById('headerLogo');
-            if (!logoElement) return;
+            if (!logoElement || !appData) return;
             
-            if (appData.logoType === 'upload' && appData.customLogo) {
+            // Check if design exists
+            if (!appData.design) {
+                console.log('No design settings found, using default logo');
+                return;
+            }
+            
+            const design = appData.design;
+            
+            // KORREKTUR: Verwende die richtigen Objektpfade
+            if (design.logoType === 'upload' && design.customLogo) {
                 logoElement.innerHTML = `
-                    <img src="${appData.customLogo}" alt="${appData.praxis.name}">
+                    <img src="${design.customLogo}" alt="${appData.praxis.name}" style="height: 36px; width: auto;">
                     <span class="praxis-name">${appData.praxis.name}</span>
                 `;
-            } else if (appData.logoIcon === 'custom' && appData.customIcon) {
+            } else if (design.logoIcon === 'custom' && design.customIcon) {
                 logoElement.innerHTML = `
-                    <img src="${appData.customIcon}" style="width: 36px; height: 36px; object-fit: contain; background: rgba(255,255,255,0.2); padding: 4px; border-radius: 8px;">
+                    <img src="${design.customIcon}" style="width: 36px; height: 36px; object-fit: contain; background: rgba(255,255,255,0.2); padding: 4px; border-radius: 8px;">
                     <span class="praxis-name">${appData.praxis.name}</span>
                 `;
             } else {
                 logoElement.innerHTML = `
-                    <span class="logo-icon">${appData.logoIcon || '🦷'}</span>
+                    <span class="logo-icon">${design.logoIcon || '🦷'}</span>
                     <span class="praxis-name">${appData.praxis.name}</span>
                 `;
             }
         }
 
         function updateOeffnungszeiten(appData) {
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+            if (!appData || !appData.oeffnungszeiten) {
+                console.log('No opening hours data');
+                return;
+            }
+            
+            const days = ['montag', 'dienstag', 'mittwoch', 'donnerstag', 'freitag', 'samstag', 'sonntag'];
             const dayNames = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
             
             let html = '';
             days.forEach((day, index) => {
-                const zeiten = appData.praxis.hours[day];
-                if (zeiten === "Geschlossen") {
-                    html += `<p><strong>${dayNames[index]}:</strong> Geschlossen</p>`;
-                } else {
-                    html += `<p><strong>${dayNames[index]}:</strong> ${zeiten}</p>`;
+                const zeiten = appData.oeffnungszeiten[day];
+                if (zeiten) {
+                    if (zeiten.von && zeiten.bis) {
+                        html += `<p><strong>${dayNames[index]}:</strong> ${zeiten.von} - ${zeiten.bis}</p>`;
+                    } else {
+                        html += `<p><strong>${dayNames[index]}:</strong> Geschlossen</p>`;
+                    }
                 }
             });
             
@@ -1463,9 +1715,13 @@
             
             // Update auch im Notfall-Bereich
             const notfallZeiten = document.getElementById('notfall-oeffnungszeiten');
-            if (notfallZeiten) {
-                notfallZeiten.textContent = 
-                    `Mo-Do: ${appData.praxis.hours.monday} | Fr: ${appData.praxis.hours.friday}`;
+            if (notfallZeiten && appData.oeffnungszeiten) {
+                const mo = appData.oeffnungszeiten.montag;
+                const fr = appData.oeffnungszeiten.freitag;
+                if (mo && fr) {
+                    notfallZeiten.textContent = 
+                        `Mo-Do: ${mo.von}-${mo.bis} | Fr: ${fr.von}-${fr.bis}`;
+                }
             }
         }
 
@@ -1478,8 +1734,8 @@
                 html += `
                     <div class="info-card" onclick="showDetail('${b.id}')">
                         <div class="info-icon">
-                            ${b.iconType === 'custom' ? 
-                                `<img src="${b.icon}" style="width: 100%; height: 100%; object-fit: contain;">` : 
+                            ${b.iconType === 'custom' && b.customIcon ? 
+                                `<img src="${b.customIcon}" style="width: 100%; height: 100%; object-fit: contain;">` : 
                                 b.icon}
                         </div>
                         <span>${b.name}</span>
@@ -1503,8 +1759,8 @@
                     <div id="${b.id}" class="content-section detail-page">
                         <div class="detail-header">
                             <div class="detail-icon">
-                                ${b.iconType === 'custom' ? 
-                                    `<img src="${b.icon}" style="width: 100%; height: 100%; object-fit: contain;">` : 
+                                ${b.iconType === 'custom' && b.customIcon ? 
+                                    `<img src="${b.customIcon}" style="width: 100%; height: 100%; object-fit: contain;">` : 
                                     b.icon}
                             </div>
                             <div>
@@ -1560,24 +1816,62 @@
 
         function generateVideos(appData) {
             const container = document.getElementById('videos-liste');
-            if (!container || !appData.videos) return;
+            if (!container) return;
             
-            if (typeof ZahngutData !== 'undefined') {
-                ZahngutData.renderVideos(container);
+            // Lade Videos aus localStorage
+            const videos = appData && appData.videos ? appData.videos.filter(v => v.active !== false) : [];
+            
+            if (videos.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-light); padding: 40px;">Keine Videos vorhanden. <br>Fügen Sie Videos über das Admin Panel hinzu.</p>';
+                return;
             }
+            
+            const videosHtml = videos.map(video => `
+                <div class="video-card" data-category="${video.category || 'allgemein'}" onclick="playVideo('${video.id}', '${video.url}', '${video.title.replace(/'/g, '\\\'')}')" style="cursor: pointer;">
+                    <div class="video-thumbnail">
+                        <div class="play-button">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                        </div>
+                        <span class="video-category-badge">${getCategoryLabel(video.category || 'allgemein')}</span>
+                    </div>
+                    <div class="video-info">
+                        <h3>${video.title}</h3>
+                        <div class="video-meta">
+                            <span>⏱ ${video.duration}</span>
+                            <span>👍 ${video.views} Aufrufe</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Verwende Grid-Layout
+            container.innerHTML = `<div class="videos-grid">${videosHtml}</div>`;
+        }
+
+        function getCategoryLabel(category) {
+            const labels = {
+                'allgemein': 'Allgemein',
+                'zahnerhaltung': 'Zahnerhaltung',
+                'zahnersatz': 'Zahnersatz',
+                'chirurgie': 'Chirurgie',
+                'kieferorthopaedie': 'Kieferorthopädie'
+            };
+            return labels[category] || 'Allgemein';
         }
 
         function generateNachsorge(appData) {
             const container = document.getElementById('nachsorge-liste');
             if (!container || !appData.aftercare) return;
             
-            if (typeof ZahngutData !== 'undefined') {
+            if (typeof ZahngutData !== 'undefined' && ZahngutData.renderNachsorge) {
                 ZahngutData.renderNachsorge(container);
             }
         }
 
         function updateEmergencyInfo(appData) {
-            if (!appData.emergency) return;
+            if (!appData || !appData.emergency) return;
             
             // Update emergency instructions
             const anweisungen = document.getElementById('emergency-anweisungen');
@@ -1678,21 +1972,159 @@
             
             const videoCards = document.querySelectorAll('.video-card');
             videoCards.forEach(card => {
+                const cardCategory = card.dataset.category || 'allgemein';
                 if (category === 'alle') {
+                    card.style.display = 'block';
                     card.classList.remove('hidden');
                 } else {
-                    if (card.dataset.category === category) {
+                    if (cardCategory === category) {
+                        card.style.display = 'block';
                         card.classList.remove('hidden');
                     } else {
+                        card.style.display = 'none';
                         card.classList.add('hidden');
                     }
                 }
             });
         }
 
-        function playVideo(videoId) {
-            alert('Video-Player wird in der finalen App integriert.');
+        function playVideo(videoId, videoUrl, videoTitle) {
+            if (!videoUrl) {
+                alert('Video-URL nicht verfügbar.');
+                return;
+            }
+            
+            const embedUrl = getEmbedUrl(videoUrl);
+            if (!embedUrl) {
+                // Direkt extern öffnen wenn kein Embed möglich
+                window.open(videoUrl, '_blank');
+                return;
+            }
+            
+            openVideoModal(embedUrl, videoTitle || 'Video', videoUrl);
         }
+
+        function getEmbedUrl(url) {
+            if (!url) return null;
+            
+            // YouTube URLs - verwende nocookie domain
+            let youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+            if (youtubeMatch) {
+                return `https://www.youtube-nocookie.com/embed/${youtubeMatch[1]}?autoplay=1&rel=0&modestbranding=1&fs=1`;
+            }
+            
+            // Vimeo URLs
+            let vimeoMatch = url.match(/(?:vimeo\.com\/)(\d+)/);
+            if (vimeoMatch) {
+                return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+            }
+            
+            // Direkte Video-URLs
+            if (url.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) {
+                return url;
+            }
+            
+            return null;
+        }
+
+        function openVideoModal(embedUrl, title, originalUrl) {
+            const modal = document.getElementById('videoModal');
+            const titleElement = document.getElementById('videoModalTitle');
+            const container = document.getElementById('videoContainer');
+            
+            titleElement.textContent = title;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Zeige Loading
+            container.innerHTML = `
+                <div class="video-loading">
+                    <div class="loading-spinner"></div>
+                    Wird geladen...
+                </div>
+            `;
+            
+            // Lade Video
+            setTimeout(() => {
+                if (embedUrl.match(/\.(mp4|webm|ogg)(\?.*)?$/i)) {
+                    // HTML5 Video für direkte Dateien
+                    container.innerHTML = `
+                        <video controls autoplay style="width: 100%; height: 100%;" onerror="handleVideoError('${originalUrl}')">
+                            <source src="${embedUrl}" type="video/mp4">
+                            <source src="${embedUrl}" type="video/webm">
+                            Ihr Browser unterstützt keine HTML5-Videos.
+                        </video>
+                    `;
+                } else {
+                    // iframe für YouTube/Vimeo mit automatischem Fallback
+                    container.innerHTML = `
+                        <iframe src="${embedUrl}" 
+                                frameborder="0" 
+                                allowfullscreen 
+                                allow="autoplay; encrypted-media; fullscreen"
+                                onload="clearVideoTimeout()"
+                                onerror="handleVideoError('${originalUrl}')">
+                        </iframe>
+                    `;
+                    
+                    // Automatisches Fallback nach 5 Sekunden wenn Video nicht lädt
+                    window.videoTimeout = setTimeout(() => {
+                        const iframe = container.querySelector('iframe');
+                        if (iframe && !iframe.contentDocument) {
+                            handleVideoError(originalUrl);
+                        }
+                    }, 5000);
+                }
+            }, 300);
+            
+            document.addEventListener('keydown', handleEscapeKey);
+        }
+
+        function clearVideoTimeout() {
+            if (window.videoTimeout) {
+                clearTimeout(window.videoTimeout);
+                window.videoTimeout = null;
+            }
+        }
+
+        function handleVideoError(originalUrl) {
+            clearVideoTimeout();
+            closeVideoModal();
+            // Automatisch extern öffnen ohne Dialog
+            window.open(originalUrl, '_blank');
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const container = document.getElementById('videoContainer');
+            
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+            
+            // Video stoppen
+            container.innerHTML = `
+                <div class="video-loading">
+                    <div class="loading-spinner"></div>
+                    Wird geladen...
+                </div>
+            `;
+            
+            document.removeEventListener('keydown', handleEscapeKey);
+        }
+
+        function handleEscapeKey(event) {
+            if (event.key === 'Escape') {
+                closeVideoModal();
+            }
+        }
+
+        // Click outside modal to close
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('videoModal');
+            if (event.target === modal) {
+                closeVideoModal();
+            }
+        });
 
         // Initialize when DOM is ready
         window.addEventListener('DOMContentLoaded', function() {
