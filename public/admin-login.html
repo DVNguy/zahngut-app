@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Zahngut</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .logo-text {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0891b2;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0F172A;
+      margin-bottom: 32px;
+      font-size: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #0F172A;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0891b2;
+      box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+    }
+
+    .checkbox-group label {
+      margin: 0;
+      font-weight: 400;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(8, 145, 178, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .forgot-password a {
+      color: #0891b2;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      color: #EF4444;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .error-message.active {
+      display: block;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .demo-info {
+      background: rgba(8, 145, 178, 0.1);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #0e7490;
+      text-align: center;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .back-link a {
+      color: #64748B;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .back-link a:hover {
+      color: #0891b2;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <div class="logo-icon">🦷</div>
+      <div class="logo-text">Zahngut</div>
+    </div>
+
+    <h1>Admin-Anmeldung</h1>
+
+    <div class="demo-info">
+      Demo-Zugang: admin@zahngut.de / Passwort nach Registrierung
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">E-Mail</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="admin@zahngut.de"
+          required
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Passwort</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="••••••••"
+          required
+          autocomplete="current-password"
+        />
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="remember" name="remember" />
+        <label for="remember">Angemeldet bleiben</label>
+      </div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">
+        Anmelden
+      </button>
+
+      <div class="forgot-password">
+        <a href="#" id="forgotPasswordLink">Passwort vergessen?</a>
+      </div>
+    </form>
+
+    <div class="back-link">
+      <a href="/">← Zurück zur Startseite</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const supabaseUrl = 'VITE_SUPABASE_URL_PLACEHOLDER';
+    const supabaseAnonKey = 'VITE_SUPABASE_ANON_KEY_PLACEHOLDER';
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMessage = document.getElementById('errorMessage');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<div class="loading"><div class="spinner"></div> Anmelden...</div>';
+      errorMessage.classList.remove('active');
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+
+        if (data.session) {
+          if (remember) {
+            localStorage.setItem('zahngut_remember', 'true');
+          }
+          window.location.href = '/admin-panel.html';
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMessage.textContent = error.message || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.';
+        errorMessage.classList.add('active');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Anmelden';
+      }
+    });
+
+    forgotPasswordLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+
+      if (!email) {
+        alert('Bitte geben Sie zunächst Ihre E-Mail-Adresse ein.');
+        return;
+      }
+
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/admin-login.html'
+        });
+
+        if (error) throw error;
+
+        alert('Passwort-Reset-Link wurde an Ihre E-Mail-Adresse gesendet.');
+      } catch (error) {
+        console.error('Password reset error:', error);
+        alert('Fehler beim Zurücksetzen des Passworts: ' + error.message);
+      }
+    });
+
+    async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = '/admin-panel.html';
+      }
+    }
+
+    checkSession();
+
+    const script = document.createElement('script');
+    script.textContent = `
+      const urlPlaceholder = document.querySelector('script[type="module"]').textContent;
+      const newScript = urlPlaceholder
+        .replace('VITE_SUPABASE_URL_PLACEHOLDER', '${window.location.protocol}//' + window.location.hostname.includes('localhost') ? 'https://eguojriprhquxmozbqxl.supabase.co' : document.querySelector('meta[name="supabase-url"]')?.content || '')
+        .replace('VITE_SUPABASE_ANON_KEY_PLACEHOLDER', window.location.hostname.includes('localhost') ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVndW9qcmlwcmhxdXhtb3picXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODE4NTMsImV4cCI6MjA3NTA1Nzg1M30.h5k5NuC_2t03RQS2UN1jlqKKIprSRDyw2QfpWI7jlgE' : document.querySelector('meta[name="supabase-key"]')?.content || '');
+    `;
+  </script>
+</body>
+</html>
