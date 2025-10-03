@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Zahngut</title>
+  <link rel="stylesheet" href="/admin-styles.css">
+</head>
+<body>
+  <div id="admin-app">
+    <header class="admin-header">
+      <div class="header-content">
+        <h1>🦷 Zahngut Admin</h1>
+        <div class="header-actions">
+          <button class="btn-secondary" id="previewBtn">👁️ Vorschau</button>
+          <button class="btn-danger" id="logoutBtn">Abmelden</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-container">
+      <nav class="admin-sidebar">
+        <button class="tab-btn active" data-tab="grunddaten">📋 Grunddaten</button>
+        <button class="tab-btn" data-tab="news">📰 Aktuelles</button>
+        <button class="tab-btn" data-tab="behandlungen">🦷 Behandlungen</button>
+        <button class="tab-btn" data-tab="videos">🎥 Videos</button>
+        <button class="tab-btn" data-tab="nachsorge">📝 Nachsorge</button>
+        <button class="tab-btn" data-tab="oeffnungszeiten">🕐 Öffnungszeiten</button>
+        <button class="tab-btn" data-tab="notfall">🚨 Notfall</button>
+      </nav>
+
+      <main class="admin-content">
+        <div id="notification" class="notification"></div>
+
+        <!-- Tab: Grunddaten -->
+        <div class="tab-content active" id="grunddaten-tab">
+          <h2>Praxis-Grunddaten</h2>
+          <form id="praxisForm" class="admin-form">
+            <div class="form-group">
+              <label>Praxis-Name</label>
+              <input type="text" id="praxisName" required />
+            </div>
+            <div class="form-group">
+              <label>Slogan</label>
+              <input type="text" id="praxisSlogan" required />
+            </div>
+            <div class="form-group">
+              <label>Telefon</label>
+              <input type="tel" id="praxisTelefon" required />
+            </div>
+            <div class="form-group">
+              <label>Notdienst</label>
+              <input type="tel" id="praxisNotdienst" required />
+            </div>
+            <div class="form-group">
+              <label>E-Mail</label>
+              <input type="email" id="praxisEmail" required />
+            </div>
+            <div class="form-group">
+              <label>Doctolib URL</label>
+              <input type="url" id="praxisDoctolib" />
+            </div>
+            <div class="form-group">
+              <label>Straße</label>
+              <input type="text" id="praxisStreet" required />
+            </div>
+            <div class="form-group">
+              <label>PLZ</label>
+              <input type="text" id="praxisZip" required />
+            </div>
+            <div class="form-group">
+              <label>Ort</label>
+              <input type="text" id="praxisCity" required />
+            </div>
+            <button type="submit" class="btn-primary">💾 Speichern</button>
+          </form>
+        </div>
+
+        <!-- Tab: News/Aktuelles -->
+        <div class="tab-content" id="news-tab">
+          <div class="tab-header">
+            <h2>Aktuelles verwalten</h2>
+            <button class="btn-primary" id="addNewsBtn">➕ Neue Meldung</button>
+          </div>
+
+          <div id="newsModal" class="modal">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h3 id="newsModalTitle">Neue Meldung erstellen</h3>
+                <button class="close-btn" id="closeNewsModal">&times;</button>
+              </div>
+              <form id="newsForm" class="admin-form">
+                <input type="hidden" id="newsId" />
+                <div class="form-group">
+                  <label>Titel</label>
+                  <input type="text" id="newsTitle" required />
+                </div>
+                <div class="form-group">
+                  <label>Inhalt</label>
+                  <textarea id="newsContent" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Bild URL (optional)</label>
+                  <input type="url" id="newsImageUrl" placeholder="https://..." />
+                  <small>Link zu einem Bild (z.B. von Pexels oder Unsplash)</small>
+                </div>
+                <div class="form-group">
+                  <label>Video URL (optional)</label>
+                  <input type="url" id="newsVideoUrl" placeholder="https://..." />
+                  <small>Link zu einem Video (MP4 Format)</small>
+                </div>
+                <div class="form-group">
+                  <label>Reihenfolge</label>
+                  <input type="number" id="newsDisplayOrder" value="0" />
+                  <small>Höhere Zahlen werden weiter oben angezeigt</small>
+                </div>
+                <div class="form-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="newsPublished" />
+                    <span>Veröffentlicht (sichtbar für Patienten)</span>
+                  </label>
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn-secondary" id="cancelNewsBtn">Abbrechen</button>
+                  <button type="submit" class="btn-primary">💾 Speichern</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div id="newsList" class="items-list">
+            <!-- News items will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Tab: Behandlungen -->
+        <div class="tab-content" id="behandlungen-tab">
+          <div class="tab-header">
+            <h2>Behandlungen</h2>
+            <button class="btn-primary" id="addTreatmentBtn">+ Neue Behandlung</button>
+          </div>
+          <div id="treatmentsList" class="items-list"></div>
+        </div>
+
+        <!-- Tab: Videos -->
+        <div class="tab-content" id="videos-tab">
+          <div class="tab-header">
+            <h2>Aufklärungsvideos</h2>
+            <button class="btn-primary" id="addVideoBtn">+ Neues Video</button>
+          </div>
+          <div id="videosList" class="items-list"></div>
+        </div>
+
+        <!-- Tab: Nachsorge -->
+        <div class="tab-content" id="nachsorge-tab">
+          <div class="tab-header">
+            <h2>Nachsorge-Anweisungen</h2>
+            <button class="btn-primary" id="addAftercareBtn">+ Neue Nachsorge</button>
+          </div>
+          <div id="aftercareList" class="items-list"></div>
+        </div>
+
+        <!-- Tab: Öffnungszeiten -->
+        <div class="tab-content" id="oeffnungszeiten-tab">
+          <h2>Öffnungszeiten</h2>
+          <form id="hoursForm" class="admin-form">
+            <div id="hoursList"></div>
+            <button type="submit" class="btn-primary">💾 Speichern</button>
+          </form>
+        </div>
+
+        <!-- Tab: Notfall -->
+        <div class="tab-content" id="notfall-tab">
+          <h2>Notfall-Informationen</h2>
+          <form id="emergencyForm" class="admin-form">
+            <div class="form-group">
+              <label>Notdienst-Nummer</label>
+              <input type="tel" id="emergencyNumber" required />
+            </div>
+            <div class="form-group">
+              <label>Zeiten</label>
+              <input type="text" id="emergencyZeiten" required />
+            </div>
+            <div class="form-group">
+              <label>Erste-Hilfe-Anweisungen (eine pro Zeile)</label>
+              <textarea id="emergencyInstructions" rows="6"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Zahn ausgeschlagen - Anleitung</label>
+              <textarea id="emergencyZahnAus" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Zahn locker - Anleitung</label>
+              <textarea id="emergencyZahnLocker" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn-primary">💾 Speichern</button>
+          </form>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal for Treatment Edit -->
+  <div id="treatmentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="treatmentModalTitle">Behandlung bearbeiten</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="treatmentForm" class="admin-form">
+        <input type="hidden" id="treatmentId" />
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="treatmentName" required />
+        </div>
+        <div class="form-group">
+          <label>Kategorie</label>
+          <select id="treatmentCategory" required>
+            <option value="Zahnerhaltung">Zahnerhaltung</option>
+            <option value="Zahnersatz">Zahnersatz</option>
+            <option value="Chirurgie">Chirurgie</option>
+            <option value="Implantologie">Implantologie</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Icon (Emoji)</label>
+          <input type="text" id="treatmentIcon" required />
+        </div>
+        <div class="form-group">
+          <label>Untertitel</label>
+          <input type="text" id="treatmentUntertitel" required />
+        </div>
+        <div class="form-group">
+          <label>Was ist das?</label>
+          <textarea id="treatmentWas" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Ablauf (einer pro Zeile)</label>
+          <textarea id="treatmentAblauf" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Vorteile (einer pro Zeile)</label>
+          <textarea id="treatmentVorteile" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Dauer</label>
+          <input type="text" id="treatmentDauer" required />
+        </div>
+        <div class="form-group">
+          <label>Empfohlen</label>
+          <input type="text" id="treatmentEmpfohlen" required />
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="treatmentActive" />
+            Aktiv (für Patienten sichtbar)
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary modal-close">Abbrechen</button>
+          <button type="submit" class="btn-primary">Speichern</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="/admin-app.js"></script>
+</body>
+</html>

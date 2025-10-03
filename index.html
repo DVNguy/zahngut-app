@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/icons/icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Zahngut Bad Wünnenberg - Moderne Zahnmedizin. Der Mensch im Mittelpunkt." />
+    <meta name="theme-color" content="#0891b2" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Zahngut Bad Wünnenberg - Ihre Zahnarztpraxis</title>
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-content">
+          <button class="back-btn" id="backBtn" style="display: none;">
+            <span>←</span>
+          </button>
+          <div class="logo" id="logoBtn">
+            <span class="logo-icon" id="logoIcon">🦷</span>
+            <span class="logo-text" id="logoText">Zahngut</span>
+          </div>
+          <button class="emergency-btn" id="emergencyBtn">
+            <span>🚨</span>
+            <span class="emergency-text">Notfall</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main-content" id="mainContent">
+        <!-- Loading State -->
+        <div class="loading-screen" id="loadingScreen">
+          <div class="loading-spinner"></div>
+          <p>Laden...</p>
+        </div>
+
+        <!-- Home Section -->
+        <section class="section active" id="homeSection">
+          <div class="hero">
+            <h1 class="hero-title" id="heroTitle">Willkommen bei Zahngut</h1>
+            <p class="hero-subtitle" id="heroSubtitle">Moderne Zahnmedizin. Der Mensch im Mittelpunkt.</p>
+          </div>
+
+          <div class="category-grid">
+            <div class="category-card" data-nav="news">
+              <div class="category-icon">📰</div>
+              <h3>Aktuelles</h3>
+              <p>Neuigkeiten aus unserer Praxis</p>
+            </div>
+            <div class="category-card" data-nav="treatments">
+              <div class="category-icon">🦷</div>
+              <h3>Behandlungen</h3>
+              <p>Unsere Leistungen im Überblick</p>
+            </div>
+            <div class="category-card" data-nav="videos">
+              <div class="category-icon">🎥</div>
+              <h3>Aufklärungsvideos</h3>
+              <p>Informative Erklärvideos</p>
+            </div>
+            <div class="category-card" data-nav="aftercare">
+              <div class="category-icon">📋</div>
+              <h3>Nachsorge</h3>
+              <p>Anweisungen nach Behandlung</p>
+            </div>
+            <div class="category-card" data-nav="appointments">
+              <div class="category-icon">📅</div>
+              <h3>Termine & Kontakt</h3>
+              <p>Öffnungszeiten und Buchung</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- News Section -->
+        <section class="section" id="newsSection">
+          <div class="section-header">
+            <h2>Aktuelles</h2>
+            <p class="section-description">Neuigkeiten aus unserer Praxis</p>
+          </div>
+          <div class="news-grid" id="newsGrid">
+            <!-- News posts will be loaded here -->
+          </div>
+        </section>
+
+        <!-- Videos Section -->
+        <section class="section" id="videosSection">
+          <div class="section-header">
+            <h2>Aufklärungsvideos</h2>
+            <div class="filter-chips" id="videoFilters">
+              <button class="filter-chip active" data-category="all">Alle</button>
+            </div>
+          </div>
+          <div class="video-grid" id="videoGrid">
+            <!-- Videos will be loaded here -->
+          </div>
+        </section>
+
+        <!-- Treatments Section -->
+        <section class="section" id="treatmentsSection">
+          <div class="section-header">
+            <h2>Behandlungen</h2>
+            <div class="filter-chips" id="treatmentFilters">
+              <button class="filter-chip active" data-category="all">Alle</button>
+              <button class="filter-chip" data-category="Zahnerhaltung">Zahnerhaltung</button>
+              <button class="filter-chip" data-category="Zahnersatz">Zahnersatz</button>
+              <button class="filter-chip" data-category="Chirurgie">Chirurgie</button>
+              <button class="filter-chip" data-category="Implantologie">Implantologie</button>
+            </div>
+          </div>
+          <div class="treatment-grid" id="treatmentGrid">
+            <!-- Treatments will be loaded here -->
+          </div>
+        </section>
+
+        <!-- Aftercare Section -->
+        <section class="section" id="aftercareSection">
+          <div class="section-header">
+            <h2>Nachsorge-Anweisungen</h2>
+            <p class="section-description">Wichtige Hinweise für die Zeit nach Ihrer Behandlung</p>
+          </div>
+          <div class="aftercare-list" id="aftercareList">
+            <!-- Aftercare instructions will be loaded here -->
+          </div>
+        </section>
+
+        <!-- Appointments Section -->
+        <section class="section" id="appointmentsSection">
+          <div class="section-header">
+            <h2>Termine & Kontakt</h2>
+          </div>
+
+          <div class="content-card">
+            <h3>📞 Kontakt</h3>
+            <div class="contact-info" id="contactInfo">
+              <!-- Contact info will be loaded here -->
+            </div>
+          </div>
+
+          <div class="content-card">
+            <h3>📍 Anfahrt</h3>
+            <div class="address-info" id="addressInfo">
+              <!-- Address will be loaded here -->
+            </div>
+            <div class="map-container" id="mapContainer">
+              <!-- Google Maps will be loaded here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Emergency Section -->
+        <section class="section" id="emergencySection">
+          <div class="emergency-header">
+            <div class="emergency-icon">🚨</div>
+            <h2>Notfall-Informationen</h2>
+          </div>
+
+          <div class="emergency-card">
+            <h3>📞 Notdienst</h3>
+            <a href="tel:" class="emergency-number" id="emergencyNumber">
+              <!-- Emergency number will be loaded here -->
+            </a>
+            <p class="emergency-time" id="emergencyTime">
+              <!-- Emergency time will be loaded here -->
+            </p>
+          </div>
+
+          <div class="content-card">
+            <h3>🩹 Erste Hilfe</h3>
+            <ul class="emergency-instructions" id="emergencyInstructions">
+              <!-- Instructions will be loaded here -->
+            </ul>
+          </div>
+
+          <div class="content-card warning-card">
+            <h3>⚠️ Besondere Notfälle</h3>
+            <div class="special-emergency" id="toothOut">
+              <h4>Zahn ausgeschlagen</h4>
+              <p><!-- Will be loaded --></p>
+            </div>
+            <div class="special-emergency" id="toothLoose">
+              <h4>Zahn locker</h4>
+              <p><!-- Will be loaded --></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Opening Hours Section -->
+        <section class="section" id="openingHoursSection">
+          <div class="section-header">
+            <h2>📅 Öffnungszeiten</h2>
+          </div>
+          <div class="content-card">
+            <div class="opening-hours" id="openingHours">
+              <!-- Opening hours will be loaded here -->
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bottom Navigation -->
+      <nav class="bottom-nav">
+        <button class="nav-item active" data-section="home">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Start</span>
+        </button>
+        <button class="nav-item" data-section="news">
+          <span class="nav-icon">📰</span>
+          <span class="nav-label">Aktuelles</span>
+        </button>
+        <button class="nav-item" data-section="videos">
+          <span class="nav-icon">🎥</span>
+          <span class="nav-label">Videos</span>
+        </button>
+        <button class="nav-item" data-section="treatments">
+          <span class="nav-icon">🦷</span>
+          <span class="nav-label">Behandlung</span>
+        </button>
+        <button class="nav-item" data-section="appointments">
+          <span class="nav-icon">📅</span>
+          <span class="nav-label">Termine</span>
+        </button>
+        <button class="nav-item" data-section="emergency">
+          <span class="nav-icon">🚨</span>
+          <span class="nav-label">Notfall</span>
+        </button>
+      </nav>
+
+      <!-- Treatment Detail Modal -->
+      <div class="modal" id="treatmentModal">
+        <div class="modal-content">
+          <button class="modal-close" id="modalClose">&times;</button>
+          <div id="treatmentDetail">
+            <!-- Treatment details will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Player Modal -->
+      <div class="modal" id="videoModal">
+        <div class="modal-content video-modal-content">
+          <button class="modal-close" id="videoModalClose">&times;</button>
+          <div id="videoPlayer">
+            <!-- Video player will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Offline Indicator -->
+      <div class="offline-indicator" id="offlineIndicator">
+        <span>📡</span>
+        <span>Offline-Modus</span>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
