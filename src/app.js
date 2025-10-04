@@ -247,8 +247,8 @@ class ZahngutApp {
     if (!container) return;
 
     container.innerHTML = aftercareList.map((aftercare, index) => {
-      const phasen = aftercare.phasen;
-      const warnung = aftercare.warnung;
+      const phasen = aftercare.phasen || [];
+      const warnsignale = aftercare.warnsignale || aftercare.warnung || [];
 
       return `
         <div class="aftercare-card" data-index="${index}">
@@ -257,7 +257,7 @@ class ZahngutApp {
               <div class="aftercare-icon">${aftercare.icon}</div>
               <div class="aftercare-title">
                 <h3>${aftercare.behandlung}</h3>
-                <p class="aftercare-period">${aftercare.zeitraum}</p>
+                <p class="aftercare-period">${aftercare.time || aftercare.zeitraum || ''}</p>
               </div>
             </div>
             <div class="expand-icon">▼</div>
@@ -265,48 +265,24 @@ class ZahngutApp {
           <div class="aftercare-content">
             <div class="aftercare-description">${aftercare.kurzbeschreibung}</div>
             <div class="timeline">
-              ${phasen.phase1 ? `
+              ${Array.isArray(phasen) ? phasen.map(phase => `
                 <div class="phase">
                   <div class="phase-marker"></div>
                   <div class="phase-header">
-                    <span class="phase-title">${phasen.phase1.title}</span>
-                    <span class="phase-time">${phasen.phase1.time}</span>
+                    <span class="phase-title">${phase.title}</span>
+                    <span class="phase-time">${phase.time}</span>
                   </div>
                   <ul class="phase-items">
-                    ${phasen.phase1.items.map(item => `<li>${item}</li>`).join('')}
+                    ${phase.items.map(item => `<li>${item}</li>`).join('')}
                   </ul>
                 </div>
-              ` : ''}
-              ${phasen.phase2 ? `
-                <div class="phase">
-                  <div class="phase-marker"></div>
-                  <div class="phase-header">
-                    <span class="phase-title">${phasen.phase2.title}</span>
-                    <span class="phase-time">${phasen.phase2.time}</span>
-                  </div>
-                  <ul class="phase-items">
-                    ${phasen.phase2.items.map(item => `<li>${item}</li>`).join('')}
-                  </ul>
-                </div>
-              ` : ''}
-              ${phasen.phase3 ? `
-                <div class="phase">
-                  <div class="phase-marker"></div>
-                  <div class="phase-header">
-                    <span class="phase-title">${phasen.phase3.title}</span>
-                    <span class="phase-time">${phasen.phase3.time}</span>
-                  </div>
-                  <ul class="phase-items">
-                    ${phasen.phase3.items.map(item => `<li>${item}</li>`).join('')}
-                  </ul>
-                </div>
-              ` : ''}
+              `).join('') : ''}
             </div>
-            ${warnung && warnung.length > 0 ? `
+            ${warnsignale && warnsignale.length > 0 ? `
               <div class="warning-symptoms">
                 <h4>⚠️ Sofort Praxis kontaktieren bei:</h4>
                 <ul>
-                  ${warnung.map(w => `<li>${w}</li>`).join('')}
+                  ${warnsignale.map(w => `<li>${w}</li>`).join('')}
                 </ul>
               </div>
             ` : ''}
