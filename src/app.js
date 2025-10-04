@@ -88,7 +88,15 @@ class ZahngutApp {
         const descEl = document.getElementById(mapping.descId);
 
         if (titleEl) titleEl.textContent = cat.name;
-        if (iconEl) iconEl.textContent = cat.icon;
+
+        if (iconEl && cat.icon) {
+          if (cat.icon.startsWith('http')) {
+            iconEl.innerHTML = `<img src="${cat.icon}" alt="${cat.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
+          } else {
+            iconEl.textContent = cat.icon;
+          }
+        }
+
         if (descEl && cat.description) descEl.textContent = cat.description;
       }
     });

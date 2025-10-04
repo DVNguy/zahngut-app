@@ -99,7 +99,11 @@ class AdminPanel {
     const previewConfigs = [
       { fileId: 'treatmentIconFile', previewId: 'treatmentIconPreview' },
       { fileId: 'videoIconFile', previewId: 'videoIconPreview' },
-      { fileId: 'aftercareIconFile', previewId: 'aftercareIconPreview' }
+      { fileId: 'aftercareIconFile', previewId: 'aftercareIconPreview' },
+      { fileId: 'categoryBehandlungenIconFile', previewId: 'categoryBehandlungenIconPreview' },
+      { fileId: 'categoryVideosIconFile', previewId: 'categoryVideosIconPreview' },
+      { fileId: 'categoryAktuellesIconFile', previewId: 'categoryAktuellesIconPreview' },
+      { fileId: 'categoryNachsorgeIconFile', previewId: 'categoryNachsorgeIconPreview' }
     ];
 
     previewConfigs.forEach(config => {
@@ -169,10 +173,10 @@ class AdminPanel {
 
   updateCategoryUI() {
     const categoryFields = [
-      { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc' },
-      { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc' },
-      { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc' },
-      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc' }
+      { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc', previewId: 'categoryBehandlungenIconPreview' },
+      { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc', previewId: 'categoryVideosIconPreview' },
+      { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc', previewId: 'categoryAktuellesIconPreview' },
+      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc', previewId: 'categoryNachsorgeIconPreview' }
     ];
 
     categoryFields.forEach(field => {
@@ -181,10 +185,16 @@ class AdminPanel {
         const nameEl = document.getElementById(field.nameId);
         const iconEl = document.getElementById(field.iconId);
         const descEl = document.getElementById(field.descId);
+        const previewEl = document.getElementById(field.previewId);
 
         if (nameEl) nameEl.value = cat.name || '';
         if (iconEl) iconEl.value = cat.icon || '';
         if (descEl) descEl.value = cat.description || '';
+
+        if (previewEl && cat.icon && cat.icon.startsWith('http')) {
+          previewEl.innerHTML = `<img src="${cat.icon}" alt="Icon">`;
+          previewEl.classList.add('active');
+        }
       }
     });
   }
@@ -192,30 +202,31 @@ class AdminPanel {
   async saveCategories(e) {
     e.preventDefault();
 
-    const categories = {
-      behandlungen: {
-        name: document.getElementById('categoryBehandlungenName').value,
-        icon: document.getElementById('categoryBehandlungenIcon').value,
-        description: document.getElementById('categoryBehandlungenDesc').value
-      },
-      videos: {
-        name: document.getElementById('categoryVideosName').value,
-        icon: document.getElementById('categoryVideosIcon').value,
-        description: document.getElementById('categoryVideosDesc').value
-      },
-      aktuelles: {
-        name: document.getElementById('categoryAktuellesName').value,
-        icon: document.getElementById('categoryAktuellesIcon').value,
-        description: document.getElementById('categoryAktuellesDesc').value
-      },
-      nachsorge: {
-        name: document.getElementById('categoryNachsorgeName').value,
-        icon: document.getElementById('categoryNachsorgeIcon').value,
-        description: document.getElementById('categoryNachsorgeDesc').value
-      }
-    };
-
     try {
+      const categoryKeys = [
+        { key: 'behandlungen', fileId: 'categoryBehandlungenIconFile', iconId: 'categoryBehandlungenIcon', nameId: 'categoryBehandlungenName', descId: 'categoryBehandlungenDesc' },
+        { key: 'videos', fileId: 'categoryVideosIconFile', iconId: 'categoryVideosIcon', nameId: 'categoryVideosName', descId: 'categoryVideosDesc' },
+        { key: 'aktuelles', fileId: 'categoryAktuellesIconFile', iconId: 'categoryAktuellesIcon', nameId: 'categoryAktuellesName', descId: 'categoryAktuellesDesc' },
+        { key: 'nachsorge', fileId: 'categoryNachsorgeIconFile', iconId: 'categoryNachsorgeIcon', nameId: 'categoryNachsorgeName', descId: 'categoryNachsorgeDesc' }
+      ];
+
+      const categories = {};
+
+      for (const cat of categoryKeys) {
+        let iconValue = document.getElementById(cat.iconId).value;
+        const iconFile = document.getElementById(cat.fileId).files[0];
+
+        if (iconFile) {
+          iconValue = await this.uploadImage(iconFile, 'category-icons');
+        }
+
+        categories[cat.key] = {
+          name: document.getElementById(cat.nameId).value,
+          icon: iconValue,
+          description: document.getElementById(cat.descId).value
+        };
+      }
+
       await setDoc(doc(db, 'app_config', 'categories'), categories);
       this.categories = categories;
       this.showNotification('Kategorien gespeichert', 'success');
