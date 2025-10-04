@@ -170,6 +170,9 @@ h2 {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
+  width: auto;
+  display: inline-block;
 }
 
 .btn-primary {
@@ -364,9 +367,10 @@ h2 {
 
 .form-actions .btn-secondary,
 .form-actions .btn-primary {
-  padding: 10px 20px;
+  padding: 10px 24px;
   flex: 0 0 auto;
-  min-width: 120px;
+  width: auto;
+  max-width: 150px;
 }
 
 .hours-day {
