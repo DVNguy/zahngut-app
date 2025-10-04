@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Daten Import</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0891b2;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #0891b2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background: #0e7490;
+    }
+    button:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f1f5f9;
+    }
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .loading {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔄 Firebase Daten Import</h1>
+    <p>Dieses Tool importiert die Mock-Daten in deine Firebase Firestore Datenbank.</p>
+
+    <button id="importBtn">Import starten</button>
+
+    <div id="status"></div>
+
+    <div style="margin-top: 30px;">
+      <h3>Was wird importiert?</h3>
+      <ul>
+        <li>Praxis-Informationen (Name, Telefon, Adresse)</li>
+        <li>Öffnungszeiten</li>
+        <li>Behandlungen</li>
+        <li>Aufklärungsvideos</li>
+        <li>Nachsorge-Anweisungen</li>
+        <li>Notfall-Informationen</li>
+        <li>News-Posts</li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getFirestore, collection, doc, setDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBci-nWGvx7OdMb6BmWbS8pWBR9Leidl_Q",
+      authDomain: "zahngut-app.firebaseapp.com",
+      databaseURL: "https://zahngut-app-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "zahngut-app",
+      storageBucket: "zahngut-app.firebasestorage.app",
+      messagingSenderId: "1022498780184",
+      appId: "1:1022498780184:web:922e819956feb594037f6d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const mockData = {
+      praxisInfo: {
+        name: 'Zahngut Bad Wünnenberg',
+        slogan: 'Die Zahnarztpraxis mit Herz',
+        telefon: '02957 1010',
+        notdienst: '01805 986700',
+        email: 'info@dein-zahngut.de',
+        doctolib: 'https://www.doctolib.de/zahnarztpraxis/bad-wuennenberg/zahngut-bad-wuennenberg',
+        street: 'Kirchweg 8d',
+        zip: '33181',
+        city: 'Bad Wünnenberg - Haaren'
+      },
+
+      openingHours: [
+        { day_of_week: 'Montag', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 1 },
+        { day_of_week: 'Dienstag', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 2 },
+        { day_of_week: 'Mittwoch', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 3 },
+        { day_of_week: 'Donnerstag', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 4 },
+        { day_of_week: 'Freitag', opens_at: '08:00', closes_at: '14:00', is_closed: false, display_order: 5 },
+        { day_of_week: 'Samstag', opens_at: null, closes_at: null, is_closed: true, display_order: 6 },
+        { day_of_week: 'Sonntag', opens_at: null, closes_at: null, is_closed: true, display_order: 7 }
+      ],
+
+      treatments: [
+        {
+          category: 'Zahnerhaltung',
+          name: 'Füllungen',
+          icon: '🦷',
+          untertitel: 'Hochwertige Zahnfüllungen',
+          was: 'Kariesbehandlung mit modernen Materialien',
+          ablauf: ['Untersuchung', 'Lokalanästhesie', 'Kariesentfernung', 'Füllung'],
+          vorteile: ['Schmerzfrei', 'Langlebig', 'Ästhetisch'],
+          dauer: '30-60 Min',
+          empfohlen: 'Bei Karies',
+          active: true,
+          created_at: new Date()
+        },
+        {
+          category: 'Prophylaxe',
+          name: 'Professionelle Zahnreinigung',
+          icon: '✨',
+          untertitel: 'Für gesunde und saubere Zähne',
+          was: 'Gründliche Reinigung aller Zahnflächen',
+          ablauf: ['Untersuchung', 'Zahnsteinentfernung', 'Politur', 'Fluoridierung'],
+          vorteile: ['Vorbeugt Karies', 'Frischer Atem', 'Helle Zähne'],
+          dauer: '45-60 Min',
+          empfohlen: '2x jährlich',
+          active: true,
+          created_at: new Date()
+        },
+        {
+          category: 'Zahnersatz',
+          name: 'Kronen',
+          icon: '👑',
+          untertitel: 'Stabiler Zahnersatz',
+          was: 'Überkronung beschädigter Zähne',
+          ablauf: ['Vorbereitung', 'Abformung', 'Provisorium', 'Einsetzen der Krone'],
+          vorteile: ['Lange Haltbarkeit', 'Natürliches Aussehen', 'Volle Kaufunktion'],
+          dauer: '2 Sitzungen',
+          empfohlen: 'Bei stark beschädigten Zähnen',
+          active: true,
+          created_at: new Date()
+        },
+        {
+          category: 'Implantologie',
+          name: 'Implantate',
+          icon: '🦴',
+          untertitel: 'Künstliche Zahnwurzeln',
+          was: 'Ersatz fehlender Zähne durch Implantate',
+          ablauf: ['Planung', 'Implantation', 'Einheilphase', 'Aufbau mit Krone'],
+          vorteile: ['Wie eigene Zähne', 'Erhält Kieferknochen', 'Sehr langlebig'],
+          dauer: 'Mehrere Monate',
+          empfohlen: 'Bei Zahnverlust',
+          active: true,
+          created_at: new Date()
+        }
+      ],
+
+      videos: [
+        {
+          category: 'Prophylaxe',
+          title: 'Richtig Zähne putzen',
+          youtube_id: 'dQw4w9WgXcQ',
+          description: 'In diesem Video zeigen wir Ihnen die richtige Zahnputztechnik.',
+          active: true,
+          created_at: new Date()
+        },
+        {
+          category: 'Behandlung',
+          title: 'Ablauf einer Wurzelbehandlung',
+          youtube_id: 'dQw4w9WgXcQ',
+          description: 'Erfahren Sie, wie eine Wurzelbehandlung abläuft.',
+          active: true,
+          created_at: new Date()
+        },
+        {
+          category: 'Implantologie',
+          title: 'Was ist ein Implantat?',
+          youtube_id: 'dQw4w9WgXcQ',
+          description: 'Alles Wissenswerte über Zahnimplantate.',
+          active: true,
+          created_at: new Date()
+        }
+      ],
+
+      aftercare: [
+        {
+          title: 'Nach einer Extraktion',
+          content: 'Beißen Sie für 30 Minuten auf das Mulltupfer. Vermeiden Sie körperliche Anstrengung für 24 Stunden. Kühlen Sie die betroffene Stelle.',
+          active: true,
+          created_at: new Date()
+        },
+        {
+          title: 'Nach einer Füllung',
+          content: 'Vermeiden Sie Essen und Trinken für 2 Stunden. Bei Komposit-Füllungen können Sie sofort wieder essen.',
+          active: true,
+          created_at: new Date()
+        },
+        {
+          title: 'Nach einer Wurzelbehandlung',
+          content: 'Vermeiden Sie harte Speisen auf der behandelten Seite. Nehmen Sie bei Bedarf Schmerzmittel ein.',
+          active: true,
+          created_at: new Date()
+        }
+      ],
+
+      emergencyInfo: {
+        notdienst_telefon: '01805 986700',
+        notdienst_zeiten: 'Außerhalb der Sprechzeiten',
+        erste_hilfe: [
+          'Bei Zahnschmerzen: Kühlen, Schmerzmittel',
+          'Bei Blutung: Mit Tupfer 20 Min. auf Wunde drücken',
+          'Bei Schwellung: Kühlen, nicht wärmen'
+        ],
+        zahn_ausgeschlagen: 'Zahn in Zahnrettungsbox oder H-Milch legen. Sofort zum Zahnarzt!',
+        zahn_locker: 'Nicht berühren oder bewegen. Umgehend Zahnarzt aufsuchen.'
+      },
+
+      news: [
+        {
+          title: 'Willkommen in unserer neuen Praxis-App',
+          content: 'Wir freuen uns, Ihnen unsere neue App vorstellen zu können. Hier finden Sie alle wichtigen Informationen zu unserer Praxis.',
+          published: true,
+          display_order: 1,
+          created_at: new Date()
+        },
+        {
+          title: 'Neue Öffnungszeiten',
+          content: 'Ab sofort haben wir auch freitags bis 14 Uhr für Sie geöffnet.',
+          published: true,
+          display_order: 2,
+          created_at: new Date()
+        }
+      ]
+    };
+
+    const statusDiv = document.getElementById('status');
+    const importBtn = document.getElementById('importBtn');
+
+    function showStatus(message, type = 'loading') {
+      statusDiv.className = `status ${type}`;
+      statusDiv.innerHTML = message;
+    }
+
+    async function importData() {
+      importBtn.disabled = true;
+      showStatus('Import wird gestartet...', 'loading');
+
+      try {
+        const results = [];
+
+        // Import Praxis Info
+        showStatus('Importiere Praxis-Informationen...', 'loading');
+        await setDoc(doc(db, 'praxis_info', 'main'), mockData.praxisInfo);
+        results.push('✅ Praxis-Informationen');
+
+        // Import Opening Hours
+        showStatus('Importiere Öffnungszeiten...', 'loading');
+        for (const hour of mockData.openingHours) {
+          await setDoc(doc(collection(db, 'opening_hours')), hour);
+        }
+        results.push('✅ Öffnungszeiten (7 Einträge)');
+
+        // Import Treatments
+        showStatus('Importiere Behandlungen...', 'loading');
+        for (const treatment of mockData.treatments) {
+          await setDoc(doc(collection(db, 'treatments')), treatment);
+        }
+        results.push(`✅ Behandlungen (${mockData.treatments.length} Einträge)`);
+
+        // Import Videos
+        showStatus('Importiere Videos...', 'loading');
+        for (const video of mockData.videos) {
+          await setDoc(doc(collection(db, 'videos')), video);
+        }
+        results.push(`✅ Videos (${mockData.videos.length} Einträge)`);
+
+        // Import Aftercare
+        showStatus('Importiere Nachsorge-Anweisungen...', 'loading');
+        for (const aftercare of mockData.aftercare) {
+          await setDoc(doc(collection(db, 'aftercare')), aftercare);
+        }
+        results.push(`✅ Nachsorge (${mockData.aftercare.length} Einträge)`);
+
+        // Import Emergency Info
+        showStatus('Importiere Notfall-Informationen...', 'loading');
+        await setDoc(doc(db, 'emergency_info', 'main'), mockData.emergencyInfo);
+        results.push('✅ Notfall-Informationen');
+
+        // Import News
+        showStatus('Importiere News...', 'loading');
+        for (const newsItem of mockData.news) {
+          await setDoc(doc(collection(db, 'news')), newsItem);
+        }
+        results.push(`✅ News (${mockData.news.length} Einträge)`);
+
+        showStatus(`
+          <h3>✅ Import erfolgreich abgeschlossen!</h3>
+          <p>Folgende Daten wurden importiert:</p>
+          <ul>
+            ${results.map(r => `<li>${r}</li>`).join('')}
+          </ul>
+          <p><strong>Die App zeigt jetzt die Firebase-Daten an!</strong></p>
+          <p>Du kannst jetzt:</p>
+          <ul>
+            <li>Die App neu laden und die importierten Daten sehen</li>
+            <li>Im Admin-Panel die Daten bearbeiten</li>
+            <li>Diese Seite schließen</li>
+          </ul>
+        `, 'success');
+
+      } catch (error) {
+        console.error('Import error:', error);
+        showStatus(`
+          <h3>❌ Import fehlgeschlagen</h3>
+          <p>Fehler: ${error.message}</p>
+          <pre>${error.stack}</pre>
+        `, 'error');
+        importBtn.disabled = false;
+      }
+    }
+
+    importBtn.addEventListener('click', importData);
+  </script>
+</body>
+</html>
