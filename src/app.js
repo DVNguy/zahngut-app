@@ -118,8 +118,28 @@ class ZahngutApp {
     const heroSubtitle = document.getElementById('heroSubtitle');
     if (heroSubtitle) heroSubtitle.textContent = info.slogan;
 
+    // Update logo
+    const logoIcon = document.getElementById('logoIcon');
     const logoText = document.getElementById('logoText');
-    if (logoText) logoText.textContent = info.name.split(' ')[0];
+
+    if (info.logo) {
+      // Show image logo
+      if (logoIcon) {
+        logoIcon.innerHTML = `<img src="${info.logo}" alt="${info.name}" style="height: 32px; object-fit: contain;" />`;
+      }
+      if (logoText) {
+        logoText.style.display = 'none';
+      }
+    } else {
+      // Show text logo
+      if (logoIcon) {
+        logoIcon.textContent = '🦷';
+      }
+      if (logoText) {
+        logoText.textContent = info.name.split(' ')[0];
+        logoText.style.display = '';
+      }
+    }
 
     const contactInfo = document.getElementById('contactInfo');
     if (contactInfo && info) {

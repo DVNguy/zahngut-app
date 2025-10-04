@@ -92,6 +92,16 @@ class AdminPanel {
     document.getElementById('closeNewsModal')?.addEventListener('click', () => this.closeNewsModal());
     document.getElementById('cancelNewsBtn')?.addEventListener('click', () => this.closeNewsModal());
 
+    // Logo preview
+    document.getElementById('praxisLogo')?.addEventListener('input', (e) => {
+      const url = e.target.value;
+      if (url) {
+        this.showLogoPreview(url);
+      } else {
+        document.getElementById('logoPreview').style.display = 'none';
+      }
+    });
+
     this.setupImagePreviews();
     this.setupColorPreviews();
     this.setupCopyColorButtons();
@@ -470,6 +480,7 @@ class AdminPanel {
       if (docSnap.exists()) {
         const data = docSnap.data();
         document.getElementById('praxisName').value = data.name || '';
+        document.getElementById('praxisLogo').value = data.logo || '';
         document.getElementById('praxisSlogan').value = data.slogan || '';
         document.getElementById('praxisTelefon').value = data.telefon || '';
         document.getElementById('praxisNotdienst').value = data.notdienst || '';
@@ -480,6 +491,11 @@ class AdminPanel {
           document.getElementById('praxisStreet').value = data.address.street || '';
           document.getElementById('praxisZip').value = data.address.zip || '';
           document.getElementById('praxisCity').value = data.address.city || '';
+        }
+
+        // Show logo preview if logo URL exists
+        if (data.logo) {
+          this.showLogoPreview(data.logo);
         }
       }
     } catch (error) {
@@ -492,6 +508,7 @@ class AdminPanel {
 
     const data = {
       name: document.getElementById('praxisName').value,
+      logo: document.getElementById('praxisLogo').value,
       slogan: document.getElementById('praxisSlogan').value,
       telefon: document.getElementById('praxisTelefon').value,
       notdienst: document.getElementById('praxisNotdienst').value,
@@ -777,6 +794,19 @@ class AdminPanel {
     setTimeout(() => {
       notification.classList.remove('show');
     }, 3000);
+  }
+
+  showLogoPreview(url) {
+    const preview = document.getElementById('logoPreview');
+    const img = document.getElementById('logoPreviewImg');
+
+    img.src = url;
+    img.onerror = () => {
+      preview.style.display = 'none';
+    };
+    img.onload = () => {
+      preview.style.display = 'block';
+    };
   }
 
   async uploadImage(file, folder = 'icons') {
