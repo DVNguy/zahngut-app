@@ -95,7 +95,6 @@ class AdminPanel {
     this.setupImagePreviews();
     this.setupColorPreviews();
     this.setupCopyColorButtons();
-    this.setupGradientToggles();
   }
 
   setupImagePreviews() {
@@ -159,11 +158,7 @@ class AdminPanel {
         const color2 = color2Input?.value || color1;
         const iconValue = iconInput?.value || '🦷';
 
-        // Check if gradient is enabled
-        const gradientCheckbox = document.getElementById(`category${cat.key}UseGradient`);
-        const useGradient = gradientCheckbox ? gradientCheckbox.checked : true;
-
-        const background = useGradient && color1 !== color2
+        const background = color1 !== color2
           ? `linear-gradient(135deg, ${color1}, ${color2})`
           : color1;
 
@@ -251,30 +246,6 @@ class AdminPanel {
     });
   }
 
-  setupGradientToggles() {
-    const categories = ['Behandlungen', 'Videos', 'Aktuelles', 'Nachsorge'];
-
-    categories.forEach(cat => {
-      const checkbox = document.getElementById(`category${cat}UseGradient`);
-      const wrapper = document.getElementById(`category${cat}Color2Wrapper`);
-
-      if (checkbox && wrapper) {
-        const updateVisibility = () => {
-          wrapper.style.display = checkbox.checked ? 'flex' : 'none';
-
-          // Trigger preview update
-          const color1Input = document.getElementById(`category${cat}BgColor1`);
-          if (color1Input) {
-            color1Input.dispatchEvent(new Event('input'));
-          }
-        };
-
-        checkbox.addEventListener('change', updateVisibility);
-        updateVisibility();
-      }
-    });
-  }
-
   setupModals() {
     document.querySelectorAll('.modal-close').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -357,14 +328,6 @@ class AdminPanel {
           if (valueSpan2) valueSpan2.textContent = color2El.value.toUpperCase();
         }
 
-        // Set gradient checkbox
-        const catName = field.key.charAt(0).toUpperCase() + field.key.slice(1);
-        const gradientCheckbox = document.getElementById(`category${catName}UseGradient`);
-        if (gradientCheckbox) {
-          gradientCheckbox.checked = cat.bgColor1 !== cat.bgColor2;
-          gradientCheckbox.dispatchEvent(new Event('change'));
-        }
-
         if (previewEl && cat.icon && cat.icon.startsWith('http')) {
           previewEl.innerHTML = `<img src="${cat.icon}" alt="Icon">`;
           previewEl.classList.add('active');
@@ -407,15 +370,12 @@ class AdminPanel {
           iconValue = await this.uploadImage(iconFile, 'category-icons');
         }
 
-        const catName = cat.key.charAt(0).toUpperCase() + cat.key.slice(1);
-        const useGradient = document.getElementById(`category${catName}UseGradient`)?.checked ?? true;
-
         categories[cat.key] = {
           name: document.getElementById(cat.nameId).value,
           icon: iconValue,
           description: document.getElementById(cat.descId).value,
           bgColor1: document.getElementById(cat.color1Id).value,
-          bgColor2: useGradient ? document.getElementById(cat.color2Id).value : document.getElementById(cat.color1Id).value
+          bgColor2: document.getElementById(cat.color2Id).value
         };
       }
 
