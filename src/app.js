@@ -114,7 +114,7 @@ class ZahngutApp {
       const address = `${addr.street}, ${addr.zip} ${addr.city}`;
       const encodedAddress = encodeURIComponent(address);
       mapContainer.innerHTML = `
-        <a href="https://www.google.com/maps/search/?api=1&query=${encodedAddress}"
+        <a href="https://www.google.com/maps?q=${encodedAddress}"
            target="_blank"
            rel="noopener noreferrer"
            class="map-link">

@@ -1,9 +1,4 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const supabaseUrl = 'https://eguojriprhquxmozbqxl.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVndW9qcmlwcmhxdXhtb3picXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODE4NTMsImV4cCI6MjA3NTA1Nzg1M30.h5k5NuC_2t03RQS2UN1jlqKKIprSRDyw2QfpWI7jlgE';
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from '../src/supabaseClient.js';
 
 class AdminPanel {
   constructor() {

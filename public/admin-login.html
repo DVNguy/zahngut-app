@@ -263,12 +263,7 @@
   </div>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-    const supabaseUrl = 'VITE_URL_PLACEHOLDER';
-    const supabaseAnonKey = 'VITE_KEY_PLACEHOLDER';
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    import { supabase } from '../src/supabaseClient.js';
 
     const form = document.getElementById('loginForm');
     const submitBtn = document.getElementById('submitBtn');
@@ -280,7 +275,6 @@
 
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const remember = document.getElementById('remember').checked;
 
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<div class="loading"><div class="spinner"></div> Anmelden...</div>';
@@ -295,9 +289,6 @@
         if (error) throw error;
 
         if (data.session) {
-          if (remember) {
-            localStorage.setItem('zahngut_remember', 'true');
-          }
           window.location.href = '/admin-panel.html';
         }
       } catch (error) {
@@ -320,7 +311,7 @@
 
       try {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/admin-login.html'
+          redirectTo: window.location.origin
         });
 
         if (error) throw error;
@@ -340,14 +331,6 @@
     }
 
     checkSession();
-
-    const script = document.createElement('script');
-    script.textContent = `
-      const urlPlaceholder = document.querySelector('script[type="module"]').textContent;
-      const newScript = urlPlaceholder
-        .replace('VITE_URL_PLACEHOLDER', '${window.location.protocol}//' + window.location.hostname.includes('localhost') ? 'https://0ec90b57d6e95fcbda19832f.supabase.co' : document.querySelector('meta[name="supabase-url"]')?.content || '')
-        .replace('VITE_KEY_PLACEHOLDER', window.location.hostname.includes('localhost') ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJib2x0IiwicmVmIjoiMGVjOTBiNTdkNmU5NWZjYmRhMTk4MzJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4ODE1NzQsImV4cCI6MTc1ODg4MTU3NH0.9I8-U0x86Ak8t2DGaIk0HfvTSLsAyzdnz-Nw00mMkKw' : document.querySelector('meta[name="supabase-key"]')?.content || '');
-    `;
   </script>
 </body>
 </html>
