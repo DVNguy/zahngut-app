@@ -94,6 +94,8 @@ class AdminPanel {
 
     this.setupImagePreviews();
     this.setupColorPreviews();
+    this.setupCopyColorButtons();
+    this.setupGradientToggles();
   }
 
   setupImagePreviews() {
@@ -157,9 +159,13 @@ class AdminPanel {
         const color2 = color2Input?.value || color1;
         const iconValue = iconInput?.value || '🦷';
 
-        const background = color1 === color2
-          ? color1
-          : `linear-gradient(135deg, ${color1}, ${color2})`;
+        // Check if gradient is enabled
+        const gradientCheckbox = document.getElementById(`category${cat.key}UseGradient`);
+        const useGradient = gradientCheckbox ? gradientCheckbox.checked : true;
+
+        const background = useGradient && color1 !== color2
+          ? `linear-gradient(135deg, ${color1}, ${color2})`
+          : color1;
 
         preview.style.background = background;
 
@@ -199,6 +205,73 @@ class AdminPanel {
       });
 
       updatePreview();
+    });
+  }
+
+  setupCopyColorButtons() {
+    let copiedColor = null;
+
+    document.querySelectorAll('.copy-color-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const colorId = btn.getAttribute('data-color-id');
+        const colorInput = document.getElementById(colorId);
+
+        if (copiedColor === null) {
+          // Kopier-Modus
+          copiedColor = colorInput.value;
+          btn.textContent = '✓';
+          btn.style.background = '#10B981';
+          btn.title = 'Farbe einfügen';
+
+          // Zeige alle anderen Buttons als "einfügen"
+          document.querySelectorAll('.copy-color-btn').forEach(otherBtn => {
+            if (otherBtn !== btn) {
+              otherBtn.textContent = '📋';
+              otherBtn.style.opacity = '1';
+            }
+          });
+        } else {
+          // Einfüge-Modus
+          colorInput.value = copiedColor;
+
+          // Trigger input event to update preview and color value
+          colorInput.dispatchEvent(new Event('input'));
+
+          // Reset alle Buttons
+          document.querySelectorAll('.copy-color-btn').forEach(allBtn => {
+            allBtn.textContent = '📋';
+            allBtn.style.background = '#0891b2';
+            allBtn.style.opacity = '1';
+            allBtn.title = 'Farbe kopieren';
+          });
+
+          copiedColor = null;
+        }
+      });
+    });
+  }
+
+  setupGradientToggles() {
+    const categories = ['Behandlungen', 'Videos', 'Aktuelles', 'Nachsorge'];
+
+    categories.forEach(cat => {
+      const checkbox = document.getElementById(`category${cat}UseGradient`);
+      const wrapper = document.getElementById(`category${cat}Color2Wrapper`);
+
+      if (checkbox && wrapper) {
+        const updateVisibility = () => {
+          wrapper.style.display = checkbox.checked ? 'flex' : 'none';
+
+          // Trigger preview update
+          const color1Input = document.getElementById(`category${cat}BgColor1`);
+          if (color1Input) {
+            color1Input.dispatchEvent(new Event('input'));
+          }
+        };
+
+        checkbox.addEventListener('change', updateVisibility);
+        updateVisibility();
+      }
     });
   }
 
@@ -269,8 +342,28 @@ class AdminPanel {
         if (nameEl) nameEl.value = cat.name || '';
         if (iconEl) iconEl.value = cat.icon || '';
         if (descEl) descEl.value = cat.description || '';
-        if (color1El) color1El.value = cat.bgColor1 || '#4F46E5';
-        if (color2El) color2El.value = cat.bgColor2 || cat.bgColor1 || '#7C3AED';
+        if (color1El) {
+          color1El.value = cat.bgColor1 || '#4F46E5';
+          // Update color value display
+          const wrapper1 = color1El.closest('.color-input-wrapper');
+          const valueSpan1 = wrapper1?.querySelector('.color-value');
+          if (valueSpan1) valueSpan1.textContent = color1El.value.toUpperCase();
+        }
+        if (color2El) {
+          color2El.value = cat.bgColor2 || cat.bgColor1 || '#7C3AED';
+          // Update color value display
+          const wrapper2 = color2El.closest('.color-input-wrapper');
+          const valueSpan2 = wrapper2?.querySelector('.color-value');
+          if (valueSpan2) valueSpan2.textContent = color2El.value.toUpperCase();
+        }
+
+        // Set gradient checkbox
+        const catName = field.key.charAt(0).toUpperCase() + field.key.slice(1);
+        const gradientCheckbox = document.getElementById(`category${catName}UseGradient`);
+        if (gradientCheckbox) {
+          gradientCheckbox.checked = cat.bgColor1 !== cat.bgColor2;
+          gradientCheckbox.dispatchEvent(new Event('change'));
+        }
 
         if (previewEl && cat.icon && cat.icon.startsWith('http')) {
           previewEl.innerHTML = `<img src="${cat.icon}" alt="Icon">`;
@@ -314,12 +407,15 @@ class AdminPanel {
           iconValue = await this.uploadImage(iconFile, 'category-icons');
         }
 
+        const catName = cat.key.charAt(0).toUpperCase() + cat.key.slice(1);
+        const useGradient = document.getElementById(`category${catName}UseGradient`)?.checked ?? true;
+
         categories[cat.key] = {
           name: document.getElementById(cat.nameId).value,
           icon: iconValue,
           description: document.getElementById(cat.descId).value,
           bgColor1: document.getElementById(cat.color1Id).value,
-          bgColor2: document.getElementById(cat.color2Id).value
+          bgColor2: useGradient ? document.getElementById(cat.color2Id).value : document.getElementById(cat.color1Id).value
         };
       }
 
