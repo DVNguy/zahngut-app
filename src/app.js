@@ -247,8 +247,11 @@ class ZahngutApp {
     if (!container) return;
 
     container.innerHTML = aftercareList.map((aftercare, index) => {
-      const phasen = aftercare.phasen || [];
-      const warnsignale = aftercare.warnsignale || aftercare.warnung || [];
+      const phasen = Array.isArray(aftercare.phasen) ? aftercare.phasen : [];
+      let warnsignale = aftercare.warnsignale || aftercare.warnung || [];
+      if (!Array.isArray(warnsignale)) {
+        warnsignale = typeof warnsignale === 'string' ? [warnsignale] : [];
+      }
 
       return `
         <div class="aftercare-card" data-index="${index}">
@@ -265,18 +268,21 @@ class ZahngutApp {
           <div class="aftercare-content">
             <div class="aftercare-description">${aftercare.kurzbeschreibung}</div>
             <div class="timeline">
-              ${Array.isArray(phasen) ? phasen.map(phase => `
-                <div class="phase">
-                  <div class="phase-marker"></div>
-                  <div class="phase-header">
-                    <span class="phase-title">${phase.title}</span>
-                    <span class="phase-time">${phase.time}</span>
+              ${Array.isArray(phasen) ? phasen.map(phase => {
+                const items = Array.isArray(phase.items) ? phase.items : [];
+                return `
+                  <div class="phase">
+                    <div class="phase-marker"></div>
+                    <div class="phase-header">
+                      <span class="phase-title">${phase.title || ''}</span>
+                      <span class="phase-time">${phase.time || ''}</span>
+                    </div>
+                    <ul class="phase-items">
+                      ${items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
                   </div>
-                  <ul class="phase-items">
-                    ${phase.items.map(item => `<li>${item}</li>`).join('')}
-                  </ul>
-                </div>
-              `).join('') : ''}
+                `;
+              }).join('') : ''}
             </div>
             ${warnsignale && warnsignale.length > 0 ? `
               <div class="warning-symptoms">
