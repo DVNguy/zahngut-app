@@ -369,10 +369,10 @@ h2 {
 .form-actions .btn-primary,
 .modal-actions .btn-secondary,
 .modal-actions .btn-primary {
-  padding: 10px 20px;
+  padding: 8px 16px;
   flex: none;
-  width: fit-content;
-  min-width: 100px;
+  width: auto;
+  font-size: 14px;
 }
 
 .hours-day {
