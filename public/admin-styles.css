@@ -256,6 +256,7 @@ h2 {
   background: linear-gradient(135deg, #F0F9FF, #E0F2FE);
   border-radius: 10px;
   flex-shrink: 0;
+  padding: 6px;
 }
 
 .item-details {
