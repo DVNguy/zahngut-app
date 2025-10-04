@@ -1,4 +1,16 @@
-import { supabase } from '../src/supabaseClient.js';
+import { db } from '../src/supabaseClient.js';
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  where
+} from 'firebase/firestore';
 
 class AdminPanel {
   constructor() {
@@ -8,19 +20,10 @@ class AdminPanel {
   }
 
   async init() {
-    await this.checkAuth();
     this.setupNavigation();
     this.setupForms();
     this.setupModals();
     await this.loadAllData();
-  }
-
-  async checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      window.location.href = '/admin-login.html';
-      return;
-    }
   }
 
   setupNavigation() {
@@ -37,11 +40,6 @@ class AdminPanel {
         const tabId = btn.dataset.tab + '-tab';
         document.getElementById(tabId)?.classList.add('active');
       });
-    });
-
-    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = '/admin-login.html';
     });
 
     document.getElementById('previewBtn')?.addEventListener('click', () => {
@@ -83,20 +81,27 @@ class AdminPanel {
   }
 
   async loadPraxisInfo() {
-    const { data } = await supabase.from('praxis_info').select('*').maybeSingle();
-    if (data) {
-      document.getElementById('praxisName').value = data.name || '';
-      document.getElementById('praxisSlogan').value = data.slogan || '';
-      document.getElementById('praxisTelefon').value = data.telefon || '';
-      document.getElementById('praxisNotdienst').value = data.notdienst || '';
-      document.getElementById('praxisEmail').value = data.email || '';
-      document.getElementById('praxisDoctolib').value = data.doctolib || '';
+    try {
+      const docRef = doc(db, 'praxis_info', 'main');
+      const docSnap = await getDoc(docRef);
 
-      if (data.address) {
-        document.getElementById('praxisStreet').value = data.address.street || '';
-        document.getElementById('praxisZip').value = data.address.zip || '';
-        document.getElementById('praxisCity').value = data.address.city || '';
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById('praxisName').value = data.name || '';
+        document.getElementById('praxisSlogan').value = data.slogan || '';
+        document.getElementById('praxisTelefon').value = data.telefon || '';
+        document.getElementById('praxisNotdienst').value = data.notdienst || '';
+        document.getElementById('praxisEmail').value = data.email || '';
+        document.getElementById('praxisDoctolib').value = data.doctolib || '';
+
+        if (data.address) {
+          document.getElementById('praxisStreet').value = data.address.street || '';
+          document.getElementById('praxisZip').value = data.address.zip || '';
+          document.getElementById('praxisCity').value = data.address.city || '';
+        }
       }
+    } catch (error) {
+      console.error('Error loading praxis info:', error);
     }
   }
 
@@ -117,73 +122,91 @@ class AdminPanel {
       }
     };
 
-    const { error } = await supabase.from('praxis_info').upsert(data);
-
-    if (error) {
-      this.showNotification('Fehler beim Speichern', 'error');
-    } else {
+    try {
+      await setDoc(doc(db, 'praxis_info', 'main'), data);
       this.showNotification('Erfolgreich gespeichert', 'success');
+    } catch (error) {
+      console.error('Error saving praxis info:', error);
+      this.showNotification('Fehler beim Speichern', 'error');
     }
   }
 
   async loadOpeningHours() {
-    const { data } = await supabase.from('opening_hours').select('*').order('display_order');
-    const container = document.getElementById('hoursList');
+    try {
+      const q = query(collection(db, 'opening_hours'), orderBy('display_order'));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const container = document.getElementById('hoursList');
 
-    if (container && data) {
-      container.innerHTML = data.map(day => `
-        <div class="hours-day">
-          <label>${day.day_of_week}</label>
-          <input type="time" id="opens_${day.id}" value="${day.opens_at || ''}" ${day.is_closed ? 'disabled' : ''} />
-          <span>bis</span>
-          <input type="time" id="closes_${day.id}" value="${day.closes_at || ''}" ${day.is_closed ? 'disabled' : ''} />
-          <label>
-            <input type="checkbox" id="closed_${day.id}" ${day.is_closed ? 'checked' : ''}
-              onchange="document.getElementById('opens_${day.id}').disabled = this.checked; document.getElementById('closes_${day.id}').disabled = this.checked;" />
-            Geschlossen
-          </label>
-        </div>
-      `).join('');
+      if (container && data.length > 0) {
+        container.innerHTML = data.map(day => `
+          <div class="hours-day">
+            <label>${day.day_of_week}</label>
+            <input type="time" id="opens_${day.id}" value="${day.opens_at || ''}" ${day.is_closed ? 'disabled' : ''} />
+            <span>bis</span>
+            <input type="time" id="closes_${day.id}" value="${day.closes_at || ''}" ${day.is_closed ? 'disabled' : ''} />
+            <label>
+              <input type="checkbox" id="closed_${day.id}" ${day.is_closed ? 'checked' : ''}
+                onchange="document.getElementById('opens_${day.id}').disabled = this.checked; document.getElementById('closes_${day.id}').disabled = this.checked;" />
+              Geschlossen
+            </label>
+          </div>
+        `).join('');
+      }
+    } catch (error) {
+      console.error('Error loading opening hours:', error);
     }
   }
 
   async saveOpeningHours(e) {
     e.preventDefault();
 
-    const { data: hours } = await supabase.from('opening_hours').select('*');
+    try {
+      const q = query(collection(db, 'opening_hours'));
+      const querySnapshot = await getDocs(q);
 
-    for (const day of hours) {
-      const isClosed = document.getElementById(`closed_${day.id}`).checked;
-      const opensAt = document.getElementById(`opens_${day.id}`).value;
-      const closesAt = document.getElementById(`closes_${day.id}`).value;
+      for (const docSnapshot of querySnapshot.docs) {
+        const isClosed = document.getElementById(`closed_${docSnapshot.id}`).checked;
+        const opensAt = document.getElementById(`opens_${docSnapshot.id}`).value;
+        const closesAt = document.getElementById(`closes_${docSnapshot.id}`).value;
 
-      await supabase.from('opening_hours').update({
-        is_closed: isClosed,
-        opens_at: isClosed ? null : opensAt,
-        closes_at: isClosed ? null : closesAt
-      }).eq('id', day.id);
+        await updateDoc(doc(db, 'opening_hours', docSnapshot.id), {
+          is_closed: isClosed,
+          opens_at: isClosed ? null : opensAt,
+          closes_at: isClosed ? null : closesAt
+        });
+      }
+
+      this.showNotification('Öffnungszeiten gespeichert', 'success');
+    } catch (error) {
+      console.error('Error saving opening hours:', error);
+      this.showNotification('Fehler beim Speichern', 'error');
     }
-
-    this.showNotification('Öffnungszeiten gespeichert', 'success');
   }
 
   async loadTreatments() {
-    const { data } = await supabase.from('treatments').select('*').order('created_at');
-    const container = document.getElementById('treatmentsList');
+    try {
+      const q = query(collection(db, 'treatments'), orderBy('created_at'));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const container = document.getElementById('treatmentsList');
 
-    if (container && data) {
-      container.innerHTML = data.map(treatment => `
-        <div class="item-card">
-          <div class="item-info">
-            <h4>${treatment.icon} ${treatment.name}</h4>
-            <p>${treatment.category} • ${treatment.active ? 'Aktiv' : 'Inaktiv'}</p>
+      if (container) {
+        container.innerHTML = data.map(treatment => `
+          <div class="item-card">
+            <div class="item-info">
+              <h4>${treatment.icon} ${treatment.name}</h4>
+              <p>${treatment.category} • ${treatment.active ? 'Aktiv' : 'Inaktiv'}</p>
+            </div>
+            <div class="item-actions">
+              <button class="btn-edit" onclick="adminPanel.editTreatment('${treatment.id}')">Bearbeiten</button>
+              <button class="btn-delete" onclick="adminPanel.deleteTreatment('${treatment.id}')">Löschen</button>
+            </div>
           </div>
-          <div class="item-actions">
-            <button class="btn-edit" onclick="adminPanel.editTreatment('${treatment.id}')">Bearbeiten</button>
-            <button class="btn-delete" onclick="adminPanel.deleteTreatment('${treatment.id}')">Löschen</button>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
+      }
+    } catch (error) {
+      console.error('Error loading treatments:', error);
     }
   }
 
@@ -215,9 +238,15 @@ class AdminPanel {
   }
 
   async editTreatment(id) {
-    const { data } = await supabase.from('treatments').select('*').eq('id', id).single();
-    if (data) {
-      this.openTreatmentModal(data);
+    try {
+      const docRef = doc(db, 'treatments', id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.openTreatmentModal({ id: docSnap.id, ...docSnap.data() });
+      }
+    } catch (error) {
+      console.error('Error editing treatment:', error);
     }
   }
 
@@ -238,46 +267,54 @@ class AdminPanel {
       vorteile: vorteileText.split('\n').filter(line => line.trim()),
       dauer: document.getElementById('treatmentDauer').value,
       empfohlen: document.getElementById('treatmentEmpfohlen').value,
-      active: document.getElementById('treatmentActive').checked
+      active: document.getElementById('treatmentActive').checked,
+      created_at: new Date().toISOString()
     };
 
-    let error;
-    if (id) {
-      ({ error } = await supabase.from('treatments').update(data).eq('id', id));
-    } else {
-      ({ error } = await supabase.from('treatments').insert(data));
-    }
+    try {
+      if (id) {
+        await updateDoc(doc(db, 'treatments', id), data);
+      } else {
+        await setDoc(doc(db, 'treatments', Date.now().toString()), data);
+      }
 
-    if (error) {
-      this.showNotification('Fehler beim Speichern', 'error');
-    } else {
       this.showNotification('Behandlung gespeichert', 'success');
       document.getElementById('treatmentModal').classList.remove('active');
       await this.loadTreatments();
+    } catch (error) {
+      console.error('Error saving treatment:', error);
+      this.showNotification('Fehler beim Speichern', 'error');
     }
   }
 
   async deleteTreatment(id) {
     if (!confirm('Wirklich löschen?')) return;
 
-    const { error } = await supabase.from('treatments').delete().eq('id', id);
-
-    if (error) {
-      this.showNotification('Fehler beim Löschen', 'error');
-    } else {
+    try {
+      await deleteDoc(doc(db, 'treatments', id));
       this.showNotification('Behandlung gelöscht', 'success');
       await this.loadTreatments();
+    } catch (error) {
+      console.error('Error deleting treatment:', error);
+      this.showNotification('Fehler beim Löschen', 'error');
     }
   }
 
   async loadEmergencyInfo() {
-    const { data } = await supabase.from('emergency_info').select('*').maybeSingle();
-    if (data) {
-      document.getElementById('emergencyNumber').value = data.nummer || '';
-      document.getElementById('emergencyZeiten').value = data.zeiten || '';
-      document.getElementById('emergencyInstructions').value = Array.isArray(data.anweisungen) ? data.anweisungen.join('\n') : '';
-      document.getElementById('emergencyZahnAus').value = data.zahn_aus || '';
-      document.getElementById('emergencyZahnLocker').value = data.zahn_locker || '';
+    try {
+      const docRef = doc(db, 'emergency_info', 'main');
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById('emergencyNumber').value = data.nummer || '';
+        document.getElementById('emergencyZeiten').value = data.zeiten || '';
+        document.getElementById('emergencyInstructions').value = Array.isArray(data.anweisungen) ? data.anweisungen.join('\n') : '';
+        document.getElementById('emergencyZahnAus').value = data.zahn_aus || '';
+        document.getElementById('emergencyZahnLocker').value = data.zahn_locker || '';
+      }
+    } catch (error) {
+      console.error('Error loading emergency info:', error);
     }
   }
 
@@ -294,12 +331,12 @@ class AdminPanel {
       zahn_locker: document.getElementById('emergencyZahnLocker').value
     };
 
-    const { error } = await supabase.from('emergency_info').upsert(data);
-
-    if (error) {
-      this.showNotification('Fehler beim Speichern', 'error');
-    } else {
+    try {
+      await setDoc(doc(db, 'emergency_info', 'main'), data);
       this.showNotification('Notfall-Informationen gespeichert', 'success');
+    } catch (error) {
+      console.error('Error saving emergency info:', error);
+      this.showNotification('Fehler beim Speichern', 'error');
     }
   }
 
@@ -313,36 +350,41 @@ class AdminPanel {
     }, 3000);
   }
 
-  // News Management
   async loadNews() {
-    const { data } = await supabase
-      .from('news')
-      .select('*')
-      .order('display_order', { ascending: false })
-      .order('created_at', { ascending: false });
+    try {
+      const q = query(
+        collection(db, 'news'),
+        orderBy('display_order', 'desc'),
+        orderBy('created_at', 'desc')
+      );
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    const list = document.getElementById('newsList');
-    if (!list || !data) return;
+      const list = document.getElementById('newsList');
+      if (!list) return;
 
-    list.innerHTML = data.map(news => `
-      <div class="item-card">
-        <div class="item-header">
-          <div>
-            <h3>${news.title}</h3>
-            <p class="item-meta">
-              ${new Date(news.created_at).toLocaleDateString('de-DE')}
-              ${news.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>'}
-            </p>
+      list.innerHTML = data.map(news => `
+        <div class="item-card">
+          <div class="item-header">
+            <div>
+              <h3>${news.title}</h3>
+              <p class="item-meta">
+                ${news.created_at ? new Date(news.created_at).toLocaleDateString('de-DE') : 'N/A'}
+                ${news.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>'}
+              </p>
+            </div>
+            <div class="item-actions">
+              <button class="btn-icon" onclick="adminPanel.editNews('${news.id}')">✏️</button>
+              <button class="btn-icon" onclick="adminPanel.deleteNews('${news.id}')">🗑️</button>
+            </div>
           </div>
-          <div class="item-actions">
-            <button class="btn-icon" onclick="adminPanel.editNews('${news.id}')">✏️</button>
-            <button class="btn-icon" onclick="adminPanel.deleteNews('${news.id}')">🗑️</button>
-          </div>
+          ${news.image_url ? `<img src="${news.image_url}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 12px;">` : ''}
+          <p style="margin-top: 12px; color: #666;">${news.content.substring(0, 150)}${news.content.length > 150 ? '...' : ''}</p>
         </div>
-        ${news.image_url ? `<img src="${news.image_url}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 12px;">` : ''}
-        <p style="margin-top: 12px; color: #666;">${news.content.substring(0, 150)}${news.content.length > 150 ? '...' : ''}</p>
-      </div>
-    `).join('');
+      `).join('');
+    } catch (error) {
+      console.error('Error loading news:', error);
+    }
   }
 
   openNewsModal(news = null) {
@@ -383,24 +425,18 @@ class AdminPanel {
       video_url: document.getElementById('newsVideoUrl').value || null,
       display_order: parseInt(document.getElementById('newsDisplayOrder').value),
       published: document.getElementById('newsPublished').checked,
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString()
     };
 
     const newsId = document.getElementById('newsId').value;
 
     try {
       if (newsId) {
-        const { error } = await supabase
-          .from('news')
-          .update(newsData)
-          .eq('id', newsId);
-        if (error) throw error;
+        await updateDoc(doc(db, 'news', newsId), newsData);
         this.showNotification('Meldung aktualisiert!');
       } else {
-        const { error } = await supabase
-          .from('news')
-          .insert([newsData]);
-        if (error) throw error;
+        await setDoc(doc(db, 'news', Date.now().toString()), newsData);
         this.showNotification('Meldung erstellt!');
       }
 
@@ -413,32 +449,29 @@ class AdminPanel {
   }
 
   async editNews(id) {
-    const { data } = await supabase
-      .from('news')
-      .select('*')
-      .eq('id', id)
-      .maybeSingle();
+    try {
+      const docRef = doc(db, 'news', id);
+      const docSnap = await getDoc(docRef);
 
-    if (data) {
-      this.openNewsModal(data);
+      if (docSnap.exists()) {
+        this.openNewsModal({ id: docSnap.id, ...docSnap.data() });
+      }
+    } catch (error) {
+      console.error('Error editing news:', error);
     }
   }
 
   async deleteNews(id) {
     if (!confirm('Meldung wirklich löschen?')) return;
 
-    const { error } = await supabase
-      .from('news')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
+    try {
+      await deleteDoc(doc(db, 'news', id));
+      this.showNotification('Meldung gelöscht!');
+      await this.loadNews();
+    } catch (error) {
+      console.error('Error deleting news:', error);
       this.showNotification('Fehler beim Löschen!', 'error');
-      return;
     }
-
-    this.showNotification('Meldung gelöscht!');
-    await this.loadNews();
   }
 }
 
