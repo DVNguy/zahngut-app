@@ -655,24 +655,7 @@ h2 {
 }
 
 .copy-color-btn {
-  background: #0891b2;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.copy-color-btn:hover {
-  background: #0e7490;
-  transform: scale(1.05);
-}
-
-.copy-color-btn:active {
-  transform: scale(0.95);
+  display: none;
 }
 
 .checkbox-inline {
