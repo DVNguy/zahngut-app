@@ -265,8 +265,8 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    const supabaseUrl = 'VITE_SUPABASE_URL_PLACEHOLDER';
-    const supabaseAnonKey = 'VITE_SUPABASE_ANON_KEY_PLACEHOLDER';
+    const supabaseUrl = 'VITE_URL_PLACEHOLDER';
+    const supabaseAnonKey = 'VITE_KEY_PLACEHOLDER';
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -345,8 +345,8 @@
     script.textContent = `
       const urlPlaceholder = document.querySelector('script[type="module"]').textContent;
       const newScript = urlPlaceholder
-        .replace('VITE_SUPABASE_URL_PLACEHOLDER', '${window.location.protocol}//' + window.location.hostname.includes('localhost') ? 'https://eguojriprhquxmozbqxl.supabase.co' : document.querySelector('meta[name="supabase-url"]')?.content || '')
-        .replace('VITE_SUPABASE_ANON_KEY_PLACEHOLDER', window.location.hostname.includes('localhost') ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVndW9qcmlwcmhxdXhtb3picXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk0ODE4NTMsImV4cCI6MjA3NTA1Nzg1M30.h5k5NuC_2t03RQS2UN1jlqKKIprSRDyw2QfpWI7jlgE' : document.querySelector('meta[name="supabase-key"]')?.content || '');
+        .replace('VITE_URL_PLACEHOLDER', '${window.location.protocol}//' + window.location.hostname.includes('localhost') ? 'https://0ec90b57d6e95fcbda19832f.supabase.co' : document.querySelector('meta[name="supabase-url"]')?.content || '')
+        .replace('VITE_KEY_PLACEHOLDER', window.location.hostname.includes('localhost') ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJib2x0IiwicmVmIjoiMGVjOTBiNTdkNmU5NWZjYmRhMTk4MzJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4ODE1NzQsImV4cCI6MTc1ODg4MTU3NH0.9I8-U0x86Ak8t2DGaIk0HfvTSLsAyzdnz-Nw00mMkKw' : document.querySelector('meta[name="supabase-key"]')?.content || '');
     `;
   </script>
 </body>
