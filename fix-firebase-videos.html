@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Videos Fix - Zahngut App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .status.loading {
+      display: block;
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .status.success {
+      display: block;
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .status.error {
+      display: block;
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .progress {
+      margin-top: 10px;
+    }
+
+    .progress-item {
+      padding: 8px 0;
+      color: #666;
+    }
+
+    .progress-item.done {
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 Firebase Videos reparieren</h1>
+    <p class="subtitle" style="color: #666; margin-bottom: 30px;">
+      Dieser Fix korrigiert die Video-URLs und fügt Thumbnails hinzu.
+    </p>
+
+    <button id="fixBtn" onclick="fixVideos()">Videos jetzt reparieren</button>
+
+    <div id="status" class="status"></div>
+    <div id="progress" class="progress"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js';
+    import { getFirestore, collection, getDocs, updateDoc, doc } from 'https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCRxLd7cFEGqF7FWTj0_ZbCIpRKqSuIdXw",
+      authDomain: "zahngut-app.firebaseapp.com",
+      projectId: "zahngut-app",
+      storageBucket: "zahngut-app.firebasestorage.app",
+      messagingSenderId: "914878003893",
+      appId: "1:914878003893:web:9e56c1dbc5e48e0eb77f4e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.fixVideos = async function() {
+      const btn = document.getElementById('fixBtn');
+      const status = document.getElementById('status');
+      const progress = document.getElementById('progress');
+
+      btn.disabled = true;
+      status.className = 'status loading';
+      status.innerHTML = '<strong>⏳ Repariere Videos...</strong>';
+      progress.innerHTML = '';
+
+      function addProgress(message, done = false) {
+        const item = document.createElement('div');
+        item.className = 'progress-item' + (done ? ' done' : '');
+        item.textContent = done ? '✅ ' + message : '⏳ ' + message;
+        progress.appendChild(item);
+      }
+
+      try {
+        addProgress('Lese Videos aus Firebase...');
+        const videosSnapshot = await getDocs(collection(db, 'videos'));
+        addProgress(`${videosSnapshot.size} Videos gefunden`, true);
+
+        for (const videoDoc of videosSnapshot.docs) {
+          const videoData = videoDoc.data();
+          const videoId = videoDoc.id;
+
+          addProgress(`Repariere ${videoData.title || videoId}...`);
+
+          let url = videoData.url;
+          let thumbnail = videoData.thumbnail;
+
+          if (url && url.includes('youtube.com/watch')) {
+            const videoIdMatch = url.match(/[?&]v=([^&]+)/);
+            if (videoIdMatch) {
+              const ytId = videoIdMatch[1];
+              url = `https://www.youtube.com/embed/${ytId}`;
+              thumbnail = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+            }
+          }
+
+          if (url && url.includes('youtube.com/embed/')) {
+            const ytId = url.split('/embed/')[1].split('?')[0];
+            thumbnail = `https://img.youtube.com/vi/${ytId}/mqdefault.jpg`;
+          }
+
+          const updates = {};
+          if (url !== videoData.url) updates.url = url;
+          if (thumbnail && thumbnail !== videoData.thumbnail) updates.thumbnail = thumbnail;
+
+          if (Object.keys(updates).length > 0) {
+            await updateDoc(doc(db, 'videos', videoId), updates);
+            addProgress(`${videoData.title || videoId} aktualisiert`, true);
+          } else {
+            addProgress(`${videoData.title || videoId} war bereits OK`, true);
+          }
+        }
+
+        status.className = 'status success';
+        status.innerHTML = `
+          <strong>✅ Erfolgreich!</strong><br><br>
+          Alle Videos wurden repariert!<br><br>
+          Du kannst jetzt die App neu laden und die Videos sollten funktionieren.
+        `;
+
+      } catch (error) {
+        console.error('Fix error:', error);
+        status.className = 'status error';
+        status.innerHTML = `
+          <strong>❌ Fehler!</strong><br><br>
+          ${error.message}
+        `;
+        btn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
