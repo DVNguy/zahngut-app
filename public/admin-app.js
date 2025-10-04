@@ -276,7 +276,7 @@ class AdminPanel {
               <span class="item-icon">${iconDisplay}</span>
               <div class="item-details">
                 <h4>${treatment.name}</h4>
-                <p class="item-meta">${treatment.category}</p>`;
+                <p class="item-meta">${treatment.category}</p>
               </div>
             </div>
             <div class="item-status-actions">
@@ -285,8 +285,6 @@ class AdminPanel {
               <button class="btn-icon" onclick="adminPanel.deleteTreatment('${treatment.id}')">🗑️</button>
             </div>
           </div>
-        }
-        )
         `;
         }).join('');
       }
@@ -438,7 +436,7 @@ class AdminPanel {
   showNotification(message, type = 'success') {
     const notification = document.getElementById('notification');
     notification.textContent = message;
-    notification.className = \`notification ${type} show`;
+    notification.className = `notification ${type} show`;
 
     setTimeout(() => {
       notification.classList.remove('show');
@@ -462,8 +460,7 @@ class AdminPanel {
 
     try {
       const timestamp = Date.now();
-      const filename = \`${folder}/${timestamp}_${file.name}`;
-      }
+      const filename = `${folder}/${timestamp}_${file.name}`;
       const storageRef = ref(storage, filename);
 
       await uploadBytes(storageRef, file);
@@ -711,15 +708,15 @@ class AdminPanel {
 
     if (videoUrl.includes('youtube.com/watch?v=')) {
       const videoId = videoUrl.split('v=')[1]?.split('&')[0];
-      videoUrl = \`https://www.youtube.com/embed/${videoId}`;
+      videoUrl = `https://www.youtube.com/embed/${videoId}`;
     } else if (!videoUrl.includes('embed') && !videoUrl.includes('http')) {
-      videoUrl = \`https://www.youtube.com/embed/${videoUrl}`;
+      videoUrl = `https://www.youtube.com/embed/${videoUrl}`;
     }
 
     let thumbnail = document.getElementById('videoThumbnail').value.trim();
     if (!thumbnail && videoUrl.includes('youtube.com/embed/')) {
       const videoId = videoUrl.split('embed/')[1]?.split('?')[0];
-      thumbnail = \`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+      thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
     }
 
     let iconValue = document.getElementById('videoIcon').value;
