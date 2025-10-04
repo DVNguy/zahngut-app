@@ -354,11 +354,19 @@ h2 {
   color: #0891b2;
 }
 
-.modal-actions {
+.modal-actions,
+.form-actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
   margin-top: 20px;
+}
+
+.form-actions .btn-secondary,
+.form-actions .btn-primary {
+  padding: 10px 20px;
+  flex: 0 0 auto;
+  min-width: 120px;
 }
 
 .hours-day {
