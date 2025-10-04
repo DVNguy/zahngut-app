@@ -32,13 +32,11 @@ export const dataService = {
 
   async getTreatments() {
     try {
-      const q = query(
-        collection(db, 'treatments'),
-        where('active', '==', true),
-        orderBy('created_at', 'asc')
-      );
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'treatments'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(item => item.active === true)
+        .sort((a, b) => (a.created_at?.seconds || 0) - (b.created_at?.seconds || 0));
       return data.length > 0 ? data : mockData.treatments;
     } catch (error) {
       console.error('Error fetching treatments:', error);
@@ -48,13 +46,11 @@ export const dataService = {
 
   async getVideos() {
     try {
-      const q = query(
-        collection(db, 'videos'),
-        where('active', '==', true),
-        orderBy('created_at', 'asc')
-      );
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'videos'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(item => item.active === true)
+        .sort((a, b) => (a.created_at?.seconds || 0) - (b.created_at?.seconds || 0));
       return data.length > 0 ? data : mockData.videos;
     } catch (error) {
       console.error('Error fetching videos:', error);
@@ -64,13 +60,11 @@ export const dataService = {
 
   async getAftercare() {
     try {
-      const q = query(
-        collection(db, 'aftercare'),
-        where('active', '==', true),
-        orderBy('created_at', 'asc')
-      );
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'aftercare'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(item => item.active === true)
+        .sort((a, b) => (a.created_at?.seconds || 0) - (b.created_at?.seconds || 0));
       return data.length > 0 ? data : mockData.aftercare;
     } catch (error) {
       console.error('Error fetching aftercare:', error);
@@ -110,14 +104,16 @@ export const dataService = {
 
   async getNews() {
     try {
-      const q = query(
-        collection(db, 'news'),
-        where('published', '==', true),
-        orderBy('display_order', 'desc'),
-        orderBy('created_at', 'desc')
-      );
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'news'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(item => item.published === true)
+        .sort((a, b) => {
+          if (a.display_order !== b.display_order) {
+            return (b.display_order || 0) - (a.display_order || 0);
+          }
+          return (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0);
+        });
       return data.length > 0 ? data : mockData.news;
     } catch (error) {
       console.error('Error fetching news:', error);
