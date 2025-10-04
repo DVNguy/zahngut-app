@@ -218,12 +218,22 @@ class AdminPanel {
 
   async loadTreatments() {
     try {
-      const q = query(collection(db, 'treatments'), orderBy('created_at'));
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'treatments'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => {
+          const aDate = a.created_at?.seconds || 0;
+          const bDate = b.created_at?.seconds || 0;
+          return aDate - bDate;
+        });
       const container = document.getElementById('treatmentsList');
 
       if (container) {
+        if (data.length === 0) {
+          container.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Noch keine Behandlungen vorhanden. Klicke auf "Neue Behandlung" um eine zu erstellen.</p>';
+          return;
+        }
+
         container.innerHTML = data.map(treatment => `
           <div class="item-card">
             <div class="item-info">
@@ -529,12 +539,18 @@ class AdminPanel {
 
   async loadVideos() {
     try {
-      const q = query(collection(db, 'videos'), orderBy('display_order', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'videos'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => (b.display_order || 0) - (a.display_order || 0));
 
       const list = document.getElementById('videosList');
       if (!list) return;
+
+      if (data.length === 0) {
+        list.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Noch keine Videos vorhanden. Klicke auf "Neues Video" um eins zu erstellen.</p>';
+        return;
+      }
 
       list.innerHTML = data.map(video => `
         <div class="item-card">
@@ -666,12 +682,18 @@ class AdminPanel {
 
   async loadAftercare() {
     try {
-      const q = query(collection(db, 'aftercare'), orderBy('display_order', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'aftercare'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => (b.display_order || 0) - (a.display_order || 0));
 
       const list = document.getElementById('aftercareList');
       if (!list) return;
+
+      if (data.length === 0) {
+        list.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Noch keine Nachsorge-Infos vorhanden. Klicke auf "Neue Nachsorge" um eine zu erstellen.</p>';
+        return;
+      }
 
       list.innerHTML = data.map(aftercare => `
         <div class="item-card">
