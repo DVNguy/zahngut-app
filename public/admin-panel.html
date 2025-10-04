@@ -334,6 +334,52 @@
               </div>
             </div>
 
+            <div class="category-section">
+              <h3>Termine & Kontakt</h3>
+              <div class="category-grid">
+                <div class="form-group">
+                  <label>Kategorie-Name</label>
+                  <input type="text" id="categoryTermineName" required placeholder="z.B. Termine & Kontakt" />
+                </div>
+                <div class="form-group">
+                  <label>Icon (Emoji oder URL)</label>
+                  <input type="text" id="categoryTermineIcon" required placeholder="📅 oder Bild-URL" />
+                </div>
+                <div class="form-group">
+                  <label>Beschreibung</label>
+                  <input type="text" id="categoryTermineDesc" placeholder="Kurze Beschreibung" />
+                </div>
+                <div class="form-group">
+                  <label>Icon-Bild hochladen</label>
+                  <input type="file" id="categoryTermineIconFile" accept="image/*" class="file-input" />
+                  <div id="categoryTermineIconPreview" class="icon-preview"></div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryTermineBgColor1" value="#06B6D4" />
+                    <input type="text" class="color-hex-input" value="#06B6D4" maxlength="7" placeholder="#000000" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                    <label style="margin: 0;">Hintergrundfarbe 2</label>
+                    <label class="checkbox-inline" style="margin: 0;">
+                      <input type="checkbox" id="categoryTermineUseGradient" checked />
+                      <span>Gradient</span>
+                    </label>
+                  </div>
+                  <div class="color-input-wrapper" id="categoryTermineColor2Wrapper">
+                    <input type="color" id="categoryTermineBgColor2" value="#3B82F6" />
+                    <input type="text" class="color-hex-input" value="#3B82F6" maxlength="7" placeholder="#000000" />
+                  </div>
+                </div>
+              </div>
+              <div class="color-preview" id="categoryTermineColorPreview">
+                📅
+              </div>
+            </div>
+
             <button type="submit" class="btn-primary">Alle Kategorien speichern</button>
           </form>
         </div>

@@ -126,7 +126,8 @@ class AdminPanel {
       { fileId: 'categoryBehandlungenIconFile', previewId: 'categoryBehandlungenIconPreview' },
       { fileId: 'categoryVideosIconFile', previewId: 'categoryVideosIconPreview' },
       { fileId: 'categoryAktuellesIconFile', previewId: 'categoryAktuellesIconPreview' },
-      { fileId: 'categoryNachsorgeIconFile', previewId: 'categoryNachsorgeIconPreview' }
+      { fileId: 'categoryNachsorgeIconFile', previewId: 'categoryNachsorgeIconPreview' },
+      { fileId: 'categoryTermineIconFile', previewId: 'categoryTermineIconPreview' }
     ];
 
     previewConfigs.forEach(config => {
@@ -154,7 +155,8 @@ class AdminPanel {
       { key: 'Behandlungen', iconId: 'categoryBehandlungenIcon', iconFileId: 'categoryBehandlungenIconFile', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2', previewId: 'categoryBehandlungenColorPreview' },
       { key: 'Videos', iconId: 'categoryVideosIcon', iconFileId: 'categoryVideosIconFile', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2', previewId: 'categoryVideosColorPreview' },
       { key: 'Aktuelles', iconId: 'categoryAktuellesIcon', iconFileId: 'categoryAktuellesIconFile', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2', previewId: 'categoryAktuellesColorPreview' },
-      { key: 'Nachsorge', iconId: 'categoryNachsorgeIcon', iconFileId: 'categoryNachsorgeIconFile', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', previewId: 'categoryNachsorgeColorPreview' }
+      { key: 'Nachsorge', iconId: 'categoryNachsorgeIcon', iconFileId: 'categoryNachsorgeIconFile', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', previewId: 'categoryNachsorgeColorPreview' },
+      { key: 'Termine', iconId: 'categoryTermineIcon', iconFileId: 'categoryTermineIconFile', color1Id: 'categoryTermineBgColor1', color2Id: 'categoryTermineBgColor2', previewId: 'categoryTermineColorPreview' }
     ];
 
     categories.forEach(cat => {
@@ -305,7 +307,7 @@ class AdminPanel {
   }
 
   setupGradientToggles() {
-    const categories = ['Behandlungen', 'Videos', 'Aktuelles', 'Nachsorge'];
+    const categories = ['Behandlungen', 'Videos', 'Aktuelles', 'Nachsorge', 'Termine'];
 
     categories.forEach(cat => {
       const checkbox = document.getElementById(`category${cat}UseGradient`);
@@ -385,7 +387,8 @@ class AdminPanel {
       { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc', previewId: 'categoryBehandlungenIconPreview', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2', colorPreviewId: 'categoryBehandlungenColorPreview' },
       { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc', previewId: 'categoryVideosIconPreview', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2', colorPreviewId: 'categoryVideosColorPreview' },
       { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc', previewId: 'categoryAktuellesIconPreview', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2', colorPreviewId: 'categoryAktuellesColorPreview' },
-      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc', previewId: 'categoryNachsorgeIconPreview', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', colorPreviewId: 'categoryNachsorgeColorPreview' }
+      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc', previewId: 'categoryNachsorgeIconPreview', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', colorPreviewId: 'categoryNachsorgeColorPreview' },
+      { key: 'termine', nameId: 'categoryTermineName', iconId: 'categoryTermineIcon', descId: 'categoryTermineDesc', previewId: 'categoryTermineIconPreview', color1Id: 'categoryTermineBgColor1', color2Id: 'categoryTermineBgColor2', colorPreviewId: 'categoryTermineColorPreview' }
     ];
 
     categoryFields.forEach(field => {
@@ -454,7 +457,8 @@ class AdminPanel {
         { key: 'behandlungen', fileId: 'categoryBehandlungenIconFile', iconId: 'categoryBehandlungenIcon', nameId: 'categoryBehandlungenName', descId: 'categoryBehandlungenDesc', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2' },
         { key: 'videos', fileId: 'categoryVideosIconFile', iconId: 'categoryVideosIcon', nameId: 'categoryVideosName', descId: 'categoryVideosDesc', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2' },
         { key: 'aktuelles', fileId: 'categoryAktuellesIconFile', iconId: 'categoryAktuellesIcon', nameId: 'categoryAktuellesName', descId: 'categoryAktuellesDesc', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2' },
-        { key: 'nachsorge', fileId: 'categoryNachsorgeIconFile', iconId: 'categoryNachsorgeIcon', nameId: 'categoryNachsorgeName', descId: 'categoryNachsorgeDesc', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2' }
+        { key: 'nachsorge', fileId: 'categoryNachsorgeIconFile', iconId: 'categoryNachsorgeIcon', nameId: 'categoryNachsorgeName', descId: 'categoryNachsorgeDesc', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2' },
+        { key: 'termine', fileId: 'categoryTermineIconFile', iconId: 'categoryTermineIcon', nameId: 'categoryTermineName', descId: 'categoryTermineDesc', color1Id: 'categoryTermineBgColor1', color2Id: 'categoryTermineBgColor2' }
       ];
 
       const categories = {};
