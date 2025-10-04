@@ -415,6 +415,7 @@ class AdminPanel {
               </p>
             </div>
             <div class="item-actions">
+              ${!news.published ? `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', true)" title="Veröffentlichen">👁️</button>` : `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', false)" title="Verstecken">🙈</button>`}
               <button class="btn-icon" onclick="adminPanel.editNews('${news.id}')">✏️</button>
               <button class="btn-icon" onclick="adminPanel.deleteNews('${news.id}')">🗑️</button>
             </div>
@@ -499,6 +500,17 @@ class AdminPanel {
       }
     } catch (error) {
       console.error('Error editing news:', error);
+    }
+  }
+
+  async toggleNewsPublish(id, publish) {
+    try {
+      await updateDoc(doc(db, 'news', id), { published: publish });
+      this.showNotification(publish ? 'Meldung veröffentlicht!' : 'Meldung versteckt!');
+      await this.loadNews();
+    } catch (error) {
+      console.error('Error toggling news publish status:', error);
+      this.showNotification('Fehler beim Aktualisieren!', 'error');
     }
   }
 
