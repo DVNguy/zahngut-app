@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Öffnungszeiten bereinigen</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f8fafc;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #1e293b;
+      margin-bottom: 20px;
+    }
+    .info {
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: #475569;
+    }
+    button {
+      background: #0891b2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background: #0e7490;
+    }
+    button:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+    #status.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+    #status.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    #status.loading {
+      display: block;
+      background: #e0f2fe;
+      color: #075985;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧹 Öffnungszeiten bereinigen</h1>
+
+    <div class="info">
+      Dieses Tool entfernt doppelte Öffnungszeiten-Einträge aus der Datenbank und behält nur einen Eintrag pro Wochentag.
+    </div>
+
+    <button id="cleanupBtn" onclick="cleanupHours()">Bereinigung starten</button>
+
+    <div id="status"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getFirestore, collection, getDocs, doc, deleteDoc, setDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDLYKzS4wUTSdtDQRtLqRBHnyiu7H7Yqpo",
+      authDomain: "zahngut-app.firebaseapp.com",
+      projectId: "zahngut-app",
+      storageBucket: "zahngut-app.firebasestorage.app",
+      messagingSenderId: "1060099732357",
+      appId: "1:1060099732357:web:f04e8e1b63c4e6e09a28c0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    function showStatus(message, type = 'loading') {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = type;
+    }
+
+    window.cleanupHours = async function() {
+      const btn = document.getElementById('cleanupBtn');
+      btn.disabled = true;
+
+      try {
+        showStatus('Lade Öffnungszeiten...', 'loading');
+
+        const q = query(collection(db, 'opening_hours'));
+        const querySnapshot = await getDocs(q);
+
+        showStatus(`Gefunden: ${querySnapshot.size} Einträge`, 'loading');
+
+        // Group by day_of_week
+        const dayGroups = {};
+        querySnapshot.docs.forEach(docSnap => {
+          const data = docSnap.data();
+          const day = data.day_of_week;
+
+          if (!dayGroups[day]) {
+            dayGroups[day] = [];
+          }
+          dayGroups[day].push({ id: docSnap.id, data });
+        });
+
+        let deletedCount = 0;
+        let keptCount = 0;
+
+        // For each day, keep only one entry
+        for (const [day, entries] of Object.entries(dayGroups)) {
+          if (entries.length > 1) {
+            showStatus(`Bereinige ${day} (${entries.length} Einträge gefunden)...`, 'loading');
+
+            // Keep the first one, delete the rest
+            const toKeep = entries[0];
+
+            // Delete all entries
+            for (const entry of entries) {
+              await deleteDoc(doc(db, 'opening_hours', entry.id));
+              deletedCount++;
+            }
+
+            // Re-create with standardized ID
+            await setDoc(doc(db, 'opening_hours', day.toLowerCase()), toKeep.data);
+            keptCount++;
+          } else if (entries.length === 1) {
+            // Ensure it has the correct ID format
+            const entry = entries[0];
+            if (entry.id !== day.toLowerCase()) {
+              showStatus(`Standardisiere ${day}...`, 'loading');
+              await deleteDoc(doc(db, 'opening_hours', entry.id));
+              await setDoc(doc(db, 'opening_hours', day.toLowerCase()), entry.data);
+            }
+            keptCount++;
+          }
+        }
+
+        showStatus(
+          `✅ Bereinigung abgeschlossen!\n\n` +
+          `Gelöscht: ${deletedCount} Einträge\n` +
+          `Behalten: ${keptCount} Einträge`,
+          'success'
+        );
+
+      } catch (error) {
+        console.error('Fehler:', error);
+        showStatus('❌ Fehler: ' + error.message, 'error');
+        btn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>

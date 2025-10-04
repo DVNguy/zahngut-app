@@ -286,7 +286,7 @@
         // Import Opening Hours
         showStatus('Importiere Öffnungszeiten...', 'loading');
         for (const hour of mockData.openingHours) {
-          await setDoc(doc(collection(db, 'opening_hours')), hour);
+          await setDoc(doc(db, 'opening_hours', hour.day_of_week.toLowerCase()), hour);
         }
         results.push('✅ Öffnungszeiten (7 Einträge)');
 
