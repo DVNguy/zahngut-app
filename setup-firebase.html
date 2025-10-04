@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Setup - Zahngut App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+
+    .step {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .step-number {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    .step-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .step-content {
+      color: #666;
+      line-height: 1.6;
+      margin-left: 40px;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+
+    .status.loading {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+      display: block;
+    }
+
+    .progress {
+      margin-top: 10px;
+    }
+
+    .progress-item {
+      padding: 5px 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .progress-item.done {
+      color: #28a745;
+    }
+
+    .progress-item.done::before {
+      content: '✓ ';
+      font-weight: bold;
+    }
+
+    code {
+      background: #e9ecef;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    .warning {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      color: #856404;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Firebase Setup</h1>
+    <p class="subtitle">Automatische Datenbank-Initialisierung</p>
+
+    <div class="warning">
+      <strong>⚠️ Wichtig:</strong> Stelle sicher, dass du in der Firebase Console bereits eine Firestore-Datenbank erstellt hast!
+    </div>
+
+    <div class="step">
+      <div class="step-title">
+        <span class="step-number">1</span>
+        Firestore Datenbank erstellen
+      </div>
+      <div class="step-content">
+        Gehe zu <a href="https://console.firebase.google.com/project/zahngut-app/firestore" target="_blank">Firebase Console</a> und erstelle eine Firestore Database im Testmodus.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-title">
+        <span class="step-number">2</span>
+        Security Rules setzen
+      </div>
+      <div class="step-content">
+        Unter "Rules" folgende Regeln einfügen (erlaubt vorerst alle Zugriffe):
+        <br><br>
+        <code>allow read, write: if true;</code>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-title">
+        <span class="step-number">3</span>
+        Datenbank initialisieren
+      </div>
+      <div class="step-content">
+        Klicke auf den Button unten, um automatisch alle Collections und Beispieldaten zu erstellen.
+      </div>
+    </div>
+
+    <button id="setupBtn" onclick="setupFirebase()">
+      Datenbank jetzt initialisieren
+    </button>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getFirestore, doc, setDoc, collection } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBci-nWGvx7OdMb6BmWbS8pWBR9Leidl_Q",
+      authDomain: "zahngut-app.firebaseapp.com",
+      databaseURL: "https://zahngut-app-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "zahngut-app",
+      storageBucket: "zahngut-app.firebasestorage.app",
+      messagingSenderId: "1022498780184",
+      appId: "1:1022498780184:web:922e819956feb594037f6d"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.setupFirebase = async function() {
+      const btn = document.getElementById('setupBtn');
+      const status = document.getElementById('status');
+
+      btn.disabled = true;
+      status.className = 'status loading';
+      status.innerHTML = '<strong>Initialisierung läuft...</strong><div class="progress" id="progress"></div>';
+
+      const progress = document.getElementById('progress');
+
+      function addProgress(text, done = false) {
+        const item = document.createElement('div');
+        item.className = 'progress-item' + (done ? ' done' : '');
+        item.textContent = text;
+        progress.appendChild(item);
+        if (done) {
+          setTimeout(() => item.classList.add('done'), 100);
+        }
+      }
+
+      try {
+        // Praxis Info
+        addProgress('Erstelle Praxis-Informationen...');
+        await setDoc(doc(db, 'praxis_info', 'main'), {
+          name: "Zahnarztpraxis Dr. Mustermann",
+          slogan: "Ihr Lächeln ist unsere Leidenschaft",
+          telefon: "+49 123 456789",
+          notdienst: "+49 123 456700",
+          email: "info@zahnarzt-praxis.de",
+          doctolib: "https://www.doctolib.de/zahnarzt/musterstadt/dr-mustermann",
+          address: {
+            street: "Musterstraße 123",
+            zip: "12345",
+            city: "Musterstadt"
+          }
+        });
+        addProgress('Praxis-Informationen erstellt', true);
+
+        // Opening Hours
+        addProgress('Erstelle Öffnungszeiten...');
+        const days = [
+          { day_of_week: 'Montag', display_order: 1, opens_at: '08:00', closes_at: '18:00', is_closed: false },
+          { day_of_week: 'Dienstag', display_order: 2, opens_at: '08:00', closes_at: '18:00', is_closed: false },
+          { day_of_week: 'Mittwoch', display_order: 3, opens_at: '08:00', closes_at: '18:00', is_closed: false },
+          { day_of_week: 'Donnerstag', display_order: 4, opens_at: '08:00', closes_at: '18:00', is_closed: false },
+          { day_of_week: 'Freitag', display_order: 5, opens_at: '08:00', closes_at: '16:00', is_closed: false },
+          { day_of_week: 'Samstag', display_order: 6, opens_at: null, closes_at: null, is_closed: true },
+          { day_of_week: 'Sonntag', display_order: 7, opens_at: null, closes_at: null, is_closed: true }
+        ];
+
+        for (const day of days) {
+          await setDoc(doc(db, 'opening_hours', day.day_of_week.toLowerCase()), day);
+        }
+        addProgress('Öffnungszeiten erstellt', true);
+
+        // Emergency Info
+        addProgress('Erstelle Notfall-Informationen...');
+        await setDoc(doc(db, 'emergency_info', 'main'), {
+          nummer: "+49 123 456700",
+          zeiten: "24/7 Notdienst verfügbar",
+          anweisungen: [
+            "Rufen Sie sofort an",
+            "Bewahren Sie Ruhe",
+            "Folgen Sie den Anweisungen am Telefon"
+          ],
+          zahn_aus: "Zahn in kalter Milch aufbewahren und sofort kommen",
+          zahn_locker: "Nicht berühren und schnellstmöglich vorbeikommen"
+        });
+        addProgress('Notfall-Informationen erstellt', true);
+
+        // Design Settings
+        addProgress('Erstelle Design-Einstellungen...');
+        await setDoc(doc(db, 'design_settings', 'main'), {
+          primary_color: "#2563eb",
+          secondary_color: "#7c3aed",
+          background_color: "#ffffff",
+          text_color: "#1f2937"
+        });
+        addProgress('Design-Einstellungen erstellt', true);
+
+        // Sample Treatments
+        addProgress('Erstelle Beispiel-Behandlungen...');
+        const treatments = [
+          {
+            name: "Professionelle Zahnreinigung",
+            category: "Prophylaxe",
+            icon: "🦷",
+            untertitel: "Für gesunde und saubere Zähne",
+            was: "Eine gründliche professionelle Reinigung Ihrer Zähne",
+            ablauf: ["Untersuchung", "Entfernung von Zahnstein", "Politur", "Fluoridierung"],
+            vorteile: ["Kariesvorbeugung", "Frischer Atem", "Gesundes Zahnfleisch"],
+            dauer: "45-60 Minuten",
+            empfohlen: "2x jährlich",
+            active: true,
+            created_at: new Date().toISOString()
+          },
+          {
+            name: "Bleaching",
+            category: "Ästhetik",
+            icon: "✨",
+            untertitel: "Für ein strahlend weißes Lächeln",
+            was: "Professionelle Zahnaufhellung für hellere Zähne",
+            ablauf: ["Beratung", "Farbbestimmung", "Schutz des Zahnfleisches", "Aufhellung"],
+            vorteile: ["Weißere Zähne", "Natürliches Ergebnis", "Schmerzfrei"],
+            dauer: "60-90 Minuten",
+            empfohlen: "Nach Bedarf",
+            active: true,
+            created_at: new Date().toISOString()
+          }
+        ];
+
+        for (let i = 0; i < treatments.length; i++) {
+          await setDoc(doc(db, 'treatments', `treatment_${i + 1}`), treatments[i]);
+        }
+        addProgress('Beispiel-Behandlungen erstellt', true);
+
+        // Sample News
+        addProgress('Erstelle Beispiel-News...');
+        await setDoc(doc(db, 'news', 'news_1'), {
+          title: "Willkommen in unserer neuen Praxis-App!",
+          content: "Wir freuen uns, Ihnen unsere neue App vorstellen zu können. Hier finden Sie alle wichtigen Informationen zu unserer Praxis, Behandlungen und können direkt Termine buchen.",
+          image_url: null,
+          video_url: null,
+          display_order: 1,
+          published: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+        addProgress('Beispiel-News erstellt', true);
+
+        // Success!
+        status.className = 'status success';
+        status.innerHTML = `
+          <strong>✅ Erfolgreich!</strong><br><br>
+          Deine Firebase-Datenbank wurde erfolgreich initialisiert!<br><br>
+          <strong>Nächste Schritte:</strong><br>
+          1. Gehe zum <a href="/admin-panel.html">Admin Panel</a> um Daten anzupassen<br>
+          2. Oder öffne die <a href="/">App</a> um das Ergebnis zu sehen<br>
+          3. Deploy zu Vercel oder Netlify
+        `;
+
+      } catch (error) {
+        console.error('Setup error:', error);
+        status.className = 'status error';
+        status.innerHTML = `
+          <strong>❌ Fehler!</strong><br><br>
+          ${error.message}<br><br>
+          <strong>Mögliche Lösungen:</strong><br>
+          • Stelle sicher, dass die Firestore-Datenbank in Firebase Console erstellt wurde<br>
+          • Überprüfe die Security Rules (allow read, write: if true;)<br>
+          • Versuche es erneut
+        `;
+        btn.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
