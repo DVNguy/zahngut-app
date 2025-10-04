@@ -77,7 +77,8 @@ class ZahngutApp {
       { key: 'behandlungen', titleId: 'treatmentsTitle', iconId: 'treatmentsIcon', descId: 'treatmentsDesc' },
       { key: 'videos', titleId: 'videosTitle', iconId: 'videosIcon', descId: 'videosDesc' },
       { key: 'aktuelles', titleId: 'aktuellesTitle', iconId: 'aktuellesIcon', descId: 'aktuellesDesc' },
-      { key: 'nachsorge', titleId: 'nachsorgeTitle', iconId: 'nachsorgeIcon', descId: 'nachsorgeDesc' }
+      { key: 'nachsorge', titleId: 'nachsorgeTitle', iconId: 'nachsorgeIcon', descId: 'nachsorgeDesc' },
+      { key: 'termine', titleId: 'appointmentsTitle', iconId: 'appointmentsIcon', descId: 'appointmentsDesc' }
     ];
 
     categoryMappings.forEach(mapping => {

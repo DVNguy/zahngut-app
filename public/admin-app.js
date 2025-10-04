@@ -358,12 +358,19 @@ class AdminPanel {
 
       if (docSnap.exists()) {
         this.categories = docSnap.data();
+
+        // Add termine category if it doesn't exist
+        if (!this.categories.termine) {
+          this.categories.termine = { name: 'Termine & Kontakt', icon: '📅', description: 'Öffnungszeiten und Buchung', bgColor1: '#06B6D4', bgColor2: '#3B82F6' };
+          await setDoc(doc(db, 'app_config', 'categories'), this.categories);
+        }
       } else {
         this.categories = {
           behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen', bgColor1: '#4F46E5', bgColor2: '#7C3AED' },
           videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen', bgColor1: '#EC4899', bgColor2: '#F43F5E' },
           aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis', bgColor1: '#10B981', bgColor2: '#14B8A6' },
-          nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen', bgColor1: '#F59E0B', bgColor2: '#EF4444' }
+          nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen', bgColor1: '#F59E0B', bgColor2: '#EF4444' },
+          termine: { name: 'Termine & Kontakt', icon: '📅', description: 'Öffnungszeiten und Buchung', bgColor1: '#06B6D4', bgColor2: '#3B82F6' }
         };
         await setDoc(doc(db, 'app_config', 'categories'), this.categories);
       }
