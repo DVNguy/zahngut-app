@@ -717,14 +717,31 @@ class AdminPanel {
       const docRef = doc(db, 'emergency_info', 'main');
       const docSnap = await getDoc(docRef);
 
+      let data;
       if (docSnap.exists()) {
-        const data = docSnap.data();
-        document.getElementById('emergencyNumber').value = data.nummer || '';
-        document.getElementById('emergencyZeiten').value = data.zeiten || '';
-        document.getElementById('emergencyInstructions').value = Array.isArray(data.anweisungen) ? data.anweisungen.join('\n') : '';
-        document.getElementById('emergencyZahnAus').value = data.zahn_aus || '';
-        document.getElementById('emergencyZahnLocker').value = data.zahn_locker || '';
+        data = docSnap.data();
+      } else {
+        // Create default emergency info if none exists
+        data = {
+          nummer: '01805 986700',
+          zeiten: 'Wochenenden und Feiertage',
+          anweisungen: [
+            'Ruhe bewahren',
+            'Wunde kühlen',
+            'Bei starken Schmerzen: Schmerzmittel',
+            'Notdienst kontaktieren'
+          ],
+          zahn_aus: 'Zahn in Zahnrettungsbox oder H-Milch aufbewahren und sofort zum Zahnarzt!',
+          zahn_locker: 'Nicht berühren! Sofort den zahnärztlichen Notdienst kontaktieren.'
+        };
+        await setDoc(docRef, data);
       }
+
+      document.getElementById('emergencyNumber').value = data.nummer || '';
+      document.getElementById('emergencyZeiten').value = data.zeiten || '';
+      document.getElementById('emergencyInstructions').value = Array.isArray(data.anweisungen) ? data.anweisungen.join('\n') : '';
+      document.getElementById('emergencyZahnAus').value = data.zahn_aus || '';
+      document.getElementById('emergencyZahnLocker').value = data.zahn_locker || '';
     } catch (error) {
       console.error('Error loading emergency info:', error);
     }
