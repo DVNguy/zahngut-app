@@ -235,14 +235,18 @@ class AdminPanel {
         }
 
         container.innerHTML = data.map(treatment => `
-          <div class="item-card">
-            <div class="item-info">
-              <h4>${treatment.icon} ${treatment.name}</h4>
-              <p>${treatment.category} • ${treatment.active ? 'Aktiv' : 'Inaktiv'}</p>
+          <div class="item-card-compact">
+            <div class="item-info-compact">
+              <span class="item-icon">${treatment.icon}</span>
+              <div class="item-details">
+                <h4>${treatment.name}</h4>
+                <p class="item-meta">${treatment.category}</p>
+              </div>
             </div>
-            <div class="item-actions">
-              <button class="btn-edit" onclick="adminPanel.editTreatment('${treatment.id}')">Bearbeiten</button>
-              <button class="btn-delete" onclick="adminPanel.deleteTreatment('${treatment.id}')">Löschen</button>
+            <div class="item-status-actions">
+              ${treatment.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>'}
+              <button class="btn-icon" onclick="adminPanel.editTreatment('${treatment.id}')">✏️</button>
+              <button class="btn-icon" onclick="adminPanel.deleteTreatment('${treatment.id}')">🗑️</button>
             </div>
           </div>
         `).join('');
@@ -415,18 +419,18 @@ class AdminPanel {
       }
 
       list.innerHTML = data.map(news => `
-        <div class="item-card">
-          <div class="item-header">
-            <div>
-              <h3>${news.title}</h3>
-              <p class="item-meta">
-                ${news.created_at ? (news.created_at.seconds ? new Date(news.created_at.seconds * 1000).toLocaleDateString('de-DE') : new Date(news.created_at).toLocaleDateString('de-DE')) : 'N/A'}
-                ${news.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>'}
-              </p>
+        <div class="item-card-compact">
+          <div class="item-info-compact">
+            <span class="item-icon">📰</span>
+            <div class="item-details">
+              <h4>${news.title}</h4>
+              <p class="item-meta">${news.created_at ? (news.created_at.seconds ? new Date(news.created_at.seconds * 1000).toLocaleDateString('de-DE') : new Date(news.created_at).toLocaleDateString('de-DE')) : 'N/A'}</p>
             </div>
-            <div class="item-actions">
-              ${!news.published ? `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', true)" title="Veröffentlichen">👁️</button>` : `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', false)" title="Verstecken">🙈</button>`}
-              <button class="btn-icon" onclick="adminPanel.editNews('${news.id}')">✏️</button>
+          </div>
+          <div class="item-status-actions">
+            ${news.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>'}
+            ${!news.published ? `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', true)" title="Veröffentlichen">👁️</button>` : `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', false)" title="Verstecken">🙈</button>`}
+            <button class="btn-icon" onclick="adminPanel.editNews('${news.id}')">✏️</button>
               <button class="btn-icon" onclick="adminPanel.deleteNews('${news.id}')">🗑️</button>
             </div>
           </div>
@@ -553,22 +557,19 @@ class AdminPanel {
       }
 
       list.innerHTML = data.map(video => `
-        <div class="item-card">
-          <div class="item-header">
-            <div>
-              <h3>${video.icon || '🎥'} ${video.title}</h3>
-              <p class="item-meta">
-                ${video.category || 'Allgemein'}
-                ${video.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>'}
-              </p>
-            </div>
-            <div class="item-actions">
-              <button class="btn-icon" onclick="adminPanel.editVideo('${video.id}')">✏️</button>
-              <button class="btn-icon" onclick="adminPanel.deleteVideo('${video.id}')">🗑️</button>
+        <div class="item-card-compact">
+          <div class="item-info-compact">
+            <span class="item-icon">${video.icon || '🎥'}</span>
+            <div class="item-details">
+              <h4>${video.title}</h4>
+              <p class="item-meta">${video.category || 'Allgemein'}</p>
             </div>
           </div>
-          ${video.thumbnail ? `<img src="${video.thumbnail}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 12px;">` : ''}
-          <p style="margin-top: 12px; color: #666;">${video.description || ''}</p>
+          <div class="item-status-actions">
+            ${video.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>'}
+            <button class="btn-icon" onclick="adminPanel.editVideo('${video.id}')">✏️</button>
+            <button class="btn-icon" onclick="adminPanel.deleteVideo('${video.id}')">🗑️</button>
+          </div>
         </div>
       `).join('');
     } catch (error) {
@@ -696,21 +697,19 @@ class AdminPanel {
       }
 
       list.innerHTML = data.map(aftercare => `
-        <div class="item-card">
-          <div class="item-header">
-            <div>
-              <h3>${aftercare.icon || '📝'} ${aftercare.behandlung}</h3>
-              <p class="item-meta">
-                ${aftercare.time || aftercare.zeitraum || ''}
-                ${aftercare.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>'}
-              </p>
-            </div>
-            <div class="item-actions">
-              <button class="btn-icon" onclick="adminPanel.editAftercare('${aftercare.id}')">✏️</button>
-              <button class="btn-icon" onclick="adminPanel.deleteAftercare('${aftercare.id}')">🗑️</button>
+        <div class="item-card-compact">
+          <div class="item-info-compact">
+            <span class="item-icon">${aftercare.icon || '📝'}</span>
+            <div class="item-details">
+              <h4>${aftercare.behandlung}</h4>
+              <p class="item-meta">${aftercare.time || aftercare.zeitraum || 'Keine Zeitangabe'}</p>
             </div>
           </div>
-          <p style="margin-top: 12px; color: #666;">${aftercare.kurzbeschreibung || ''}</p>
+          <div class="item-status-actions">
+            ${aftercare.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>'}
+            <button class="btn-icon" onclick="adminPanel.editAftercare('${aftercare.id}')">✏️</button>
+            <button class="btn-icon" onclick="adminPanel.deleteAftercare('${aftercare.id}')">🗑️</button>
+          </div>
         </div>
       `).join('');
     } catch (error) {
