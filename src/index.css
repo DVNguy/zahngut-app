@@ -505,7 +505,7 @@ p {
 
 .category-icon {
   font-size: 56px;
-  margin-bottom: 16px;
+  margin: 0 auto 16px auto;
   line-height: 1;
   display: flex;
   align-items: center;
