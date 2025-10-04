@@ -142,6 +142,14 @@ class AdminPanel {
       const iconFileInput = document.getElementById(cat.iconFileId);
       const preview = document.getElementById(cat.previewId);
 
+      const updateColorValue = (input) => {
+        const wrapper = input.closest('.color-input-wrapper');
+        const valueSpan = wrapper?.querySelector('.color-value');
+        if (valueSpan) {
+          valueSpan.textContent = input.value.toUpperCase();
+        }
+      };
+
       const updatePreview = () => {
         if (!preview) return;
 
@@ -162,8 +170,14 @@ class AdminPanel {
         }
       };
 
-      color1Input?.addEventListener('input', updatePreview);
-      color2Input?.addEventListener('input', updatePreview);
+      color1Input?.addEventListener('input', (e) => {
+        updateColorValue(e.target);
+        updatePreview();
+      });
+      color2Input?.addEventListener('input', (e) => {
+        updateColorValue(e.target);
+        updatePreview();
+      });
       iconInput?.addEventListener('input', updatePreview);
 
       iconFileInput?.addEventListener('change', (e) => {

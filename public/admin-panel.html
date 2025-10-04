@@ -141,8 +141,8 @@
 
           <form id="categoriesForm" class="admin-form">
             <div class="category-section">
-              <h3>🦷 Behandlungen</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
+              <h3>Behandlungen</h3>
+              <div class="category-grid">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryBehandlungenName" required placeholder="z.B. Behandlungen" />
@@ -150,33 +150,40 @@
                 <div class="form-group">
                   <label>Icon (Emoji oder URL)</label>
                   <input type="text" id="categoryBehandlungenIcon" required placeholder="🦷 oder Bild-URL" />
-                  <input type="file" id="categoryBehandlungenIconFile" accept="image/*" style="margin-top: 8px;" />
-                  <div id="categoryBehandlungenIconPreview" class="icon-preview"></div>
                 </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 1</label>
-                  <input type="color" id="categoryBehandlungenBgColor1" value="#4F46E5" />
-                </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 2 (für Gradient)</label>
-                  <input type="color" id="categoryBehandlungenBgColor2" value="#7C3AED" />
-                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
-                </div>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryBehandlungenDesc" placeholder="Kurze Beschreibung" />
                 </div>
+                <div class="form-group">
+                  <label>Icon-Bild hochladen</label>
+                  <input type="file" id="categoryBehandlungenIconFile" accept="image/*" class="file-input" />
+                  <div id="categoryBehandlungenIconPreview" class="icon-preview"></div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryBehandlungenBgColor1" value="#4F46E5" />
+                    <span class="color-value">#4F46E5</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (Gradient)</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryBehandlungenBgColor2" value="#7C3AED" />
+                    <span class="color-value">#7C3AED</span>
+                  </div>
+                  <small>Optional: Leer lassen für einfarbig</small>
+                </div>
               </div>
-              <div class="color-preview" id="categoryBehandlungenColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #4F46E5, #7C3AED);">
+              <div class="color-preview" id="categoryBehandlungenColorPreview">
                 🦷
               </div>
             </div>
 
             <div class="category-section">
-              <h3>🎥 Videos</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
+              <h3>Videos</h3>
+              <div class="category-grid">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryVideosName" required placeholder="z.B. Videos" />
@@ -184,33 +191,40 @@
                 <div class="form-group">
                   <label>Icon (Emoji oder URL)</label>
                   <input type="text" id="categoryVideosIcon" required placeholder="🎥 oder Bild-URL" />
-                  <input type="file" id="categoryVideosIconFile" accept="image/*" style="margin-top: 8px;" />
-                  <div id="categoryVideosIconPreview" class="icon-preview"></div>
                 </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 1</label>
-                  <input type="color" id="categoryVideosBgColor1" value="#EC4899" />
-                </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 2 (für Gradient)</label>
-                  <input type="color" id="categoryVideosBgColor2" value="#F43F5E" />
-                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
-                </div>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryVideosDesc" placeholder="Kurze Beschreibung" />
                 </div>
+                <div class="form-group">
+                  <label>Icon-Bild hochladen</label>
+                  <input type="file" id="categoryVideosIconFile" accept="image/*" class="file-input" />
+                  <div id="categoryVideosIconPreview" class="icon-preview"></div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryVideosBgColor1" value="#EC4899" />
+                    <span class="color-value">#EC4899</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (Gradient)</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryVideosBgColor2" value="#F43F5E" />
+                    <span class="color-value">#F43F5E</span>
+                  </div>
+                  <small>Optional: Leer lassen für einfarbig</small>
+                </div>
               </div>
-              <div class="color-preview" id="categoryVideosColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #EC4899, #F43F5E);">
+              <div class="color-preview" id="categoryVideosColorPreview">
                 🎥
               </div>
             </div>
 
             <div class="category-section">
-              <h3>📰 Aktuelles</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
+              <h3>Aktuelles</h3>
+              <div class="category-grid">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryAktuellesName" required placeholder="z.B. Aktuelles" />
@@ -218,33 +232,40 @@
                 <div class="form-group">
                   <label>Icon (Emoji oder URL)</label>
                   <input type="text" id="categoryAktuellesIcon" required placeholder="📰 oder Bild-URL" />
-                  <input type="file" id="categoryAktuellesIconFile" accept="image/*" style="margin-top: 8px;" />
-                  <div id="categoryAktuellesIconPreview" class="icon-preview"></div>
                 </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 1</label>
-                  <input type="color" id="categoryAktuellesBgColor1" value="#10B981" />
-                </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 2 (für Gradient)</label>
-                  <input type="color" id="categoryAktuellesBgColor2" value="#14B8A6" />
-                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
-                </div>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryAktuellesDesc" placeholder="Kurze Beschreibung" />
                 </div>
+                <div class="form-group">
+                  <label>Icon-Bild hochladen</label>
+                  <input type="file" id="categoryAktuellesIconFile" accept="image/*" class="file-input" />
+                  <div id="categoryAktuellesIconPreview" class="icon-preview"></div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryAktuellesBgColor1" value="#10B981" />
+                    <span class="color-value">#10B981</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (Gradient)</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryAktuellesBgColor2" value="#14B8A6" />
+                    <span class="color-value">#14B8A6</span>
+                  </div>
+                  <small>Optional: Leer lassen für einfarbig</small>
+                </div>
               </div>
-              <div class="color-preview" id="categoryAktuellesColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #10B981, #14B8A6);">
+              <div class="color-preview" id="categoryAktuellesColorPreview">
                 📰
               </div>
             </div>
 
             <div class="category-section">
-              <h3>📝 Nachsorge</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
+              <h3>Nachsorge</h3>
+              <div class="category-grid">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryNachsorgeName" required placeholder="z.B. Nachsorge" />
@@ -252,31 +273,38 @@
                 <div class="form-group">
                   <label>Icon (Emoji oder URL)</label>
                   <input type="text" id="categoryNachsorgeIcon" required placeholder="📝 oder Bild-URL" />
-                  <input type="file" id="categoryNachsorgeIconFile" accept="image/*" style="margin-top: 8px;" />
-                  <div id="categoryNachsorgeIconPreview" class="icon-preview"></div>
                 </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 1</label>
-                  <input type="color" id="categoryNachsorgeBgColor1" value="#F59E0B" />
-                </div>
-                <div class="form-group">
-                  <label>Hintergrundfarbe 2 (für Gradient)</label>
-                  <input type="color" id="categoryNachsorgeBgColor2" value="#EF4444" />
-                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
-                </div>
-              </div>
-              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryNachsorgeDesc" placeholder="Kurze Beschreibung" />
                 </div>
+                <div class="form-group">
+                  <label>Icon-Bild hochladen</label>
+                  <input type="file" id="categoryNachsorgeIconFile" accept="image/*" class="file-input" />
+                  <div id="categoryNachsorgeIconPreview" class="icon-preview"></div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryNachsorgeBgColor1" value="#F59E0B" />
+                    <span class="color-value">#F59E0B</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (Gradient)</label>
+                  <div class="color-input-wrapper">
+                    <input type="color" id="categoryNachsorgeBgColor2" value="#EF4444" />
+                    <span class="color-value">#EF4444</span>
+                  </div>
+                  <small>Optional: Leer lassen für einfarbig</small>
+                </div>
               </div>
-              <div class="color-preview" id="categoryNachsorgeColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #F59E0B, #EF4444);">
+              <div class="color-preview" id="categoryNachsorgeColorPreview">
                 📝
               </div>
             </div>
 
-            <button type="submit" class="btn-primary">💾 Alle Kategorien speichern</button>
+            <button type="submit" class="btn-primary">Alle Kategorien speichern</button>
           </form>
         </div>
 
