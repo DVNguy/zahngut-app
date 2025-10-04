@@ -150,6 +150,8 @@ class AdminPanel {
               // Don't clear the icon value, just disable the input visually
               if (iconGroup) iconGroup.style.opacity = '0.5';
               if (removeBtn) removeBtn.style.display = 'block';
+              // Clear the remove flag when a new file is selected
+              fileInput.removeAttribute('data-remove-image');
             };
             reader.readAsDataURL(file);
           }
@@ -163,7 +165,11 @@ class AdminPanel {
           const preview = document.getElementById(config.previewId);
           const iconGroup = document.getElementById(config.iconGroupId);
 
-          if (fileInput) fileInput.value = '';
+          if (fileInput) {
+            fileInput.value = '';
+            // Mark that the image should be removed by adding a data attribute
+            fileInput.setAttribute('data-remove-image', 'true');
+          }
           if (preview) {
             preview.innerHTML = '';
             preview.classList.remove('active');
@@ -561,14 +567,23 @@ class AdminPanel {
 
       for (const cat of categoryKeys) {
         const emojiValue = document.getElementById(cat.iconId).value;
-        const iconFile = document.getElementById(cat.fileId).files[0];
+        const fileInputEl = document.getElementById(cat.fileId);
+        const iconFile = fileInputEl?.files[0];
+        const shouldRemoveImage = fileInputEl?.getAttribute('data-remove-image') === 'true';
         let iconValue = emojiValue;
 
         // If a new file is uploaded, use that as the icon
         if (iconFile) {
           iconValue = await this.uploadImage(iconFile, 'category-icons');
+          // Clear the remove flag
+          if (fileInputEl) fileInputEl.removeAttribute('data-remove-image');
+        } else if (shouldRemoveImage) {
+          // User explicitly removed the image, use emoji only
+          iconValue = emojiValue;
+          // Clear the remove flag
+          if (fileInputEl) fileInputEl.removeAttribute('data-remove-image');
         } else {
-          // If no new file, check if we had an existing image URL
+          // If no new file and no removal, check if we had an existing image URL
           const existing = this.categories[cat.key];
           if (existing && existing.icon && existing.icon.startsWith('http')) {
             iconValue = existing.icon; // Keep the existing image URL
