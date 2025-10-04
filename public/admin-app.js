@@ -1,6 +1,7 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, deleteDoc, query, orderBy, where } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBci-nWGvx7OdMb6BmWbS8pWBR9Leidl_Q",
@@ -15,6 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 class AdminPanel {
   constructor() {
@@ -88,6 +90,35 @@ class AdminPanel {
     document.getElementById('addAftercareBtn')?.addEventListener('click', () => this.openAftercareModal());
     document.getElementById('closeNewsModal')?.addEventListener('click', () => this.closeNewsModal());
     document.getElementById('cancelNewsBtn')?.addEventListener('click', () => this.closeNewsModal());
+
+    this.setupImagePreviews();
+  }
+
+  setupImagePreviews() {
+    const previewConfigs = [
+      { fileId: 'treatmentIconFile', previewId: 'treatmentIconPreview' },
+      { fileId: 'videoIconFile', previewId: 'videoIconPreview' },
+      { fileId: 'aftercareIconFile', previewId: 'aftercareIconPreview' }
+    ];
+
+    previewConfigs.forEach(config => {
+      const fileInput = document.getElementById(config.fileId);
+      if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          const preview = document.getElementById(config.previewId);
+
+          if (file && preview) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              preview.innerHTML = `<img src="${event.target.result}" alt="Vorschau">`;
+              preview.classList.add('active');
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+    });
   }
 
   setupModals() {
@@ -234,13 +265,18 @@ class AdminPanel {
           return;
         }
 
-        container.innerHTML = data.map(treatment => `
+        container.innerHTML = data.map(treatment => {
+          const iconDisplay = treatment.icon && treatment.icon.startsWith('http')
+            ? `<img src="${treatment.icon}" style="width: 32px; height: 32px; object-fit: cover;">`
+            : treatment.icon;
+
+          return `
           <div class="item-card-compact">
             <div class="item-info-compact">
-              <span class="item-icon">${treatment.icon}</span>
+              <span class="item-icon">${iconDisplay}</span>
               <div class="item-details">
                 <h4>${treatment.name}</h4>
-                <p class="item-meta">${treatment.category}</p>
+                <p class="item-meta">${treatment.category}</p>`;
               </div>
             </div>
             <div class="item-status-actions">
@@ -249,7 +285,10 @@ class AdminPanel {
               <button class="btn-icon" onclick="adminPanel.deleteTreatment('${treatment.id}')">🗑️</button>
             </div>
           </div>
-        `).join('');
+        }
+        )
+        `;
+        }).join('');
       }
     } catch (error) {
       console.error('Error loading treatments:', error);
@@ -303,10 +342,20 @@ class AdminPanel {
     const ablaufText = document.getElementById('treatmentAblauf').value;
     const vorteileText = document.getElementById('treatmentVorteile').value;
 
+    let iconValue = document.getElementById('treatmentIcon').value;
+    const iconFile = document.getElementById('treatmentIconFile').files[0];
+
+    if (iconFile) {
+      const uploadedUrl = await this.uploadImage(iconFile, 'treatment-icons');
+      if (uploadedUrl) {
+        iconValue = uploadedUrl;
+      }
+    }
+
     const data = {
       name: document.getElementById('treatmentName').value,
       category: document.getElementById('treatmentCategory').value,
-      icon: document.getElementById('treatmentIcon').value,
+      icon: iconValue,
       untertitel: document.getElementById('treatmentUntertitel').value,
       was: document.getElementById('treatmentWas').value,
       ablauf: ablaufText.split('\n').filter(line => line.trim()),
@@ -389,11 +438,43 @@ class AdminPanel {
   showNotification(message, type = 'success') {
     const notification = document.getElementById('notification');
     notification.textContent = message;
-    notification.className = `notification ${type} show`;
+    notification.className = \`notification ${type} show`;
 
     setTimeout(() => {
       notification.classList.remove('show');
     }, 3000);
+  }
+
+  async uploadImage(file, folder = 'icons') {
+    if (!file) return null;
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      this.showNotification('Bild ist zu groß (max. 5MB)', 'error');
+      return null;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      this.showNotification('Nur JPG, PNG, WebP oder SVG erlaubt', 'error');
+      return null;
+    }
+
+    try {
+      const timestamp = Date.now();
+      const filename = \`${folder}/${timestamp}_${file.name}`;
+      }
+      const storageRef = ref(storage, filename);
+
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+
+      return url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      this.showNotification('Fehler beim Hochladen', 'error');
+      return null;
+    }
   }
 
   async loadNews() {
@@ -556,10 +637,15 @@ class AdminPanel {
         return;
       }
 
-      list.innerHTML = data.map(video => `
+      list.innerHTML = data.map(video => {
+        const iconDisplay = video.icon && video.icon.startsWith('http')
+          ? `<img src="${video.icon}" style="width: 32px; height: 32px; object-fit: cover;">`
+          : (video.icon || '🎥');
+
+        return `
         <div class="item-card-compact">
           <div class="item-info-compact">
-            <span class="item-icon">${video.icon || '🎥'}</span>
+            <span class="item-icon">${iconDisplay}</span>
             <div class="item-details">
               <h4>${video.title}</h4>
               <p class="item-meta">${video.category || 'Allgemein'}</p>
@@ -571,7 +657,8 @@ class AdminPanel {
             <button class="btn-icon" onclick="adminPanel.deleteVideo('${video.id}')">🗑️</button>
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
     } catch (error) {
       console.error('Error loading videos:', error);
     }
@@ -624,21 +711,31 @@ class AdminPanel {
 
     if (videoUrl.includes('youtube.com/watch?v=')) {
       const videoId = videoUrl.split('v=')[1]?.split('&')[0];
-      videoUrl = `https://www.youtube.com/embed/${videoId}`;
+      videoUrl = \`https://www.youtube.com/embed/${videoId}`;
     } else if (!videoUrl.includes('embed') && !videoUrl.includes('http')) {
-      videoUrl = `https://www.youtube.com/embed/${videoUrl}`;
+      videoUrl = \`https://www.youtube.com/embed/${videoUrl}`;
     }
 
     let thumbnail = document.getElementById('videoThumbnail').value.trim();
     if (!thumbnail && videoUrl.includes('youtube.com/embed/')) {
       const videoId = videoUrl.split('embed/')[1]?.split('?')[0];
-      thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+      thumbnail = \`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    }
+
+    let iconValue = document.getElementById('videoIcon').value;
+    const iconFile = document.getElementById('videoIconFile').files[0];
+
+    if (iconFile) {
+      const uploadedUrl = await this.uploadImage(iconFile, 'video-icons');
+      if (uploadedUrl) {
+        iconValue = uploadedUrl;
+      }
     }
 
     const videoData = {
       title: document.getElementById('videoTitle').value,
       category: document.getElementById('videoCategory').value,
-      icon: document.getElementById('videoIcon').value,
+      icon: iconValue,
       url: videoUrl,
       thumbnail: thumbnail,
       description: document.getElementById('videoDescription').value,
@@ -696,10 +793,15 @@ class AdminPanel {
         return;
       }
 
-      list.innerHTML = data.map(aftercare => `
+      list.innerHTML = data.map(aftercare => {
+        const iconDisplay = aftercare.icon && aftercare.icon.startsWith('http')
+          ? `<img src="${aftercare.icon}" style="width: 32px; height: 32px; object-fit: cover;">`
+          : (aftercare.icon || '📝');
+
+        return `
         <div class="item-card-compact">
           <div class="item-info-compact">
-            <span class="item-icon">${aftercare.icon || '📝'}</span>
+            <span class="item-icon">${iconDisplay}</span>
             <div class="item-details">
               <h4>${aftercare.behandlung}</h4>
               <p class="item-meta">${aftercare.time || aftercare.zeitraum || 'Keine Zeitangabe'}</p>
@@ -711,7 +813,8 @@ class AdminPanel {
             <button class="btn-icon" onclick="adminPanel.deleteAftercare('${aftercare.id}')">🗑️</button>
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
     } catch (error) {
       console.error('Error loading aftercare:', error);
     }
@@ -777,9 +880,19 @@ class AdminPanel {
       return;
     }
 
+    let iconValue = document.getElementById('aftercareIcon').value;
+    const iconFile = document.getElementById('aftercareIconFile').files[0];
+
+    if (iconFile) {
+      const uploadedUrl = await this.uploadImage(iconFile, 'aftercare-icons');
+      if (uploadedUrl) {
+        iconValue = uploadedUrl;
+      }
+    }
+
     const aftercareData = {
       behandlung: document.getElementById('aftercareName').value,
-      icon: document.getElementById('aftercareIcon').value,
+      icon: iconValue,
       time: document.getElementById('aftercareTime').value,
       zeitraum: document.getElementById('aftercareTime').value,
       kurzbeschreibung: document.getElementById('aftercareDescription').value,

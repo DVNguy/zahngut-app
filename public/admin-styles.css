@@ -527,3 +527,69 @@ h2 {
   background: #F1F5F9;
   transform: scale(1.1);
 }
+
+.icon-upload-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.icon-upload-group input[type="text"] {
+  flex: 0 0 120px;
+  min-width: 80px;
+}
+
+.file-upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.file-upload-wrapper input[type="file"] {
+  display: none;
+}
+
+.btn-file-upload {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #0891b2, #06b6d4);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-file-upload:hover {
+  background: linear-gradient(135deg, #0e7490, #0891b2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
+}
+
+.file-upload-hint {
+  font-size: 11px;
+  color: #94A3B8;
+  font-style: italic;
+}
+
+.icon-preview {
+  margin-top: 12px;
+  padding: 12px;
+  background: #F8FAFC;
+  border-radius: 8px;
+  display: none;
+}
+
+.icon-preview.active {
+  display: block;
+}
+
+.icon-preview img {
+  max-width: 64px;
+  max-height: 64px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
