@@ -1,19 +1,18 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Get config from global variable set by config.ts
-const getConfig = () => {
-  if (window.__APP_CONFIG__) {
-    return window.__APP_CONFIG__;
-  }
-  console.error('Config not loaded yet!');
-  return { supabaseUrl: '', supabaseAnonKey: '', hasValidConfig: false };
-};
+const supabaseUrl = import.meta.env.VITE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_KEY || '';
 
-const config = getConfig();
+const hasValidConfig = !!(supabaseUrl && supabaseAnonKey);
 
-// Only create Supabase client if we have valid config
-export const supabase = config.hasValidConfig
-  ? createClient(config.supabaseUrl, config.supabaseAnonKey)
+if (hasValidConfig) {
+  console.log('✅ Supabase client initialized:', supabaseUrl);
+} else {
+  console.warn('⚠️ No Supabase credentials - using mock data');
+}
+
+export const supabase = hasValidConfig
+  ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
 export const hasSupabase = !!supabase;
