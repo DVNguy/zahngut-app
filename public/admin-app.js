@@ -574,7 +574,14 @@ class AdminPanel {
 
         // If a new file is uploaded, use that as the icon
         if (iconFile) {
-          iconValue = await this.uploadImage(iconFile, 'category-icons');
+          console.log(`Uploading image for ${cat.key}:`, iconFile.name);
+          const uploadedUrl = await this.uploadImage(iconFile, 'category-icons');
+          if (uploadedUrl) {
+            console.log(`Upload successful for ${cat.key}:`, uploadedUrl);
+            iconValue = uploadedUrl;
+          } else {
+            console.error(`Upload failed for ${cat.key}, keeping emoji`);
+          }
           // Clear the remove flag
           if (fileInputEl) fileInputEl.removeAttribute('data-remove-image');
         } else if (shouldRemoveImage) {
@@ -603,8 +610,10 @@ class AdminPanel {
         };
       }
 
+      console.log('Saving categories:', categories);
       await setDoc(doc(db, 'app_config', 'categories'), categories);
       this.categories = categories;
+      console.log('Categories saved successfully');
       this.showNotification('Kategorien gespeichert', 'success');
     } catch (error) {
       console.error('Error saving categories:', error);
@@ -969,13 +978,21 @@ class AdminPanel {
       const filename = `${folder}/${timestamp}_${file.name}`;
       const storageRef = ref(storage, filename);
 
+      console.log('Uploading to:', filename);
       await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
+      console.log('Upload successful, URL:', url);
 
       return url;
     } catch (error) {
       console.error('Error uploading image:', error);
-      this.showNotification('Fehler beim Hochladen', 'error');
+      console.error('Error details:', error.code, error.message);
+
+      if (error.code === 'storage/unauthorized') {
+        this.showNotification('Keine Berechtigung für Storage. Bitte Firebase Storage Rules konfigurieren.', 'error');
+      } else {
+        this.showNotification(`Fehler beim Hochladen: ${error.message}`, 'error');
+      }
       return null;
     }
   }
