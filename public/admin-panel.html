@@ -142,7 +142,7 @@
           <form id="categoriesForm" class="admin-form">
             <div class="category-section">
               <h3>🦷 Behandlungen</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryBehandlungenName" required placeholder="z.B. Behandlungen" />
@@ -154,15 +154,29 @@
                   <div id="categoryBehandlungenIconPreview" class="icon-preview"></div>
                 </div>
                 <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <input type="color" id="categoryBehandlungenBgColor1" value="#4F46E5" />
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (für Gradient)</label>
+                  <input type="color" id="categoryBehandlungenBgColor2" value="#7C3AED" />
+                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryBehandlungenDesc" placeholder="Kurze Beschreibung" />
                 </div>
+              </div>
+              <div class="color-preview" id="categoryBehandlungenColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #4F46E5, #7C3AED);">
+                🦷
               </div>
             </div>
 
             <div class="category-section">
               <h3>🎥 Videos</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryVideosName" required placeholder="z.B. Videos" />
@@ -174,15 +188,29 @@
                   <div id="categoryVideosIconPreview" class="icon-preview"></div>
                 </div>
                 <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <input type="color" id="categoryVideosBgColor1" value="#EC4899" />
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (für Gradient)</label>
+                  <input type="color" id="categoryVideosBgColor2" value="#F43F5E" />
+                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryVideosDesc" placeholder="Kurze Beschreibung" />
                 </div>
+              </div>
+              <div class="color-preview" id="categoryVideosColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #EC4899, #F43F5E);">
+                🎥
               </div>
             </div>
 
             <div class="category-section">
               <h3>📰 Aktuelles</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryAktuellesName" required placeholder="z.B. Aktuelles" />
@@ -194,15 +222,29 @@
                   <div id="categoryAktuellesIconPreview" class="icon-preview"></div>
                 </div>
                 <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <input type="color" id="categoryAktuellesBgColor1" value="#10B981" />
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (für Gradient)</label>
+                  <input type="color" id="categoryAktuellesBgColor2" value="#14B8A6" />
+                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryAktuellesDesc" placeholder="Kurze Beschreibung" />
                 </div>
+              </div>
+              <div class="color-preview" id="categoryAktuellesColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #10B981, #14B8A6);">
+                📰
               </div>
             </div>
 
             <div class="category-section">
               <h3>📝 Nachsorge</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 2fr; gap: 12px; margin-bottom: 12px;">
                 <div class="form-group">
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryNachsorgeName" required placeholder="z.B. Nachsorge" />
@@ -214,9 +256,23 @@
                   <div id="categoryNachsorgeIconPreview" class="icon-preview"></div>
                 </div>
                 <div class="form-group">
+                  <label>Hintergrundfarbe 1</label>
+                  <input type="color" id="categoryNachsorgeBgColor1" value="#F59E0B" />
+                </div>
+                <div class="form-group">
+                  <label>Hintergrundfarbe 2 (für Gradient)</label>
+                  <input type="color" id="categoryNachsorgeBgColor2" value="#EF4444" />
+                  <small style="color: #64748B; font-size: 12px;">Leer lassen für einfarbig</small>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryNachsorgeDesc" placeholder="Kurze Beschreibung" />
                 </div>
+              </div>
+              <div class="color-preview" id="categoryNachsorgeColorPreview" style="width: 80px; height: 80px; border-radius: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: center; font-size: 32px; background: linear-gradient(135deg, #F59E0B, #EF4444);">
+                📝
               </div>
             </div>
 

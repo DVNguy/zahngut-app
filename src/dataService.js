@@ -12,18 +12,18 @@ export const dataService = {
         return docSnap.data();
       }
       return {
-        behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen' },
-        videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen' },
-        aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis' },
-        nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen' }
+        behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen', bgColor1: '#4F46E5', bgColor2: '#7C3AED' },
+        videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen', bgColor1: '#EC4899', bgColor2: '#F43F5E' },
+        aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis', bgColor1: '#10B981', bgColor2: '#14B8A6' },
+        nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen', bgColor1: '#F59E0B', bgColor2: '#EF4444' }
       };
     } catch (error) {
       console.error('Error fetching categories:', error);
       return {
-        behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen' },
-        videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen' },
-        aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis' },
-        nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen' }
+        behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen', bgColor1: '#4F46E5', bgColor2: '#7C3AED' },
+        videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen', bgColor1: '#EC4899', bgColor2: '#F43F5E' },
+        aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis', bgColor1: '#10B981', bgColor2: '#14B8A6' },
+        nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen', bgColor1: '#F59E0B', bgColor2: '#EF4444' }
       };
     }
   },

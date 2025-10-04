@@ -90,6 +90,15 @@ class ZahngutApp {
         if (titleEl) titleEl.textContent = cat.name;
 
         if (iconEl && cat.icon) {
+          const parent = iconEl.parentElement;
+
+          if (cat.bgColor1 && parent) {
+            const bg = cat.bgColor1 === cat.bgColor2 || !cat.bgColor2
+              ? cat.bgColor1
+              : `linear-gradient(135deg, ${cat.bgColor1}, ${cat.bgColor2})`;
+            parent.style.background = bg;
+          }
+
           if (cat.icon.startsWith('http')) {
             iconEl.innerHTML = `<img src="${cat.icon}" alt="${cat.name}" style="width: 100%; height: 100%; object-fit: contain;">`;
           } else {

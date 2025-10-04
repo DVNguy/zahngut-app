@@ -93,6 +93,7 @@ class AdminPanel {
     document.getElementById('cancelNewsBtn')?.addEventListener('click', () => this.closeNewsModal());
 
     this.setupImagePreviews();
+    this.setupColorPreviews();
   }
 
   setupImagePreviews() {
@@ -123,6 +124,67 @@ class AdminPanel {
           }
         });
       }
+    });
+  }
+
+  setupColorPreviews() {
+    const categories = [
+      { key: 'Behandlungen', iconId: 'categoryBehandlungenIcon', iconFileId: 'categoryBehandlungenIconFile', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2', previewId: 'categoryBehandlungenColorPreview' },
+      { key: 'Videos', iconId: 'categoryVideosIcon', iconFileId: 'categoryVideosIconFile', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2', previewId: 'categoryVideosColorPreview' },
+      { key: 'Aktuelles', iconId: 'categoryAktuellesIcon', iconFileId: 'categoryAktuellesIconFile', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2', previewId: 'categoryAktuellesColorPreview' },
+      { key: 'Nachsorge', iconId: 'categoryNachsorgeIcon', iconFileId: 'categoryNachsorgeIconFile', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', previewId: 'categoryNachsorgeColorPreview' }
+    ];
+
+    categories.forEach(cat => {
+      const color1Input = document.getElementById(cat.color1Id);
+      const color2Input = document.getElementById(cat.color2Id);
+      const iconInput = document.getElementById(cat.iconId);
+      const iconFileInput = document.getElementById(cat.iconFileId);
+      const preview = document.getElementById(cat.previewId);
+
+      const updatePreview = () => {
+        if (!preview) return;
+
+        const color1 = color1Input?.value || '#4F46E5';
+        const color2 = color2Input?.value || color1;
+        const iconValue = iconInput?.value || '🦷';
+
+        const background = color1 === color2
+          ? color1
+          : `linear-gradient(135deg, ${color1}, ${color2})`;
+
+        preview.style.background = background;
+
+        if (iconValue.startsWith('http')) {
+          preview.innerHTML = `<img src="${iconValue}" alt="Icon" style="width: 50px; height: 50px; object-fit: contain;">`;
+        } else {
+          preview.textContent = iconValue;
+        }
+      };
+
+      color1Input?.addEventListener('input', updatePreview);
+      color2Input?.addEventListener('input', updatePreview);
+      iconInput?.addEventListener('input', updatePreview);
+
+      iconFileInput?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && preview) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const color1 = color1Input?.value || '#4F46E5';
+            const color2 = color2Input?.value || color1;
+            const background = color1 === color2
+              ? color1
+              : `linear-gradient(135deg, ${color1}, ${color2})`;
+
+            preview.style.background = background;
+            preview.innerHTML = `<img src="${event.target.result}" alt="Icon" style="width: 50px; height: 50px; object-fit: contain;">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      updatePreview();
     });
   }
 
@@ -158,10 +220,10 @@ class AdminPanel {
         this.categories = docSnap.data();
       } else {
         this.categories = {
-          behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen' },
-          videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen' },
-          aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis' },
-          nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen' }
+          behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen', bgColor1: '#4F46E5', bgColor2: '#7C3AED' },
+          videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen', bgColor1: '#EC4899', bgColor2: '#F43F5E' },
+          aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis', bgColor1: '#10B981', bgColor2: '#14B8A6' },
+          nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen', bgColor1: '#F59E0B', bgColor2: '#EF4444' }
         };
         await setDoc(doc(db, 'app_config', 'categories'), this.categories);
       }
@@ -173,10 +235,10 @@ class AdminPanel {
 
   updateCategoryUI() {
     const categoryFields = [
-      { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc', previewId: 'categoryBehandlungenIconPreview' },
-      { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc', previewId: 'categoryVideosIconPreview' },
-      { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc', previewId: 'categoryAktuellesIconPreview' },
-      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc', previewId: 'categoryNachsorgeIconPreview' }
+      { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc', previewId: 'categoryBehandlungenIconPreview', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2', colorPreviewId: 'categoryBehandlungenColorPreview' },
+      { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc', previewId: 'categoryVideosIconPreview', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2', colorPreviewId: 'categoryVideosColorPreview' },
+      { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc', previewId: 'categoryAktuellesIconPreview', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2', colorPreviewId: 'categoryAktuellesColorPreview' },
+      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc', previewId: 'categoryNachsorgeIconPreview', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', colorPreviewId: 'categoryNachsorgeColorPreview' }
     ];
 
     categoryFields.forEach(field => {
@@ -186,14 +248,32 @@ class AdminPanel {
         const iconEl = document.getElementById(field.iconId);
         const descEl = document.getElementById(field.descId);
         const previewEl = document.getElementById(field.previewId);
+        const color1El = document.getElementById(field.color1Id);
+        const color2El = document.getElementById(field.color2Id);
+        const colorPreviewEl = document.getElementById(field.colorPreviewId);
 
         if (nameEl) nameEl.value = cat.name || '';
         if (iconEl) iconEl.value = cat.icon || '';
         if (descEl) descEl.value = cat.description || '';
+        if (color1El) color1El.value = cat.bgColor1 || '#4F46E5';
+        if (color2El) color2El.value = cat.bgColor2 || cat.bgColor1 || '#7C3AED';
 
         if (previewEl && cat.icon && cat.icon.startsWith('http')) {
           previewEl.innerHTML = `<img src="${cat.icon}" alt="Icon">`;
           previewEl.classList.add('active');
+        }
+
+        if (colorPreviewEl) {
+          const bg = cat.bgColor1 === cat.bgColor2 || !cat.bgColor2
+            ? cat.bgColor1
+            : `linear-gradient(135deg, ${cat.bgColor1}, ${cat.bgColor2})`;
+          colorPreviewEl.style.background = bg;
+
+          if (cat.icon && cat.icon.startsWith('http')) {
+            colorPreviewEl.innerHTML = `<img src="${cat.icon}" alt="Icon" style="width: 50px; height: 50px; object-fit: contain;">`;
+          } else {
+            colorPreviewEl.textContent = cat.icon || '🦷';
+          }
         }
       }
     });
@@ -204,10 +284,10 @@ class AdminPanel {
 
     try {
       const categoryKeys = [
-        { key: 'behandlungen', fileId: 'categoryBehandlungenIconFile', iconId: 'categoryBehandlungenIcon', nameId: 'categoryBehandlungenName', descId: 'categoryBehandlungenDesc' },
-        { key: 'videos', fileId: 'categoryVideosIconFile', iconId: 'categoryVideosIcon', nameId: 'categoryVideosName', descId: 'categoryVideosDesc' },
-        { key: 'aktuelles', fileId: 'categoryAktuellesIconFile', iconId: 'categoryAktuellesIcon', nameId: 'categoryAktuellesName', descId: 'categoryAktuellesDesc' },
-        { key: 'nachsorge', fileId: 'categoryNachsorgeIconFile', iconId: 'categoryNachsorgeIcon', nameId: 'categoryNachsorgeName', descId: 'categoryNachsorgeDesc' }
+        { key: 'behandlungen', fileId: 'categoryBehandlungenIconFile', iconId: 'categoryBehandlungenIcon', nameId: 'categoryBehandlungenName', descId: 'categoryBehandlungenDesc', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2' },
+        { key: 'videos', fileId: 'categoryVideosIconFile', iconId: 'categoryVideosIcon', nameId: 'categoryVideosName', descId: 'categoryVideosDesc', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2' },
+        { key: 'aktuelles', fileId: 'categoryAktuellesIconFile', iconId: 'categoryAktuellesIcon', nameId: 'categoryAktuellesName', descId: 'categoryAktuellesDesc', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2' },
+        { key: 'nachsorge', fileId: 'categoryNachsorgeIconFile', iconId: 'categoryNachsorgeIcon', nameId: 'categoryNachsorgeName', descId: 'categoryNachsorgeDesc', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2' }
       ];
 
       const categories = {};
@@ -223,7 +303,9 @@ class AdminPanel {
         categories[cat.key] = {
           name: document.getElementById(cat.nameId).value,
           icon: iconValue,
-          description: document.getElementById(cat.descId).value
+          description: document.getElementById(cat.descId).value,
+          bgColor1: document.getElementById(cat.color1Id).value,
+          bgColor2: document.getElementById(cat.color2Id).value
         };
       }
 
