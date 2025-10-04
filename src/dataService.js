@@ -120,7 +120,23 @@ export const dataService = {
       if (docSnap.exists()) {
         return { id: docSnap.id, ...docSnap.data() };
       }
-      return mockData.emergencyInfo;
+
+      // Create default emergency info if it doesn't exist
+      const defaultData = {
+        nummer: '01805 986700',
+        zeiten: 'Wochenenden und Feiertage',
+        anweisungen: [
+          'Ruhe bewahren',
+          'Wunde kühlen',
+          'Bei starken Schmerzen: Schmerzmittel',
+          'Notdienst kontaktieren'
+        ],
+        zahn_aus: 'Zahn in Zahnrettungsbox oder H-Milch aufbewahren und sofort zum Zahnarzt!',
+        zahn_locker: 'Nicht berühren! Sofort den zahnärztlichen Notdienst kontaktieren.'
+      };
+
+      await setDoc(docRef, defaultData);
+      return { id: 'main', ...defaultData };
     } catch (error) {
       console.error('Error fetching emergency info:', error);
       return mockData.emergencyInfo;
