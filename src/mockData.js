@@ -3,7 +3,7 @@ export const mockData = {
   praxisInfo: {
     id: '1',
     name: 'Zahnarztpraxis Zahngut Bad Wünnenberg',
-    slogan: 'ZA Duc Van Nguy & Kollegen',
+    slogan: '',
     telefon: '02957 - 1010',
     notdienst: '01805 - 986 700',
     email: 'info@dein-zahngut.de',
