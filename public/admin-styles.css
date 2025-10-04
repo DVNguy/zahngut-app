@@ -366,11 +366,13 @@ h2 {
 }
 
 .form-actions .btn-secondary,
-.form-actions .btn-primary {
-  padding: 10px 24px;
-  flex: 0 0 auto;
-  width: auto;
-  max-width: 150px;
+.form-actions .btn-primary,
+.modal-actions .btn-secondary,
+.modal-actions .btn-primary {
+  padding: 10px 20px;
+  flex: none;
+  width: fit-content;
+  min-width: 100px;
 }
 
 .hours-day {
