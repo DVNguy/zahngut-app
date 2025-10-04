@@ -1,4 +1,4 @@
-import { db } from './supabaseClient.js';
+import { db } from './firebaseConfig.js';
 import { collection, getDocs, doc, getDoc, query, where, orderBy, onSnapshot } from 'firebase/firestore';
 import { mockData, delay } from './mockData.js';
 

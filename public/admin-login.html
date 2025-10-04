@@ -263,7 +263,8 @@
   </div>
 
   <script type="module">
-    import { supabase } from '../src/supabaseClient.js';
+    import { auth } from '../src/firebaseConfig.js';
+    import { signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
 
     const form = document.getElementById('loginForm');
     const submitBtn = document.getElementById('submitBtn');
@@ -281,19 +282,23 @@
       errorMessage.classList.remove('active');
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-
-        if (error) throw error;
-
-        if (data.session) {
-          window.location.href = '/admin-panel.html';
-        }
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = '/admin-panel.html';
       } catch (error) {
         console.error('Login error:', error);
-        errorMessage.textContent = error.message || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.';
+        let message = 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.';
+
+        if (error.code === 'auth/user-not-found') {
+          message = 'Kein Benutzer mit dieser E-Mail gefunden.';
+        } else if (error.code === 'auth/wrong-password') {
+          message = 'Falsches Passwort.';
+        } else if (error.code === 'auth/invalid-email') {
+          message = 'Ungültige E-Mail-Adresse.';
+        } else if (error.code === 'auth/invalid-credential') {
+          message = 'Ungültige Anmeldedaten.';
+        }
+
+        errorMessage.textContent = message;
         errorMessage.classList.add('active');
         submitBtn.disabled = false;
         submitBtn.innerHTML = 'Anmelden';
@@ -310,12 +315,7 @@
       }
 
       try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin
-        });
-
-        if (error) throw error;
-
+        await sendPasswordResetEmail(auth, email);
         alert('Passwort-Reset-Link wurde an Ihre E-Mail-Adresse gesendet.');
       } catch (error) {
         console.error('Password reset error:', error);
@@ -323,14 +323,11 @@
       }
     });
 
-    async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
         window.location.href = '/admin-panel.html';
       }
-    }
-
-    checkSession();
+    });
   </script>
 </body>
 </html>

@@ -1,4 +1,5 @@
-import { db } from '../src/supabaseClient.js';
+import { db, auth } from '../src/firebaseConfig.js';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import {
   collection,
   getDocs,
@@ -16,14 +17,36 @@ class AdminPanel {
   constructor() {
     this.currentTreatment = null;
     this.currentNews = null;
-    this.init();
+    this.checkAuth();
+  }
+
+  checkAuth() {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.init();
+      } else {
+        window.location.href = '/admin-login.html';
+      }
+    });
   }
 
   async init() {
     this.setupNavigation();
     this.setupForms();
     this.setupModals();
+    this.setupLogout();
     await this.loadAllData();
+  }
+
+  setupLogout() {
+    document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        window.location.href = '/admin-login.html';
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    });
   }
 
   setupNavigation() {
