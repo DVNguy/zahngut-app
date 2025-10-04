@@ -10,7 +10,7 @@
       max-width: 800px;
       margin: 50px auto;
       padding: 20px;
-      background: #f5f5f5;
+      background: #f5f5f9;
     }
     .container {
       background: white;
@@ -22,6 +22,27 @@
       color: #0891b2;
       margin-bottom: 20px;
     }
+    .auth-container {
+      display: none;
+    }
+    .auth-container.active {
+      display: block;
+    }
+    .import-container {
+      display: none;
+    }
+    .import-container.active {
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
     button {
       background: #0891b2;
       color: white;
@@ -31,6 +52,7 @@
       font-size: 16px;
       cursor: pointer;
       margin: 10px 5px;
+      width: 100%;
     }
     button:hover {
       background: #0e7490;
@@ -57,41 +79,67 @@
       background: #dbeafe;
       color: #1e40af;
     }
-    pre {
-      background: #1e293b;
-      color: #e2e8f0;
-      padding: 15px;
+    .user-info {
+      background: #f0f9ff;
+      padding: 12px;
       border-radius: 8px;
-      overflow-x: auto;
-      font-size: 14px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logout-btn {
+      background: #ef4444;
+      width: auto;
+      padding: 8px 16px;
+    }
+    .logout-btn:hover {
+      background: #dc2626;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🔄 Firebase Daten Import</h1>
-    <p>Dieses Tool importiert die Mock-Daten in deine Firebase Firestore Datenbank.</p>
 
-    <button id="importBtn">Import starten</button>
+    <div id="authContainer" class="auth-container active">
+      <p>Bitte melde dich mit deinem Admin-Account an, um Daten zu importieren.</p>
+      <input type="email" id="emailInput" placeholder="E-Mail" />
+      <input type="password" id="passwordInput" placeholder="Passwort" />
+      <button id="loginBtn">Anmelden</button>
+      <div id="authStatus"></div>
+    </div>
 
-    <div id="status"></div>
+    <div id="importContainer" class="import-container">
+      <div id="userInfo" class="user-info">
+        <span id="userEmail"></span>
+        <button id="logoutBtn" class="logout-btn">Abmelden</button>
+      </div>
 
-    <div style="margin-top: 30px;">
-      <h3>Was wird importiert?</h3>
-      <ul>
-        <li>Praxis-Informationen (Name, Telefon, Adresse)</li>
-        <li>Öffnungszeiten</li>
-        <li>Behandlungen</li>
-        <li>Aufklärungsvideos</li>
-        <li>Nachsorge-Anweisungen</li>
-        <li>Notfall-Informationen</li>
-        <li>News-Posts</li>
-      </ul>
+      <p>Dieses Tool importiert die Mock-Daten in deine Firebase Firestore Datenbank.</p>
+
+      <button id="importBtn">Import starten</button>
+
+      <div id="status"></div>
+
+      <div style="margin-top: 30px;">
+        <h3>Was wird importiert?</h3>
+        <ul>
+          <li>Praxis-Informationen (Name, Telefon, Adresse)</li>
+          <li>Öffnungszeiten</li>
+          <li>Behandlungen</li>
+          <li>Aufklärungsvideos</li>
+          <li>Nachsorge-Anweisungen</li>
+          <li>Notfall-Informationen</li>
+          <li>News-Posts</li>
+        </ul>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
     import { getFirestore, collection, doc, setDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 
     const firebaseConfig = {
@@ -105,6 +153,7 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
     const mockData = {
@@ -263,15 +312,90 @@
       ]
     };
 
+    const authContainer = document.getElementById('authContainer');
+    const importContainer = document.getElementById('importContainer');
+    const authStatus = document.getElementById('authStatus');
     const statusDiv = document.getElementById('status');
     const importBtn = document.getElementById('importBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const emailInput = document.getElementById('emailInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const userEmailSpan = document.getElementById('userEmail');
+
+    function showAuthStatus(message, type = 'error') {
+      authStatus.className = `status ${type}`;
+      authStatus.innerHTML = message;
+    }
 
     function showStatus(message, type = 'loading') {
       statusDiv.className = `status ${type}`;
       statusDiv.innerHTML = message;
     }
 
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        authContainer.classList.remove('active');
+        importContainer.classList.add('active');
+        userEmailSpan.textContent = user.email;
+      } else {
+        authContainer.classList.add('active');
+        importContainer.classList.remove('active');
+      }
+    });
+
+    loginBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showAuthStatus('Bitte E-Mail und Passwort eingeben', 'error');
+        return;
+      }
+
+      loginBtn.disabled = true;
+      showAuthStatus('Anmeldung läuft...', 'loading');
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showAuthStatus('Erfolgreich angemeldet!', 'success');
+      } catch (error) {
+        console.error('Login error:', error);
+        let errorMessage = 'Anmeldung fehlgeschlagen';
+
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+          errorMessage = 'Falsche E-Mail oder Passwort';
+        } else if (error.code === 'auth/user-not-found') {
+          errorMessage = 'Benutzer nicht gefunden';
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMessage = 'Zu viele Versuche. Bitte später erneut versuchen';
+        }
+
+        showAuthStatus(errorMessage, 'error');
+        loginBtn.disabled = false;
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
+    });
+
+    passwordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loginBtn.click();
+      }
+    });
+
     async function importData() {
+      if (!auth.currentUser) {
+        showStatus('Bitte melde dich zuerst an', 'error');
+        return;
+      }
+
       importBtn.disabled = true;
       showStatus('Import wird gestartet...', 'loading');
 
