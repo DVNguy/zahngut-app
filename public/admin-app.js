@@ -147,9 +147,9 @@ class AdminPanel {
 
       const updateColorValue = (input) => {
         const wrapper = input.closest('.color-input-wrapper');
-        const valueSpan = wrapper?.querySelector('.color-value');
-        if (valueSpan) {
-          valueSpan.textContent = input.value.toUpperCase();
+        const hexInput = wrapper?.querySelector('.color-hex-input');
+        if (hexInput) {
+          hexInput.value = input.value.toUpperCase();
         }
       };
 
@@ -253,28 +253,35 @@ class AdminPanel {
   }
 
   setupColorValueCopy() {
-    // Make all color-value spans clickable to copy the color
-    document.querySelectorAll('.color-value').forEach(valueSpan => {
-      valueSpan.onclick = async () => {
-        const wrapper = valueSpan.closest('.color-input-wrapper');
-        const colorInput = wrapper?.querySelector('input[type="color"]');
+    // Sync color picker and hex input fields
+    document.querySelectorAll('.color-input-wrapper').forEach(wrapper => {
+      const colorPicker = wrapper.querySelector('input[type="color"]');
+      const hexInput = wrapper.querySelector('.color-hex-input');
 
-        if (colorInput) {
-          try {
-            await navigator.clipboard.writeText(colorInput.value.toUpperCase());
-            const originalText = valueSpan.textContent;
-            const originalColor = valueSpan.style.color;
-            valueSpan.textContent = 'Kopiert!';
-            valueSpan.style.color = '#0891b2';
-            setTimeout(() => {
-              valueSpan.textContent = originalText;
-              valueSpan.style.color = originalColor || '#475569';
-            }, 1000);
-          } catch (err) {
-            console.error('Fehler beim Kopieren:', err);
+      if (colorPicker && hexInput) {
+        // Update hex input when color picker changes
+        colorPicker.addEventListener('input', () => {
+          hexInput.value = colorPicker.value.toUpperCase();
+        });
+
+        // Update color picker when hex input changes
+        hexInput.addEventListener('input', (e) => {
+          let value = e.target.value.toUpperCase();
+
+          // Auto-add # if missing
+          if (value && !value.startsWith('#')) {
+            value = '#' + value;
+            hexInput.value = value;
           }
-        }
-      };
+
+          // Validate hex color format
+          if (/^#[0-9A-F]{6}$/i.test(value)) {
+            colorPicker.value = value;
+            // Trigger color picker's input event to update previews
+            colorPicker.dispatchEvent(new Event('input'));
+          }
+        });
+      }
     });
   }
 
@@ -371,17 +378,17 @@ class AdminPanel {
         if (descEl) descEl.value = cat.description || '';
         if (color1El) {
           color1El.value = cat.bgColor1 || '#4F46E5';
-          // Update color value display
+          // Update hex input display
           const wrapper1 = color1El.closest('.color-input-wrapper');
-          const valueSpan1 = wrapper1?.querySelector('.color-value');
-          if (valueSpan1) valueSpan1.textContent = color1El.value.toUpperCase();
+          const hexInput1 = wrapper1?.querySelector('.color-hex-input');
+          if (hexInput1) hexInput1.value = color1El.value.toUpperCase();
         }
         if (color2El) {
           color2El.value = cat.bgColor2 || cat.bgColor1 || '#7C3AED';
-          // Update color value display
+          // Update hex input display
           const wrapper2 = color2El.closest('.color-input-wrapper');
-          const valueSpan2 = wrapper2?.querySelector('.color-value');
-          if (valueSpan2) valueSpan2.textContent = color2El.value.toUpperCase();
+          const hexInput2 = wrapper2?.querySelector('.color-hex-input');
+          if (hexInput2) hexInput2.value = color2El.value.toUpperCase();
         }
 
         // Set gradient checkbox
