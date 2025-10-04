@@ -2,10 +2,10 @@
 export const mockData = {
   praxisInfo: {
     id: '1',
-    name: 'Zahngut Bad Wünnenberg',
-    slogan: 'Die Zahnarztpraxis mit Herz',
-    telefon: '02957 1010',
-    notdienst: '01805 986700',
+    name: 'Zahnarztpraxis Zahngut Bad Wünnenberg',
+    slogan: 'ZA Duc Van Nguy & Kollegen',
+    telefon: '02957 - 1010',
+    notdienst: '01805 - 986 700',
     email: 'info@dein-zahngut.de',
     doctolib: 'https://www.doctolib.de/zahnarztpraxis/bad-wuennenberg/zahngut-bad-wuennenberg',
     address: {
@@ -16,11 +16,11 @@ export const mockData = {
   },
 
   openingHours: [
-    { day_of_week: 'Montag', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 1 },
-    { day_of_week: 'Dienstag', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 2 },
-    { day_of_week: 'Mittwoch', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 3 },
-    { day_of_week: 'Donnerstag', opens_at: '08:00', closes_at: '17:00', is_closed: false, display_order: 4 },
-    { day_of_week: 'Freitag', opens_at: '08:00', closes_at: '14:00', is_closed: false, display_order: 5 },
+    { day_of_week: 'Montag', opens_at: '08:00', closes_at: '19:00', is_closed: false, display_order: 1 },
+    { day_of_week: 'Dienstag', opens_at: '08:00', closes_at: '19:00', is_closed: false, display_order: 2 },
+    { day_of_week: 'Mittwoch', opens_at: '08:00', closes_at: '19:00', is_closed: false, display_order: 3 },
+    { day_of_week: 'Donnerstag', opens_at: '08:00', closes_at: '19:00', is_closed: false, display_order: 4 },
+    { day_of_week: 'Freitag', opens_at: '08:00', closes_at: '16:00', is_closed: false, display_order: 5 },
     { day_of_week: 'Samstag', opens_at: null, closes_at: null, is_closed: true, display_order: 6 },
     { day_of_week: 'Sonntag', opens_at: null, closes_at: null, is_closed: true, display_order: 7 }
   ],
