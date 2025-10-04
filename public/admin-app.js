@@ -509,11 +509,8 @@ class AdminPanel {
             ${news.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>'}
             ${!news.published ? `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', true)" title="Veröffentlichen">👁️</button>` : `<button class="btn-icon" onclick="adminPanel.toggleNewsPublish('${news.id}', false)" title="Verstecken">🙈</button>`}
             <button class="btn-icon" onclick="adminPanel.editNews('${news.id}')">✏️</button>
-              <button class="btn-icon" onclick="adminPanel.deleteNews('${news.id}')">🗑️</button>
-            </div>
+            <button class="btn-icon" onclick="adminPanel.deleteNews('${news.id}')">🗑️</button>
           </div>
-          ${news.image_url ? `<img src="${news.image_url}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 12px;">` : ''}
-          <p style="margin-top: 12px; color: #666;">${news.content.substring(0, 150)}${news.content.length > 150 ? '...' : ''}</p>
         </div>
       `).join('');
     } catch (error) {
