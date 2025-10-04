@@ -652,6 +652,16 @@ h2 {
   color: #475569;
   font-weight: 500;
   flex: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.color-input-wrapper .color-value:hover {
+  background: #F1F5F9;
+  color: #0891b2;
 }
 
 .copy-color-btn {

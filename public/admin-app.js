@@ -96,6 +96,7 @@ class AdminPanel {
     this.setupColorPreviews();
     this.setupCopyColorButtons();
     this.setupGradientToggles();
+    this.setupColorValueCopy();
   }
 
   setupImagePreviews() {
@@ -248,6 +249,32 @@ class AdminPanel {
           copiedColor = null;
         }
       });
+    });
+  }
+
+  setupColorValueCopy() {
+    // Make all color-value spans clickable to copy the color
+    document.querySelectorAll('.color-value').forEach(valueSpan => {
+      valueSpan.onclick = async () => {
+        const wrapper = valueSpan.closest('.color-input-wrapper');
+        const colorInput = wrapper?.querySelector('input[type="color"]');
+
+        if (colorInput) {
+          try {
+            await navigator.clipboard.writeText(colorInput.value.toUpperCase());
+            const originalText = valueSpan.textContent;
+            const originalColor = valueSpan.style.color;
+            valueSpan.textContent = 'Kopiert!';
+            valueSpan.style.color = '#0891b2';
+            setTimeout(() => {
+              valueSpan.textContent = originalText;
+              valueSpan.style.color = originalColor || '#475569';
+            }, 1000);
+          } catch (err) {
+            console.error('Fehler beim Kopieren:', err);
+          }
+        }
+      };
     });
   }
 
