@@ -116,6 +116,7 @@ class AdminPanel {
     this.setupCopyColorButtons();
     this.setupGradientToggles();
     this.setupColorValueCopy();
+    this.setupEmojiPickers();
   }
 
   setupImagePreviews() {
@@ -350,6 +351,56 @@ class AdminPanel {
 
         checkbox.addEventListener('change', updateVisibility);
         updateVisibility();
+      }
+    });
+  }
+
+  setupEmojiPickers() {
+    const categories = ['Behandlungen', 'Videos', 'Aktuelles', 'Nachsorge', 'Termine'];
+
+    categories.forEach(cat => {
+      const iconInput = document.getElementById(`category${cat}Icon`);
+      const emojiPicker = document.getElementById(`category${cat}EmojiPicker`);
+
+      if (iconInput && emojiPicker) {
+        // Toggle emoji picker on input click
+        iconInput.addEventListener('click', (e) => {
+          e.stopPropagation();
+
+          // Close all other emoji pickers
+          document.querySelectorAll('.emoji-picker').forEach(picker => {
+            if (picker !== emojiPicker) {
+              picker.classList.remove('active');
+            }
+          });
+
+          emojiPicker.classList.toggle('active');
+        });
+
+        // Handle emoji selection
+        emojiPicker.querySelectorAll('.emoji-option').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const emoji = btn.getAttribute('data-emoji');
+            iconInput.value = emoji;
+            emojiPicker.classList.remove('active');
+
+            // Trigger color preview update
+            const color1Input = document.getElementById(`category${cat}BgColor1`);
+            if (color1Input) {
+              color1Input.dispatchEvent(new Event('input'));
+            }
+          });
+        });
+      }
+    });
+
+    // Close emoji pickers when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.emoji-picker') && !e.target.closest('input[readonly]')) {
+        document.querySelectorAll('.emoji-picker').forEach(picker => {
+          picker.classList.remove('active');
+        });
       }
     });
   }
