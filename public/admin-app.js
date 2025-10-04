@@ -83,6 +83,7 @@ class AdminPanel {
     document.getElementById('newsForm')?.addEventListener('submit', (e) => this.saveNews(e));
     document.getElementById('videoForm')?.addEventListener('submit', (e) => this.saveVideo(e));
     document.getElementById('aftercareForm')?.addEventListener('submit', (e) => this.saveAftercare(e));
+    document.getElementById('categoriesForm')?.addEventListener('submit', (e) => this.saveCategories(e));
 
     document.getElementById('addTreatmentBtn')?.addEventListener('click', () => this.openTreatmentModal());
     document.getElementById('addNewsBtn')?.addEventListener('click', () => this.openNewsModal());
@@ -139,8 +140,89 @@ class AdminPanel {
       this.loadEmergencyInfo(),
       this.loadNews(),
       this.loadVideos(),
-      this.loadAftercare()
+      this.loadAftercare(),
+      this.loadCategories()
     ]);
+  }
+
+  async loadCategories() {
+    try {
+      const docRef = doc(db, 'app_config', 'categories');
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.categories = docSnap.data();
+      } else {
+        this.categories = {
+          behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen' },
+          videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen' },
+          aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis' },
+          nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen' }
+        };
+        await setDoc(doc(db, 'app_config', 'categories'), this.categories);
+      }
+      this.updateCategoryUI();
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  }
+
+  updateCategoryUI() {
+    const categoryFields = [
+      { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc' },
+      { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc' },
+      { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc' },
+      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc' }
+    ];
+
+    categoryFields.forEach(field => {
+      const cat = this.categories[field.key];
+      if (cat) {
+        const nameEl = document.getElementById(field.nameId);
+        const iconEl = document.getElementById(field.iconId);
+        const descEl = document.getElementById(field.descId);
+
+        if (nameEl) nameEl.value = cat.name || '';
+        if (iconEl) iconEl.value = cat.icon || '';
+        if (descEl) descEl.value = cat.description || '';
+      }
+    });
+  }
+
+  async saveCategories(e) {
+    e.preventDefault();
+
+    const categories = {
+      behandlungen: {
+        name: document.getElementById('categoryBehandlungenName').value,
+        icon: document.getElementById('categoryBehandlungenIcon').value,
+        description: document.getElementById('categoryBehandlungenDesc').value
+      },
+      videos: {
+        name: document.getElementById('categoryVideosName').value,
+        icon: document.getElementById('categoryVideosIcon').value,
+        description: document.getElementById('categoryVideosDesc').value
+      },
+      aktuelles: {
+        name: document.getElementById('categoryAktuellesName').value,
+        icon: document.getElementById('categoryAktuellesIcon').value,
+        description: document.getElementById('categoryAktuellesDesc').value
+      },
+      nachsorge: {
+        name: document.getElementById('categoryNachsorgeName').value,
+        icon: document.getElementById('categoryNachsorgeIcon').value,
+        description: document.getElementById('categoryNachsorgeDesc').value
+      }
+    };
+
+    try {
+      await setDoc(doc(db, 'app_config', 'categories'), categories);
+      this.categories = categories;
+      this.showNotification('Kategorien gespeichert', 'success');
+    } catch (error) {
+      console.error('Error saving categories:', error);
+      this.showNotification('Fehler beim Speichern', 'error');
+    }
   }
 
   async loadPraxisInfo() {

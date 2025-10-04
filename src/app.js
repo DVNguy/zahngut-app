@@ -7,6 +7,7 @@ class ZahngutApp {
     this.videos = [];
     this.aftercare = [];
     this.news = [];
+    this.categories = {};
     this.subscriptions = [];
     this.init();
   }
@@ -39,7 +40,8 @@ class ZahngutApp {
 
   async loadAllData() {
     try {
-      const [praxisInfo, openingHours, treatments, videos, aftercare, designSettings, emergencyInfo, news] = await Promise.all([
+      const [categories, praxisInfo, openingHours, treatments, videos, aftercare, designSettings, emergencyInfo, news] = await Promise.all([
+        dataService.getCategories(),
         dataService.getPraxisInfo(),
         dataService.getOpeningHours(),
         dataService.getTreatments(),
@@ -50,11 +52,13 @@ class ZahngutApp {
         dataService.getNews()
       ]);
 
+      this.categories = categories;
       this.treatments = treatments;
       this.videos = videos;
       this.aftercare = aftercare;
       this.news = news;
 
+      this.updateCategoryLabels();
       this.renderPraxisInfo(praxisInfo);
       this.renderOpeningHours(openingHours);
       this.renderTreatments(treatments);
@@ -66,6 +70,28 @@ class ZahngutApp {
     } catch (error) {
       console.error('Error loading data:', error);
     }
+  }
+
+  updateCategoryLabels() {
+    const categoryMappings = [
+      { key: 'behandlungen', titleId: 'treatmentsTitle', iconId: 'treatmentsIcon', descId: 'treatmentsDesc' },
+      { key: 'videos', titleId: 'videosTitle', iconId: 'videosIcon', descId: 'videosDesc' },
+      { key: 'aktuelles', titleId: 'aktuellesTitle', iconId: 'aktuellesIcon', descId: 'aktuellesDesc' },
+      { key: 'nachsorge', titleId: 'nachsorgeTitle', iconId: 'nachsorgeIcon', descId: 'nachsorgeDesc' }
+    ];
+
+    categoryMappings.forEach(mapping => {
+      const cat = this.categories[mapping.key];
+      if (cat) {
+        const titleEl = document.getElementById(mapping.titleId);
+        const iconEl = document.getElementById(mapping.iconId);
+        const descEl = document.getElementById(mapping.descId);
+
+        if (titleEl) titleEl.textContent = cat.name;
+        if (iconEl) iconEl.textContent = cat.icon;
+        if (descEl && cat.description) descEl.textContent = cat.description;
+      }
+    });
   }
 
   renderPraxisInfo(info) {

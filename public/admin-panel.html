@@ -21,6 +21,7 @@
     <div class="admin-container">
       <nav class="admin-sidebar">
         <button class="tab-btn active" data-tab="grunddaten">📋 Grunddaten</button>
+        <button class="tab-btn" data-tab="kategorien">🏷️ Kategorien</button>
         <button class="tab-btn" data-tab="news">📰 Aktuelles</button>
         <button class="tab-btn" data-tab="behandlungen">🦷 Behandlungen</button>
         <button class="tab-btn" data-tab="videos">🎥 Videos</button>
@@ -131,6 +132,88 @@
           <div id="newsList" class="items-list">
             <!-- News items will be loaded here -->
           </div>
+        </div>
+
+        <!-- Tab: Kategorien -->
+        <div class="tab-content" id="kategorien-tab">
+          <h2>Kategorien anpassen</h2>
+          <p style="color: #64748B; margin-bottom: 24px;">Hier kannst du die Überschriften und Icons der Hauptkategorien anpassen.</p>
+
+          <form id="categoriesForm" class="admin-form">
+            <div class="category-section">
+              <h3>🦷 Behandlungen</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+                <div class="form-group">
+                  <label>Kategorie-Name</label>
+                  <input type="text" id="categoryBehandlungenName" required placeholder="z.B. Behandlungen" />
+                </div>
+                <div class="form-group">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryBehandlungenIcon" required placeholder="🦷" />
+                </div>
+                <div class="form-group">
+                  <label>Beschreibung</label>
+                  <input type="text" id="categoryBehandlungenDesc" placeholder="Kurze Beschreibung" />
+                </div>
+              </div>
+            </div>
+
+            <div class="category-section">
+              <h3>🎥 Videos</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+                <div class="form-group">
+                  <label>Kategorie-Name</label>
+                  <input type="text" id="categoryVideosName" required placeholder="z.B. Videos" />
+                </div>
+                <div class="form-group">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryVideosIcon" required placeholder="🎥" />
+                </div>
+                <div class="form-group">
+                  <label>Beschreibung</label>
+                  <input type="text" id="categoryVideosDesc" placeholder="Kurze Beschreibung" />
+                </div>
+              </div>
+            </div>
+
+            <div class="category-section">
+              <h3>📰 Aktuelles</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+                <div class="form-group">
+                  <label>Kategorie-Name</label>
+                  <input type="text" id="categoryAktuellesName" required placeholder="z.B. Aktuelles" />
+                </div>
+                <div class="form-group">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryAktuellesIcon" required placeholder="📰" />
+                </div>
+                <div class="form-group">
+                  <label>Beschreibung</label>
+                  <input type="text" id="categoryAktuellesDesc" placeholder="Kurze Beschreibung" />
+                </div>
+              </div>
+            </div>
+
+            <div class="category-section">
+              <h3>📝 Nachsorge</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px;">
+                <div class="form-group">
+                  <label>Kategorie-Name</label>
+                  <input type="text" id="categoryNachsorgeName" required placeholder="z.B. Nachsorge" />
+                </div>
+                <div class="form-group">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryNachsorgeIcon" required placeholder="📝" />
+                </div>
+                <div class="form-group">
+                  <label>Beschreibung</label>
+                  <input type="text" id="categoryNachsorgeDesc" placeholder="Kurze Beschreibung" />
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary">💾 Alle Kategorien speichern</button>
+          </form>
         </div>
 
         <!-- Tab: Behandlungen -->

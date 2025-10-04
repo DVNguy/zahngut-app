@@ -3,6 +3,31 @@ import { collection, getDocs, doc, getDoc, query, where, orderBy, onSnapshot } f
 import { mockData, delay } from './mockData.js';
 
 export const dataService = {
+  async getCategories() {
+    try {
+      const docRef = doc(db, 'app_config', 'categories');
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        return docSnap.data();
+      }
+      return {
+        behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen' },
+        videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen' },
+        aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis' },
+        nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen' }
+      };
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      return {
+        behandlungen: { name: 'Behandlungen', icon: '🦷', description: 'Unsere zahnmedizinischen Leistungen' },
+        videos: { name: 'Videos', icon: '🎥', description: 'Aufklärungsvideos zu Behandlungen' },
+        aktuelles: { name: 'Aktuelles', icon: '📰', description: 'Neuigkeiten aus der Praxis' },
+        nachsorge: { name: 'Nachsorge', icon: '📝', description: 'Pflegehinweise nach Behandlungen' }
+      };
+    }
+  },
+
   async getPraxisInfo() {
     try {
       const docRef = doc(db, 'praxis_info', 'main');
