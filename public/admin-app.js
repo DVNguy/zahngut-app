@@ -147,7 +147,7 @@ class AdminPanel {
               preview.innerHTML = `<img src="${event.target.result}" alt="Vorschau">`;
               preview.classList.add('active');
 
-              if (iconInput) iconInput.value = '';
+              // Don't clear the icon value, just disable the input visually
               if (iconGroup) iconGroup.style.opacity = '0.5';
               if (removeBtn) removeBtn.style.display = 'block';
             };
@@ -483,10 +483,12 @@ class AdminPanel {
         if (nameEl) nameEl.value = cat.name || '';
         if (descEl) descEl.value = cat.description || '';
 
-        // Handle icon field based on whether it's an image URL or emoji
+        // Always set the emoji icon, even if an image is uploaded (for fallback)
+        // Check if we have a stored emoji in iconEmoji field or extract from icon if it's not a URL
         const isImageIcon = cat.icon && cat.icon.startsWith('http');
+        const emojiValue = cat.iconEmoji || (!isImageIcon ? cat.icon : '🦷');
         if (iconEl) {
-          iconEl.value = isImageIcon ? '' : (cat.icon || '');
+          iconEl.value = emojiValue || '';
         }
 
         if (color1El) {
@@ -558,11 +560,19 @@ class AdminPanel {
       const categories = {};
 
       for (const cat of categoryKeys) {
-        let iconValue = document.getElementById(cat.iconId).value;
+        const emojiValue = document.getElementById(cat.iconId).value;
         const iconFile = document.getElementById(cat.fileId).files[0];
+        let iconValue = emojiValue;
 
+        // If a new file is uploaded, use that as the icon
         if (iconFile) {
           iconValue = await this.uploadImage(iconFile, 'category-icons');
+        } else {
+          // If no new file, check if we had an existing image URL
+          const existing = this.categories[cat.key];
+          if (existing && existing.icon && existing.icon.startsWith('http')) {
+            iconValue = existing.icon; // Keep the existing image URL
+          }
         }
 
         const catName = cat.key.charAt(0).toUpperCase() + cat.key.slice(1);
@@ -571,6 +581,7 @@ class AdminPanel {
         categories[cat.key] = {
           name: document.getElementById(cat.nameId).value,
           icon: iconValue,
+          iconEmoji: emojiValue, // Store emoji separately for fallback
           description: document.getElementById(cat.descId).value,
           bgColor1: document.getElementById(cat.color1Id).value,
           bgColor2: useGradient ? document.getElementById(cat.color2Id).value : document.getElementById(cat.color1Id).value
