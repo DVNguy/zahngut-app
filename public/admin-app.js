@@ -92,14 +92,23 @@ class AdminPanel {
     document.getElementById('closeNewsModal')?.addEventListener('click', () => this.closeNewsModal());
     document.getElementById('cancelNewsBtn')?.addEventListener('click', () => this.closeNewsModal());
 
-    // Logo preview
-    document.getElementById('praxisLogo')?.addEventListener('input', (e) => {
-      const url = e.target.value;
-      if (url) {
-        this.showLogoPreview(url);
-      } else {
-        document.getElementById('logoPreview').style.display = 'none';
+    // Logo file upload
+    document.getElementById('praxisLogoFile')?.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const uploadedUrl = await this.uploadImage(file, 'logos');
+        if (uploadedUrl) {
+          document.getElementById('praxisLogo').value = uploadedUrl;
+          this.showLogoPreview(uploadedUrl);
+        }
       }
+    });
+
+    // Logo remove button
+    document.getElementById('removeLogoBtn')?.addEventListener('click', () => {
+      document.getElementById('praxisLogo').value = '';
+      document.getElementById('praxisLogoFile').value = '';
+      document.getElementById('logoPreview').style.display = 'none';
     });
 
     this.setupImagePreviews();

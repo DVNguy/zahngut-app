@@ -119,21 +119,20 @@ class ZahngutApp {
     if (heroSubtitle) heroSubtitle.textContent = info.slogan;
 
     // Update logo
+    const logoBtn = document.getElementById('logoBtn');
     const logoIcon = document.getElementById('logoIcon');
     const logoText = document.getElementById('logoText');
 
     if (info.logo) {
-      // Show image logo
-      if (logoIcon) {
-        logoIcon.innerHTML = `<img src="${info.logo}" alt="${info.name}" style="height: 32px; object-fit: contain;" />`;
-      }
-      if (logoText) {
-        logoText.style.display = 'none';
+      // Show full logo image (spanning the entire logo area)
+      if (logoBtn) {
+        logoBtn.innerHTML = `<img src="${info.logo}" alt="${info.name}" style="height: 40px; max-width: 200px; object-fit: contain;" />`;
       }
     } else {
-      // Show text logo
+      // Show text logo with icon
       if (logoIcon) {
         logoIcon.textContent = '🦷';
+        logoIcon.style.display = '';
       }
       if (logoText) {
         logoText.textContent = info.name.split(' ')[0];
