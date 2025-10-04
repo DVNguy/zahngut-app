@@ -263,8 +263,7 @@
   </div>
 
   <script type="module">
-    import { auth } from '../src/firebaseConfig.js';
-    import { signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
+    import { auth, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from './firebase-auth.js';
 
     const form = document.getElementById('loginForm');
     const submitBtn = document.getElementById('submitBtn');

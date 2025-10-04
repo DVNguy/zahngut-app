@@ -1,5 +1,5 @@
-import { db, auth } from '../src/firebaseConfig.js';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth, onAuthStateChanged, signOut } from './firebase-auth.js';
+import { db } from './firebase-db.js';
 import {
   collection,
   getDocs,
