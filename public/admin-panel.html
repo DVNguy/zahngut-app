@@ -157,18 +157,21 @@
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryBehandlungenName" required placeholder="z.B. Behandlungen" />
                 </div>
-                <div class="form-group">
-                  <label>Icon (Emoji oder URL)</label>
-                  <input type="text" id="categoryBehandlungenIcon" required placeholder="🦷 oder Bild-URL" />
+                <div class="form-group" id="categoryBehandlungenIconGroup">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryBehandlungenIcon" placeholder="🦷" />
+                  <small style="color: #64748B;">Oder lade unten ein eigenes Icon hoch</small>
                 </div>
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryBehandlungenDesc" placeholder="Kurze Beschreibung" />
                 </div>
                 <div class="form-group">
-                  <label>Icon-Bild hochladen</label>
+                  <label>Icon-Bild hochladen (optional)</label>
                   <input type="file" id="categoryBehandlungenIconFile" accept="image/*" class="file-input" />
+                  <small style="color: #64748B;">Überschreibt das Emoji-Icon</small>
                   <div id="categoryBehandlungenIconPreview" class="icon-preview"></div>
+                  <button type="button" id="categoryBehandlungenRemoveIcon" class="btn-remove-icon" style="display: none; margin-top: 8px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Bild entfernen</button>
                 </div>
                 <div class="form-group">
                   <label>Hintergrundfarbe 1</label>
@@ -203,18 +206,21 @@
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryVideosName" required placeholder="z.B. Videos" />
                 </div>
-                <div class="form-group">
-                  <label>Icon (Emoji oder URL)</label>
-                  <input type="text" id="categoryVideosIcon" required placeholder="🎥 oder Bild-URL" />
+                <div class="form-group" id="categoryVideosIconGroup">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryVideosIcon" placeholder="🎥" />
+                  <small style="color: #64748B;">Oder lade unten ein eigenes Icon hoch</small>
                 </div>
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryVideosDesc" placeholder="Kurze Beschreibung" />
                 </div>
                 <div class="form-group">
-                  <label>Icon-Bild hochladen</label>
+                  <label>Icon-Bild hochladen (optional)</label>
                   <input type="file" id="categoryVideosIconFile" accept="image/*" class="file-input" />
+                  <small style="color: #64748B;">Überschreibt das Emoji-Icon</small>
                   <div id="categoryVideosIconPreview" class="icon-preview"></div>
+                  <button type="button" id="categoryVideosRemoveIcon" class="btn-remove-icon" style="display: none; margin-top: 8px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Bild entfernen</button>
                 </div>
                 <div class="form-group">
                   <label>Hintergrundfarbe 1</label>
@@ -249,18 +255,21 @@
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryAktuellesName" required placeholder="z.B. Aktuelles" />
                 </div>
-                <div class="form-group">
-                  <label>Icon (Emoji oder URL)</label>
-                  <input type="text" id="categoryAktuellesIcon" required placeholder="📰 oder Bild-URL" />
+                <div class="form-group" id="categoryAktuellesIconGroup">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryAktuellesIcon" placeholder="📰" />
+                  <small style="color: #64748B;">Oder lade unten ein eigenes Icon hoch</small>
                 </div>
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryAktuellesDesc" placeholder="Kurze Beschreibung" />
                 </div>
                 <div class="form-group">
-                  <label>Icon-Bild hochladen</label>
+                  <label>Icon-Bild hochladen (optional)</label>
                   <input type="file" id="categoryAktuellesIconFile" accept="image/*" class="file-input" />
+                  <small style="color: #64748B;">Überschreibt das Emoji-Icon</small>
                   <div id="categoryAktuellesIconPreview" class="icon-preview"></div>
+                  <button type="button" id="categoryAktuellesRemoveIcon" class="btn-remove-icon" style="display: none; margin-top: 8px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Bild entfernen</button>
                 </div>
                 <div class="form-group">
                   <label>Hintergrundfarbe 1</label>
@@ -295,18 +304,21 @@
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryNachsorgeName" required placeholder="z.B. Nachsorge" />
                 </div>
-                <div class="form-group">
-                  <label>Icon (Emoji oder URL)</label>
-                  <input type="text" id="categoryNachsorgeIcon" required placeholder="📝 oder Bild-URL" />
+                <div class="form-group" id="categoryNachsorgeIconGroup">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryNachsorgeIcon" placeholder="📝" />
+                  <small style="color: #64748B;">Oder lade unten ein eigenes Icon hoch</small>
                 </div>
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryNachsorgeDesc" placeholder="Kurze Beschreibung" />
                 </div>
                 <div class="form-group">
-                  <label>Icon-Bild hochladen</label>
+                  <label>Icon-Bild hochladen (optional)</label>
                   <input type="file" id="categoryNachsorgeIconFile" accept="image/*" class="file-input" />
+                  <small style="color: #64748B;">Überschreibt das Emoji-Icon</small>
                   <div id="categoryNachsorgeIconPreview" class="icon-preview"></div>
+                  <button type="button" id="categoryNachsorgeRemoveIcon" class="btn-remove-icon" style="display: none; margin-top: 8px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Bild entfernen</button>
                 </div>
                 <div class="form-group">
                   <label>Hintergrundfarbe 1</label>
@@ -341,18 +353,21 @@
                   <label>Kategorie-Name</label>
                   <input type="text" id="categoryTermineName" required placeholder="z.B. Termine & Kontakt" />
                 </div>
-                <div class="form-group">
-                  <label>Icon (Emoji oder URL)</label>
-                  <input type="text" id="categoryTermineIcon" required placeholder="📅 oder Bild-URL" />
+                <div class="form-group" id="categoryTermineIconGroup">
+                  <label>Icon (Emoji)</label>
+                  <input type="text" id="categoryTermineIcon" placeholder="📅" />
+                  <small style="color: #64748B;">Oder lade unten ein eigenes Icon hoch</small>
                 </div>
                 <div class="form-group">
                   <label>Beschreibung</label>
                   <input type="text" id="categoryTermineDesc" placeholder="Kurze Beschreibung" />
                 </div>
                 <div class="form-group">
-                  <label>Icon-Bild hochladen</label>
+                  <label>Icon-Bild hochladen (optional)</label>
                   <input type="file" id="categoryTermineIconFile" accept="image/*" class="file-input" />
+                  <small style="color: #64748B;">Überschreibt das Emoji-Icon</small>
                   <div id="categoryTermineIconPreview" class="icon-preview"></div>
+                  <button type="button" id="categoryTermineRemoveIcon" class="btn-remove-icon" style="display: none; margin-top: 8px; padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px;">Bild entfernen</button>
                 </div>
                 <div class="form-group">
                   <label>Hintergrundfarbe 1</label>

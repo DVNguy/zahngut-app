@@ -123,11 +123,11 @@ class AdminPanel {
       { fileId: 'treatmentIconFile', previewId: 'treatmentIconPreview' },
       { fileId: 'videoIconFile', previewId: 'videoIconPreview' },
       { fileId: 'aftercareIconFile', previewId: 'aftercareIconPreview' },
-      { fileId: 'categoryBehandlungenIconFile', previewId: 'categoryBehandlungenIconPreview' },
-      { fileId: 'categoryVideosIconFile', previewId: 'categoryVideosIconPreview' },
-      { fileId: 'categoryAktuellesIconFile', previewId: 'categoryAktuellesIconPreview' },
-      { fileId: 'categoryNachsorgeIconFile', previewId: 'categoryNachsorgeIconPreview' },
-      { fileId: 'categoryTermineIconFile', previewId: 'categoryTermineIconPreview' }
+      { fileId: 'categoryBehandlungenIconFile', previewId: 'categoryBehandlungenIconPreview', iconId: 'categoryBehandlungenIcon', removeBtnId: 'categoryBehandlungenRemoveIcon', iconGroupId: 'categoryBehandlungenIconGroup' },
+      { fileId: 'categoryVideosIconFile', previewId: 'categoryVideosIconPreview', iconId: 'categoryVideosIcon', removeBtnId: 'categoryVideosRemoveIcon', iconGroupId: 'categoryVideosIconGroup' },
+      { fileId: 'categoryAktuellesIconFile', previewId: 'categoryAktuellesIconPreview', iconId: 'categoryAktuellesIcon', removeBtnId: 'categoryAktuellesRemoveIcon', iconGroupId: 'categoryAktuellesIconGroup' },
+      { fileId: 'categoryNachsorgeIconFile', previewId: 'categoryNachsorgeIconPreview', iconId: 'categoryNachsorgeIcon', removeBtnId: 'categoryNachsorgeRemoveIcon', iconGroupId: 'categoryNachsorgeIconGroup' },
+      { fileId: 'categoryTermineIconFile', previewId: 'categoryTermineIconPreview', iconId: 'categoryTermineIcon', removeBtnId: 'categoryTermineRemoveIcon', iconGroupId: 'categoryTermineIconGroup' }
     ];
 
     previewConfigs.forEach(config => {
@@ -136,15 +136,39 @@ class AdminPanel {
         fileInput.addEventListener('change', (e) => {
           const file = e.target.files[0];
           const preview = document.getElementById(config.previewId);
+          const iconInput = document.getElementById(config.iconId);
+          const removeBtn = document.getElementById(config.removeBtnId);
+          const iconGroup = document.getElementById(config.iconGroupId);
 
           if (file && preview) {
             const reader = new FileReader();
             reader.onload = (event) => {
               preview.innerHTML = `<img src="${event.target.result}" alt="Vorschau">`;
               preview.classList.add('active');
+
+              if (iconInput) iconInput.value = '';
+              if (iconGroup) iconGroup.style.opacity = '0.5';
+              if (removeBtn) removeBtn.style.display = 'block';
             };
             reader.readAsDataURL(file);
           }
+        });
+      }
+
+      const removeBtn = document.getElementById(config.removeBtnId);
+      if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+          const fileInput = document.getElementById(config.fileId);
+          const preview = document.getElementById(config.previewId);
+          const iconGroup = document.getElementById(config.iconGroupId);
+
+          if (fileInput) fileInput.value = '';
+          if (preview) {
+            preview.innerHTML = '';
+            preview.classList.remove('active');
+          }
+          if (iconGroup) iconGroup.style.opacity = '1';
+          removeBtn.style.display = 'none';
         });
       }
     });
@@ -384,11 +408,11 @@ class AdminPanel {
 
   updateCategoryUI() {
     const categoryFields = [
-      { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc', previewId: 'categoryBehandlungenIconPreview', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2', colorPreviewId: 'categoryBehandlungenColorPreview' },
-      { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc', previewId: 'categoryVideosIconPreview', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2', colorPreviewId: 'categoryVideosColorPreview' },
-      { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc', previewId: 'categoryAktuellesIconPreview', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2', colorPreviewId: 'categoryAktuellesColorPreview' },
-      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc', previewId: 'categoryNachsorgeIconPreview', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', colorPreviewId: 'categoryNachsorgeColorPreview' },
-      { key: 'termine', nameId: 'categoryTermineName', iconId: 'categoryTermineIcon', descId: 'categoryTermineDesc', previewId: 'categoryTermineIconPreview', color1Id: 'categoryTermineBgColor1', color2Id: 'categoryTermineBgColor2', colorPreviewId: 'categoryTermineColorPreview' }
+      { key: 'behandlungen', nameId: 'categoryBehandlungenName', iconId: 'categoryBehandlungenIcon', descId: 'categoryBehandlungenDesc', previewId: 'categoryBehandlungenIconPreview', color1Id: 'categoryBehandlungenBgColor1', color2Id: 'categoryBehandlungenBgColor2', colorPreviewId: 'categoryBehandlungenColorPreview', removeBtnId: 'categoryBehandlungenRemoveIcon', iconGroupId: 'categoryBehandlungenIconGroup' },
+      { key: 'videos', nameId: 'categoryVideosName', iconId: 'categoryVideosIcon', descId: 'categoryVideosDesc', previewId: 'categoryVideosIconPreview', color1Id: 'categoryVideosBgColor1', color2Id: 'categoryVideosBgColor2', colorPreviewId: 'categoryVideosColorPreview', removeBtnId: 'categoryVideosRemoveIcon', iconGroupId: 'categoryVideosIconGroup' },
+      { key: 'aktuelles', nameId: 'categoryAktuellesName', iconId: 'categoryAktuellesIcon', descId: 'categoryAktuellesDesc', previewId: 'categoryAktuellesIconPreview', color1Id: 'categoryAktuellesBgColor1', color2Id: 'categoryAktuellesBgColor2', colorPreviewId: 'categoryAktuellesColorPreview', removeBtnId: 'categoryAktuellesRemoveIcon', iconGroupId: 'categoryAktuellesIconGroup' },
+      { key: 'nachsorge', nameId: 'categoryNachsorgeName', iconId: 'categoryNachsorgeIcon', descId: 'categoryNachsorgeDesc', previewId: 'categoryNachsorgeIconPreview', color1Id: 'categoryNachsorgeBgColor1', color2Id: 'categoryNachsorgeBgColor2', colorPreviewId: 'categoryNachsorgeColorPreview', removeBtnId: 'categoryNachsorgeRemoveIcon', iconGroupId: 'categoryNachsorgeIconGroup' },
+      { key: 'termine', nameId: 'categoryTermineName', iconId: 'categoryTermineIcon', descId: 'categoryTermineDesc', previewId: 'categoryTermineIconPreview', color1Id: 'categoryTermineBgColor1', color2Id: 'categoryTermineBgColor2', colorPreviewId: 'categoryTermineColorPreview', removeBtnId: 'categoryTermineRemoveIcon', iconGroupId: 'categoryTermineIconGroup' }
     ];
 
     categoryFields.forEach(field => {
@@ -402,9 +426,18 @@ class AdminPanel {
         const color2El = document.getElementById(field.color2Id);
         const colorPreviewEl = document.getElementById(field.colorPreviewId);
 
+        const iconGroup = document.getElementById(field.iconGroupId);
+        const removeBtn = document.getElementById(field.removeBtnId);
+
         if (nameEl) nameEl.value = cat.name || '';
-        if (iconEl) iconEl.value = cat.icon || '';
         if (descEl) descEl.value = cat.description || '';
+
+        // Handle icon field based on whether it's an image URL or emoji
+        const isImageIcon = cat.icon && cat.icon.startsWith('http');
+        if (iconEl) {
+          iconEl.value = isImageIcon ? '' : (cat.icon || '');
+        }
+
         if (color1El) {
           color1El.value = cat.bgColor1 || '#4F46E5';
           // Update hex input display
@@ -428,9 +461,19 @@ class AdminPanel {
           gradientCheckbox.dispatchEvent(new Event('change'));
         }
 
-        if (previewEl && cat.icon && cat.icon.startsWith('http')) {
+        // Show image preview and adjust UI if icon is an image URL
+        if (previewEl && isImageIcon) {
           previewEl.innerHTML = `<img src="${cat.icon}" alt="Icon">`;
           previewEl.classList.add('active');
+          if (iconGroup) iconGroup.style.opacity = '0.5';
+          if (removeBtn) removeBtn.style.display = 'block';
+        } else {
+          if (previewEl) {
+            previewEl.innerHTML = '';
+            previewEl.classList.remove('active');
+          }
+          if (iconGroup) iconGroup.style.opacity = '1';
+          if (removeBtn) removeBtn.style.display = 'none';
         }
 
         if (colorPreviewEl) {
