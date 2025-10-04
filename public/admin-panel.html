@@ -264,6 +264,121 @@
     </div>
   </div>
 
+  <!-- Modal for Video Edit -->
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="videoModalTitle">Video bearbeiten</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="videoForm" class="admin-form">
+        <input type="hidden" id="videoId" />
+        <div class="form-group">
+          <label>Titel</label>
+          <input type="text" id="videoTitle" required />
+        </div>
+        <div class="form-group">
+          <label>Kategorie</label>
+          <select id="videoCategory" required>
+            <option value="Zahnerhaltung">Zahnerhaltung</option>
+            <option value="Zahnersatz">Zahnersatz</option>
+            <option value="Chirurgie">Chirurgie</option>
+            <option value="Implantologie">Implantologie</option>
+            <option value="Allgemein">Allgemein</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Icon (Emoji)</label>
+          <input type="text" id="videoIcon" required />
+        </div>
+        <div class="form-group">
+          <label>YouTube Video ID oder Embed URL</label>
+          <input type="text" id="videoUrl" required placeholder="z.B. dQw4w9WgXcQ oder https://www.youtube.com/embed/..." />
+          <small>Entweder die YouTube Video ID oder die komplette Embed URL</small>
+        </div>
+        <div class="form-group">
+          <label>Thumbnail URL (optional)</label>
+          <input type="url" id="videoThumbnail" placeholder="https://..." />
+          <small>Falls leer, wird automatisch YouTube Thumbnail verwendet</small>
+        </div>
+        <div class="form-group">
+          <label>Kurzbeschreibung</label>
+          <textarea id="videoDescription" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Dauer (z.B. "5:30")</label>
+          <input type="text" id="videoDuration" placeholder="5:30" />
+        </div>
+        <div class="form-group">
+          <label>Reihenfolge</label>
+          <input type="number" id="videoOrder" value="0" />
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="videoActive" />
+            Aktiv (für Patienten sichtbar)
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary modal-close">Abbrechen</button>
+          <button type="submit" class="btn-primary">Speichern</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for Aftercare Edit -->
+  <div id="aftercareModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="aftercareModalTitle">Nachsorge bearbeiten</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="aftercareForm" class="admin-form">
+        <input type="hidden" id="aftercareId" />
+        <div class="form-group">
+          <label>Behandlung</label>
+          <input type="text" id="aftercareName" required />
+        </div>
+        <div class="form-group">
+          <label>Icon (Emoji)</label>
+          <input type="text" id="aftercareIcon" required />
+        </div>
+        <div class="form-group">
+          <label>Zeitraum (z.B. "2-4 Wochen")</label>
+          <input type="text" id="aftercareTime" required />
+        </div>
+        <div class="form-group">
+          <label>Kurzbeschreibung</label>
+          <textarea id="aftercareDescription" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Warnsignale (einer pro Zeile)</label>
+          <textarea id="aftercareWarnings" rows="4" placeholder="Starke Schmerzen&#10;Blutungen&#10;Schwellungen"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Phasen (JSON Format)</label>
+          <textarea id="aftercarePhases" rows="8" placeholder='[{"title":"Erste 24h","time":"Tag 1","items":["Nicht spülen","Kühlen"]},{"title":"Tag 2-7","time":"Woche 1","items":["Vorsichtig putzen"]}]'></textarea>
+          <small>JSON Array mit Phasen. Jede Phase hat: title, time, items (Array)</small>
+        </div>
+        <div class="form-group">
+          <label>Reihenfolge</label>
+          <input type="number" id="aftercareOrder" value="0" />
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="aftercareActive" />
+            Aktiv (für Patienten sichtbar)
+          </label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary modal-close">Abbrechen</button>
+          <button type="submit" class="btn-primary">Speichern</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script type="module" src="/admin-app.js"></script>
 </body>
 </html>

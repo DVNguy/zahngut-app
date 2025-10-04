@@ -53,9 +53,13 @@ class AdminPanel {
     document.getElementById('emergencyForm')?.addEventListener('submit', (e) => this.saveEmergencyInfo(e));
     document.getElementById('treatmentForm')?.addEventListener('submit', (e) => this.saveTreatment(e));
     document.getElementById('newsForm')?.addEventListener('submit', (e) => this.saveNews(e));
+    document.getElementById('videoForm')?.addEventListener('submit', (e) => this.saveVideo(e));
+    document.getElementById('aftercareForm')?.addEventListener('submit', (e) => this.saveAftercare(e));
 
     document.getElementById('addTreatmentBtn')?.addEventListener('click', () => this.openTreatmentModal());
     document.getElementById('addNewsBtn')?.addEventListener('click', () => this.openNewsModal());
+    document.getElementById('addVideoBtn')?.addEventListener('click', () => this.openVideoModal());
+    document.getElementById('addAftercareBtn')?.addEventListener('click', () => this.openAftercareModal());
     document.getElementById('closeNewsModal')?.addEventListener('click', () => this.closeNewsModal());
     document.getElementById('cancelNewsBtn')?.addEventListener('click', () => this.closeNewsModal());
   }
@@ -76,7 +80,9 @@ class AdminPanel {
       this.loadOpeningHours(),
       this.loadTreatments(),
       this.loadEmergencyInfo(),
-      this.loadNews()
+      this.loadNews(),
+      this.loadVideos(),
+      this.loadAftercare()
     ]);
   }
 
@@ -470,6 +476,282 @@ class AdminPanel {
       await this.loadNews();
     } catch (error) {
       console.error('Error deleting news:', error);
+      this.showNotification('Fehler beim Löschen!', 'error');
+    }
+  }
+
+  async loadVideos() {
+    try {
+      const q = query(collection(db, 'videos'), orderBy('display_order', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      const list = document.getElementById('videosList');
+      if (!list) return;
+
+      list.innerHTML = data.map(video => `
+        <div class="item-card">
+          <div class="item-header">
+            <div>
+              <h3>${video.icon || '🎥'} ${video.title}</h3>
+              <p class="item-meta">
+                ${video.category || 'Allgemein'}
+                ${video.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>'}
+              </p>
+            </div>
+            <div class="item-actions">
+              <button class="btn-icon" onclick="adminPanel.editVideo('${video.id}')">✏️</button>
+              <button class="btn-icon" onclick="adminPanel.deleteVideo('${video.id}')">🗑️</button>
+            </div>
+          </div>
+          ${video.thumbnail ? `<img src="${video.thumbnail}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 12px;">` : ''}
+          <p style="margin-top: 12px; color: #666;">${video.description || ''}</p>
+        </div>
+      `).join('');
+    } catch (error) {
+      console.error('Error loading videos:', error);
+    }
+  }
+
+  openVideoModal(video = null) {
+    const modal = document.getElementById('videoModal');
+    const title = document.getElementById('videoModalTitle');
+
+    if (video) {
+      title.textContent = 'Video bearbeiten';
+      document.getElementById('videoId').value = video.id;
+      document.getElementById('videoTitle').value = video.title;
+      document.getElementById('videoCategory').value = video.category || 'Allgemein';
+      document.getElementById('videoIcon').value = video.icon || '🎥';
+      document.getElementById('videoUrl').value = video.url;
+      document.getElementById('videoThumbnail').value = video.thumbnail || '';
+      document.getElementById('videoDescription').value = video.description || '';
+      document.getElementById('videoDuration').value = video.duration || '';
+      document.getElementById('videoOrder').value = video.display_order || 0;
+      document.getElementById('videoActive').checked = video.active || false;
+    } else {
+      title.textContent = 'Neues Video';
+      document.getElementById('videoForm').reset();
+      document.getElementById('videoId').value = '';
+      document.getElementById('videoIcon').value = '🎥';
+      document.getElementById('videoActive').checked = true;
+    }
+
+    modal.classList.add('active');
+  }
+
+  async editVideo(id) {
+    try {
+      const docRef = doc(db, 'videos', id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.openVideoModal({ id: docSnap.id, ...docSnap.data() });
+      }
+    } catch (error) {
+      console.error('Error editing video:', error);
+    }
+  }
+
+  async saveVideo(e) {
+    e.preventDefault();
+
+    let videoUrl = document.getElementById('videoUrl').value.trim();
+
+    if (videoUrl.includes('youtube.com/watch?v=')) {
+      const videoId = videoUrl.split('v=')[1]?.split('&')[0];
+      videoUrl = `https://www.youtube.com/embed/${videoId}`;
+    } else if (!videoUrl.includes('embed') && !videoUrl.includes('http')) {
+      videoUrl = `https://www.youtube.com/embed/${videoUrl}`;
+    }
+
+    let thumbnail = document.getElementById('videoThumbnail').value.trim();
+    if (!thumbnail && videoUrl.includes('youtube.com/embed/')) {
+      const videoId = videoUrl.split('embed/')[1]?.split('?')[0];
+      thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    }
+
+    const videoData = {
+      title: document.getElementById('videoTitle').value,
+      category: document.getElementById('videoCategory').value,
+      icon: document.getElementById('videoIcon').value,
+      url: videoUrl,
+      thumbnail: thumbnail,
+      description: document.getElementById('videoDescription').value,
+      duration: document.getElementById('videoDuration').value || null,
+      display_order: parseInt(document.getElementById('videoOrder').value) || 0,
+      active: document.getElementById('videoActive').checked,
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString()
+    };
+
+    const videoId = document.getElementById('videoId').value;
+
+    try {
+      if (videoId) {
+        await updateDoc(doc(db, 'videos', videoId), videoData);
+        this.showNotification('Video aktualisiert!');
+      } else {
+        await setDoc(doc(db, 'videos', Date.now().toString()), videoData);
+        this.showNotification('Video erstellt!');
+      }
+
+      document.getElementById('videoModal').classList.remove('active');
+      await this.loadVideos();
+    } catch (error) {
+      console.error('Error saving video:', error);
+      this.showNotification('Fehler beim Speichern!', 'error');
+    }
+  }
+
+  async deleteVideo(id) {
+    if (!confirm('Video wirklich löschen?')) return;
+
+    try {
+      await deleteDoc(doc(db, 'videos', id));
+      this.showNotification('Video gelöscht!');
+      await this.loadVideos();
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      this.showNotification('Fehler beim Löschen!', 'error');
+    }
+  }
+
+  async loadAftercare() {
+    try {
+      const q = query(collection(db, 'aftercare'), orderBy('display_order', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      const list = document.getElementById('aftercareList');
+      if (!list) return;
+
+      list.innerHTML = data.map(aftercare => `
+        <div class="item-card">
+          <div class="item-header">
+            <div>
+              <h3>${aftercare.icon || '📝'} ${aftercare.behandlung}</h3>
+              <p class="item-meta">
+                ${aftercare.time || aftercare.zeitraum || ''}
+                ${aftercare.active ? '<span class="status-badge published">Aktiv</span>' : '<span class="status-badge draft">Inaktiv</span>'}
+              </p>
+            </div>
+            <div class="item-actions">
+              <button class="btn-icon" onclick="adminPanel.editAftercare('${aftercare.id}')">✏️</button>
+              <button class="btn-icon" onclick="adminPanel.deleteAftercare('${aftercare.id}')">🗑️</button>
+            </div>
+          </div>
+          <p style="margin-top: 12px; color: #666;">${aftercare.kurzbeschreibung || ''}</p>
+        </div>
+      `).join('');
+    } catch (error) {
+      console.error('Error loading aftercare:', error);
+    }
+  }
+
+  openAftercareModal(aftercare = null) {
+    const modal = document.getElementById('aftercareModal');
+    const title = document.getElementById('aftercareModalTitle');
+
+    if (aftercare) {
+      title.textContent = 'Nachsorge bearbeiten';
+      document.getElementById('aftercareId').value = aftercare.id;
+      document.getElementById('aftercareName').value = aftercare.behandlung;
+      document.getElementById('aftercareIcon').value = aftercare.icon || '📝';
+      document.getElementById('aftercareTime').value = aftercare.time || aftercare.zeitraum || '';
+      document.getElementById('aftercareDescription').value = aftercare.kurzbeschreibung || '';
+
+      const warnings = aftercare.warnsignale || aftercare.warnung || [];
+      document.getElementById('aftercareWarnings').value = Array.isArray(warnings)
+        ? warnings.join('\n')
+        : (typeof warnings === 'string' ? warnings : '');
+
+      const phasen = aftercare.phasen || [];
+      document.getElementById('aftercarePhases').value = JSON.stringify(phasen, null, 2);
+      document.getElementById('aftercareOrder').value = aftercare.display_order || 0;
+      document.getElementById('aftercareActive').checked = aftercare.active || false;
+    } else {
+      title.textContent = 'Neue Nachsorge';
+      document.getElementById('aftercareForm').reset();
+      document.getElementById('aftercareId').value = '';
+      document.getElementById('aftercareIcon').value = '📝';
+      document.getElementById('aftercareActive').checked = true;
+      document.getElementById('aftercarePhases').value = '[]';
+    }
+
+    modal.classList.add('active');
+  }
+
+  async editAftercare(id) {
+    try {
+      const docRef = doc(db, 'aftercare', id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        this.openAftercareModal({ id: docSnap.id, ...docSnap.data() });
+      }
+    } catch (error) {
+      console.error('Error editing aftercare:', error);
+    }
+  }
+
+  async saveAftercare(e) {
+    e.preventDefault();
+
+    const warningsText = document.getElementById('aftercareWarnings').value;
+    const phasesText = document.getElementById('aftercarePhases').value;
+
+    let phasen = [];
+    try {
+      phasen = JSON.parse(phasesText);
+    } catch (err) {
+      this.showNotification('Fehler im Phasen-JSON Format!', 'error');
+      return;
+    }
+
+    const aftercareData = {
+      behandlung: document.getElementById('aftercareName').value,
+      icon: document.getElementById('aftercareIcon').value,
+      time: document.getElementById('aftercareTime').value,
+      zeitraum: document.getElementById('aftercareTime').value,
+      kurzbeschreibung: document.getElementById('aftercareDescription').value,
+      warnsignale: warningsText.split('\n').filter(line => line.trim()),
+      warnung: warningsText.split('\n').filter(line => line.trim()),
+      phasen: phasen,
+      display_order: parseInt(document.getElementById('aftercareOrder').value) || 0,
+      active: document.getElementById('aftercareActive').checked,
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString()
+    };
+
+    const aftercareId = document.getElementById('aftercareId').value;
+
+    try {
+      if (aftercareId) {
+        await updateDoc(doc(db, 'aftercare', aftercareId), aftercareData);
+        this.showNotification('Nachsorge aktualisiert!');
+      } else {
+        await setDoc(doc(db, 'aftercare', Date.now().toString()), aftercareData);
+        this.showNotification('Nachsorge erstellt!');
+      }
+
+      document.getElementById('aftercareModal').classList.remove('active');
+      await this.loadAftercare();
+    } catch (error) {
+      console.error('Error saving aftercare:', error);
+      this.showNotification('Fehler beim Speichern!', 'error');
+    }
+  }
+
+  async deleteAftercare(id) {
+    if (!confirm('Nachsorge wirklich löschen?')) return;
+
+    try {
+      await deleteDoc(doc(db, 'aftercare', id));
+      this.showNotification('Nachsorge gelöscht!');
+      await this.loadAftercare();
+    } catch (error) {
+      console.error('Error deleting aftercare:', error);
       this.showNotification('Fehler beim Löschen!', 'error');
     }
   }
