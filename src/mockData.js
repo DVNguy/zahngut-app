@@ -96,18 +96,7 @@ export const mockData = {
     }
   ],
 
-  news: [
-    {
-      id: '1',
-      title: 'Willkommen bei Zahngut',
-      content: 'Wir freuen uns, Sie in unserer modernen Zahnarztpraxis begrüßen zu dürfen.',
-      image_url: '',
-      video_url: '',
-      published: true,
-      display_order: 1,
-      created_at: new Date().toISOString()
-    }
-  ],
+  news: [],
 
   designSettings: {
     id: '1',

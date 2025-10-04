@@ -384,16 +384,25 @@ class AdminPanel {
 
   async loadNews() {
     try {
-      const q = query(
-        collection(db, 'news'),
-        orderBy('display_order', 'desc'),
-        orderBy('created_at', 'desc')
-      );
-      const querySnapshot = await getDocs(q);
-      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, 'news'));
+      const data = querySnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => {
+          if (a.display_order !== b.display_order) {
+            return (b.display_order || 0) - (a.display_order || 0);
+          }
+          const aDate = a.created_at?.seconds || a.created_at || 0;
+          const bDate = b.created_at?.seconds || b.created_at || 0;
+          return bDate - aDate;
+        });
 
       const list = document.getElementById('newsList');
       if (!list) return;
+
+      if (data.length === 0) {
+        list.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Noch keine News vorhanden. Klicke auf "Neue Meldung" um eine zu erstellen.</p>';
+        return;
+      }
 
       list.innerHTML = data.map(news => `
         <div class="item-card">
@@ -401,7 +410,7 @@ class AdminPanel {
             <div>
               <h3>${news.title}</h3>
               <p class="item-meta">
-                ${news.created_at ? new Date(news.created_at).toLocaleDateString('de-DE') : 'N/A'}
+                ${news.created_at ? (news.created_at.seconds ? new Date(news.created_at.seconds * 1000).toLocaleDateString('de-DE') : new Date(news.created_at).toLocaleDateString('de-DE')) : 'N/A'}
                 ${news.published ? '<span class="status-badge published">Veröffentlicht</span>' : '<span class="status-badge draft">Entwurf</span>'}
               </p>
             </div>

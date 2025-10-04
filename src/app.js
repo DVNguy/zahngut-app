@@ -212,7 +212,8 @@ class ZahngutApp {
     }
 
     grid.innerHTML = news.map(post => {
-      const date = new Date(post.created_at).toLocaleDateString('de-DE', {
+      const timestamp = post.created_at?.seconds ? post.created_at.seconds * 1000 : post.created_at;
+      const date = new Date(timestamp).toLocaleDateString('de-DE', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'

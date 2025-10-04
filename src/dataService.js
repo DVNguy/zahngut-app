@@ -114,10 +114,10 @@ export const dataService = {
           }
           return (b.created_at?.seconds || 0) - (a.created_at?.seconds || 0);
         });
-      return data.length > 0 ? data : mockData.news;
+      return data;
     } catch (error) {
       console.error('Error fetching news:', error);
-      return mockData.news;
+      return [];
     }
   },
 
